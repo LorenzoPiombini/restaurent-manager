@@ -1,0 +1,192 @@
+.TH BUSINESS "1" "November 2024" "Restaurant software 1.0.0" "Restaurant Manager Manual" 
+.SH NAME
+filter_tip_service, get_tips_employees_week, total_credit_card_tips_each_employee.
+.SH SYNOPSIS
+.nf
+.B #include "business.h"
+.P
+.BI "unsigned char filter_tip_service(int " index ", int " fd_index ", int " fd_data \
+", Record_f*** " recs ", Record_f**** " result ", Record_f**** " filtered_r, 
+.BI "		 int " service ", int* " ps ", int** " sizes );
+.P
+.BI "unsigned char get_tips_employees_week(int " week ", int " tips_index ", int " tips_data ", Record_f**** " recs_tr ", int** " sizes ", int* " pr_sz ");
+.fi
+
+unsigned char total_credit_card_tips_each_employee(Record_f**** result, int size, int* sizes, float** totals, char*** emp_k,int* pemp_t, int* ptot_t);
+
+.SH DESCRIPTION
+you can use
+.B filter_tip_service
+in two ways:
+.PP
+1. pass a result already containing data to be filtered based on service.
+.PP
+2. pass a result NULL, the fucntion will read from the files as per the file descriptors.	
+.PP
+.B get_tips_employees_week 
+return the tips according to the value of week, which identify 
+the index number of the tips.inx file, TODAY, CUR_WK(current week) and LST_WK(last week) are the
+macro defined in business.h.
+	
+	  	
+.SH RETURN VALUE
+Upon succesful return, these functions will return 1 (unsigned char), and you will have your data 
+in filtered_r, recs_tr or result, for filter_tip_service and get_tips_employees_week the length 
+of the array containing the data will be stored in the array sizes.
+	
+If an error is encountered 0 is returned.
+you will be responsabile to free the memory allocated for filtered_r and/or result, only
+if the fucntion succeed, on failure the memory will be freed. 
+	
+.SH EXAMPLES
+filter the tips of the current week showing only the tip for lunch services, and add them up:
+.nf
+#include <stdio.h>
+#include <stdlib.h>
+#include "file.h"
+#include "business.h"
+#include "str_op.h"
+#include "record.h"
+#include "restaurant_t.h"
+
+int main(void)
+{
+	int fd_td = open_file("tips.dat",0);
+	int fd_ti = open_file("tips.inx",0);
+
+	/* get tips each employees current week*/
+
+	Record_f*** result_t = NULL;
+	int* sizes = NULL, result_size = 0, *pr_sz = &result_size;
+	if(!get_tips_employees_week(CUR_WK,fd_ti,fd_td,&result_t,&sizes,pr_sz))
+	{
+		printf("get_tips_employees_current_week failed.%s:%d\n",F,L-2);
+		close_file(2,fd_ti,fd_td); 
+		return 1;
+	}
+
+	Record_f*** filtered_r = NULL;
+	int size = 0, *ps = &size;
+	int* sizes_fts = NULL;
+
+	if(!filter_tip_service(CUR_WK,-1,-1,NULL,&result_t,&filtered_r,LUNCH,ps,
+		&sizes,result_size,&sizes_fts))
+	{
+		printf("filter_tip_service failed. %s:%d.\n",F,L-2);
+		free_array_of_arrays(result_size,&result_t,sizes,result_size);
+		free(sizes);
+		close_file(2,fd_ti,fd_td); 
+		return 1;
+	}
+
+	free_array_of_arrays(result_size,&result_t,sizes,result_size);
+	free(sizes);
+
+	char** emp_k = NULL;
+	float* totals = NULL;
+	int emp_t = 0, *pemp_t = &emp_t, tot_t = 0, *ptot_t = &tot_t;	
+
+	if(!total_credit_card_tips_each_employee(&filtered_r,*ps,sizes_fts,&totals,&emp_k,pemp_t,ptot_t))
+	{
+		printf("totaling tips failed. %s:%d.\n",F,L-2);
+		free_array_of_arrays(size,&filtered_r,sizes_fts,size);
+		free(sizes);
+		close_file(2,fd_ti,fd_td); 
+		return 1;
+	}
+	
+	int i = 0;
+	for(i = 0; i < *ptot_t; i++)
+	{
+		printf("%s total tips: %.2f.\n",emp_k[i],totals[i]);
+	}
+	free(totals);
+	free_strs(*pemp_t,1,emp_k);
+	free_array_of_arrays(size,&filtered_r,sizes_fts,size);
+	free(sizes_fts);
+	close_file(2,fd_ti,fd_td); 
+	return 0;
+}	
+.PP
+2. this achieve the same result as above:
+.nf
+#include <stdio.h>
+#include <stdlib.h>
+#include "file.h"
+#include "business.h"
+#include "str_op.h"
+#include "record.h"
+#include "restaurant_t.h"
+
+int main(void)
+{
+	int fd_td = open_file("tips.dat",0);
+	int fd_ti = open_file("tips.inx",0);
+
+	Record_f*** result = NULL;
+	Record_f** rec = NULL;
+	int size = 0, *ps = &size, j = 0;
+	int* sizes = NULL;
+	
+	if(!filter_tip_service(CUR_WK,fd_ti,fd_td,&rec,&result,NULL,LUNCH,ps,&sizes,0,NULL))
+	{
+		printf("filter_tip_service failed. %s:%d.\n",F,L-2);
+		close_file(2,fd_ti,fd_td); 
+		return 1;
+	}
+
+	char** emp_k = NULL;
+	float* totals = NULL;
+	int emp_t = 0, *pemp_t = &emp_t, tot_t = 0, *ptot_t = &tot_t;	
+			
+	if(!total_credit_card_tips_each_employee(&result,*ps,sizes,&totals,&emp_k,pemp_t,ptot_t))
+	{
+		printf("totaling tips failed. %s:%d.\n",F,L-2);
+		free_array_of_arrays(size,&result,sizes,size);
+		free(sizes);
+		close_file(2,fd_ti,fd_td); 
+		return 1;
+	}
+	int i = 0;
+	for(i = 0; i < *ptot_t; i++)
+	{
+		printf("%s total tips: %.2f.\n",emp_k[i],totals[i]);
+	}
+	free(totals);
+	free_strs(*pemp_t,1,emp_k);
+	free_array_of_arrays(size,&result,sizes,size);
+	free(sizes);
+	close_file(2,fd_ti,fd_td); 
+	return 0;
+}
+.fi
+.SH NOTE
+first example heap usage: 4,687 allocs, 4,687 frees, 196,784 bytes allocated, taking 
+0.002772 seconds to execute.
+second example total heap usage: 3,263 allocs, 3,263 frees, 165,360 bytes allocated, taking
+0.003048 seconds to execute.	
+
+
+
+	/* you pass a pointer to a variable index, as the index that you want to read from */
+	/* the fucntions will use it and store the length of the array Record_f** recs.*/
+	/* if the fuction fails it takes care of the memory */
+	/* if the fucntions succeed we have our recs populated and is size in *p_index or index */
+	
+	/*----------------------- this shows how to use it --------------------------------------*/
+	/*											 */
+	/*	Record_f** recs = calloc(1,sizeof(Record_f*));					 */
+	/*	if(!recs)									 */
+	/*	{										 */
+	/*		printf("calloc failed, %s:%d",F,L-3);					 */
+	/*		return 0;								 */
+	/*	}										 */
+	/*											 */
+	/*	int index = 0, *p_index = &index;						 */
+	/*	if(!get_rec(fd_td,fd_ti,p_index,"t808-20-24e9Da Silva2",&recs, "tips")) 	 */
+	/*	{										 */
+	/*		printf("get_rec failed %s:%d.\n",F,L-2);				 */
+	/*		close_file(4,fd_ei,fd_ti,fd_ed,fd_td); 					 */
+	/*		free_record_array(*p_index,&recs);					 */
+	/*		return 1;								 */
+	/*	}										 */

@@ -1,0 +1,35 @@
+#ifndef RESTAURANT_T_H
+#define RESTAURANT_T_H
+
+typedef enum{
+	BREAKFAST,
+	LUNCH,
+	DINNER
+}Service;
+
+typedef enum
+{
+	SERVER,
+	CHEF,
+	BUSSER,
+	BARTENDER,
+	BARBACK,
+	CASHIER,
+	HOST,
+	DISHWASHER,
+	LINE_COOK,
+	FOOD_RUNNER,
+	ASSISTANT_MANAGER,
+	BAR_MANAGER,
+	DRIVER,
+	FLOOR_MANAGER,
+	GENERAL_MANAGER
+}Role;
+
+typedef enum
+{
+	POOL
+}Rules;
+
+
+#endif

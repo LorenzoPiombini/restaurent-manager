@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Configuration
+host="localhost"
+port="5555"
+file="./json_data_example2"
+
+# Check if file exists
+if [ ! -f "$file" ]; then
+    echo "File does not exist: $file"
+    exit 1
+fi
+
+# Read the file line by line
+while IFS= read -r line
+do
+    echo "Sending JSON: $line"
+    echo "$line" | nc $host $port
+    # Optional: sleep between sends to avoid overwhelming the server
+    #sleep 1
+done < "$file"
+

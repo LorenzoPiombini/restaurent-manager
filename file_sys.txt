@@ -1,0 +1,7 @@
+employee
+schedule
+tips
+percentage
+shift
+users
+timecard

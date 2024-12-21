@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "start testing in the back ground..."
+./testing_cli_1 &
+./testing_cli_2 &
+
+
