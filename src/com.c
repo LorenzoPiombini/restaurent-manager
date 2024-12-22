@@ -123,8 +123,21 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 
 	printf("read %d bytes from buffer.\n",instruction_size);
 
-	/*this eliminate the \n at the end of the sring */
-	instruction_buff[instruction_size-1] = '\0';
-	
+    /*trimming the string, eleminating all garbage from the network*/                                         
+    int index = 0;                                                                                            
+    if((index = find_last_char('}',instruction_buff)) == -1) {                                                
+        printf("invalid data.\n");                                                                        
+        return 0;                                                                                         
+    }                                                                                                         
+                                                                                                                  
+    if((index + 1) > instruction_size) {                                                                      
+            printf("error in socket data.\n");                                                                
+            return 0;                                                                                         
+    } else if((index + 1) < instruction_size) {                                                               
+            memset(&instruction_buff[index + 1],0,(instruction_size - (index + 1)));                          
+    } else if ((index + 1) == instruction_size) {                                                             
+            instruction_buff[instruction_size] = '\0';                                                        
+    }
+
 	return 1;
 }

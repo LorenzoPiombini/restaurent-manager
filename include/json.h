@@ -13,7 +13,7 @@
 
 
 /* regex(s) used to validate the json string before parsing */
-#define JSRGX_STRING "\"[a-zA-Z0-9._]+\""
+#define JSRGX_STRING "\"[a-zA-Z0-9.!@_]+\""
 #define JSRGX_VALUE JSRGX_STRING "|[0-9.]+|true|false|null"
 #define JSRGX_ARRAY "\\[\\s*(" JSRGX_STRING "|[0-9.]+|true|false|null)" \
 		    "(\\s*,\\s*(" JSRGX_STRING "|[0-9.]+|true|false|null))*\\s*\\]"

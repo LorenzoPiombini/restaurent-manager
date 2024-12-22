@@ -94,6 +94,7 @@ if(arg == 0)
 				printf("accept_instructions() failed %s:%d.\n",F,L-2);
 				close_file(2,fd_socket,fd_client);
 				/*close the shared memory*/
+                q_free(&q);
 				free_memory_object(SH_ILOCK);
 				return 1;
 			}
@@ -158,7 +159,7 @@ if(arg == 1)
                                   PROT_READ | PROT_WRITE, MAP_SHARED, fd_mo, 0);
         }
 
-	char* test = "{\"instruction\":0,\"name\":\"Stephanie\",\"last_name\":\"Sappaturu\"}";
+	char* test = "{\"instruction\":5,\"username\":\"Robert\",\"password\":\"help98!\"}";
 	JsonPair** pairs = NULL;
 	int psize = 0;
 	if(!parse_json_object(test,&pairs,&psize))
@@ -172,9 +173,10 @@ if(arg == 1)
 	int inst = (int)pairs[0]->value->data.i;	
 	free_json_pairs_array(&pairs,psize);
 					
-	if(!convert_pairs_in_db_instruction(BST_tree,inst))
+	if(!convert_pairs_in_db_instruction(BST_tree,inst)) {
+       free_BST(&BST_tree); 
 		return EXIT_FAILURE;
-
+    }
 	/*int k = 0, l = 1;
 	for(k = 0; k < l; k++)
 		if(!parse_json_object(test))
