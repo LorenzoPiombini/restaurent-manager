@@ -93,9 +93,10 @@ if(arg == 0)
 			{
 				printf("accept_instructions() failed %s:%d.\n",F,L-2);
 				close_file(2,fd_socket,fd_client);
-				/*close the shared memory*/
                 q_free(&q);
+				/*close the shared memory*/
 				free_memory_object(SH_ILOCK);
+			    memset(instruction,0,buff_size);
 				return 1;
 			}
 	
