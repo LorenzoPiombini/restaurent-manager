@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h> /* for sockaddr_in */
 #include <sys/un.h>
+#include <openssl/ssl.h>
 #include <unistd.h> /* for read()*/
 #include "debug.h"
 #include "str_op.h"
@@ -57,6 +58,7 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 
 		return 1;
 	}
+
 	else if(domain == AF_UNIX)
 	{
 		struct sockaddr_un intercom = {0};
@@ -106,13 +108,22 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 		printf("accept() failed, %s:%d.\n",F,L-2);
 		return 0;
 	}
-	
+	/*
+     *TODO: start an SSL section here 
+     * */
+
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if(!ctx) {
+        fprintf(stderr,"failed to create SSL context");
+    }
+
+    SSL_CTX_free(ctx);
     struct sockaddr_in addr = {0};
     /*convert the ip adress from human readable to network endian*/
     inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
 
     if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
-        fprintf(stderr,"client not allowed. connection dropped");
+        fprintf(stderr,"client not allowed. connection dropped.\n");
         return 1; 
     }
 

@@ -77,6 +77,7 @@ if(arg == 0)
 		{
 			printf("thread pool init failed, %s:%d.\n",F,L-2);
 			close_file(1,fd_socket);
+            q_free(&q);
 			free_memory_object(SH_ILOCK);
 			return 0;
 		}
