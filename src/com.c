@@ -111,13 +111,39 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 	/*
      *TODO: start an SSL section here 
      * */
+    long opts;
 
     SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
     if(!ctx) {
         fprintf(stderr,"failed to create SSL context");
     }
 
+
+    if(!SSL_CTX_set_min_proto_version(ctx,TLS1_2_VERSION)) {
+        fprintf(stderr,"failed to set minimum TLS version\n");
+        SSL_CTX_free(ctx);
+        return 0;
+    }
+
+
+    /*
+     * setting the option for the SSL context
+     *
+     * for documentation on what this option are please see
+     * openSSL documentaion at 
+     * https://docs.openssl.org/master/man7/ossl-guide-tls-server-block/
+     * or 
+     * https://github.com/openssl/openssl/blob/master/demos/guide/tls-server-block.c 
+     **/
+    opts = SSL_OP_IGNORE_UNEXPECTED_EOF;
+    opts |= SSL_OP_NO_RENEGOTIATION;
+    opts |= SSL_OP_CIPHER_SERVER_PREFERENCE;
+
+    /*apply the selction options */
+    SSL_CTX_set_options(ctx, opts);
+
     SSL_CTX_free(ctx);
+
     struct sockaddr_in addr = {0};
     /*convert the ip adress from human readable to network endian*/
     inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
