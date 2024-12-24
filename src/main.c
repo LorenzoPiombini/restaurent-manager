@@ -89,8 +89,8 @@ if(arg == 0)
 		{
 			int buff_size = 1000;
 			char instruction[buff_size];
-
-			if(!accept_instructions(&fd_socket,&fd_client,instruction,buff_size))
+            int res = 0;
+			if((res = accept_instructions(&fd_socket,&fd_client,instruction,buff_size)) == 0)
 			{
 				printf("accept_instructions() failed %s:%d.\n",F,L-2);
 				close_file(2,fd_socket,fd_client);
@@ -100,6 +100,13 @@ if(arg == 0)
 			    memset(instruction,0,buff_size);
 				return 1;
 			}
+
+            /*
+             * a not authorized client tried to connect
+             * so we resume the loop without perform any instruction
+             * */
+            if(res == CLI_NOT)
+                continue;
 	
 			Th_args* arg_st = calloc(1,sizeof(Th_args));
 			if(!arg_st)
