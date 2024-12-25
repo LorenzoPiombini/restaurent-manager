@@ -7,6 +7,7 @@
 
 
 #define CLI_NOT 15
+#define NO_CON 16
 
 int open_socket(int domain,int type);
 unsigned char listen_set_up(int* fd_sock, int domain, int type, short port);

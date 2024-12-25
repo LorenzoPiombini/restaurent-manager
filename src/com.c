@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fnctl.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h> /* for sockaddr_in */
@@ -10,6 +11,9 @@
 #include "str_op.h"
 #include "com.h"
 #include "file.h" /* for close_file() */
+
+static int set_non_blocking(int fd);
+
 
 int open_socket(int domain, int type)
 {
@@ -104,10 +108,9 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 	*client_sock = accept(*fd_sock,(struct sockaddr*)&client_info, &client_size);
 	if(*client_sock == -1)
 	{
-		perror("accept: ");
-		printf("accept() failed, %s:%d.\n",F,L-2);
-		return 0;
+        return NO_CON;
 	}
+    /**/
 	/*
      *TODO: start an SSL section here 
      * */
@@ -150,7 +153,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 
     if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
         fprintf(stderr,"client not allowed. connection dropped.\n");
-        return 1; 
+        return CLI_NOT; 
     }
 
 	int instruction_size = read(*client_sock,instruction_buff,buff_size);
@@ -185,4 +188,24 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
     }
 
 	return 1;
+}
+
+
+static int set_non_blocking(int fd)
+{
+    int flags = fcntl(fd,F_GETFL,0);
+    
+    if(flags == -1) {
+        fprintf(stderr,"can't get file flags.\n");
+        return flags;
+    }
+
+    flags |= O_NONBLOCK;
+
+    if(fcntl(fd,F_GETFL,0) == -1) {
+        fprintf(stderr,"change file flag failed.\n");
+        return -1;
+    }
+
+    return EXIT_SUCCESS;
 }

@@ -49,10 +49,10 @@ if(arg == 0)
 		{
 			printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
 			return EXIT_FAILURE;
-                }
+        }
 
 		int fd_socket = -1;
-		if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM,5555))
+		if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555))
 		{
 			printf("listen_set_up() failed %s:%d.\n",F,L-2);
 			close_file(1,fd_socket);
@@ -105,9 +105,21 @@ if(arg == 0)
              * a not authorized client tried to connect
              * so we resume the loop without perform any instruction
              * */
-            if(res == CLI_NOT)
+            if(res == CLI_NOT) {
+                close(fd_client);
                 continue;
-	
+            }
+
+            /*
+             * the socket is NON blocking so we need to ensure that 
+             * when accept failes becaus ethere are no connetion 
+             * the program does not crash or exit or try to execute invalid 
+             * instructions
+             * */
+
+            if(res == NO_CON)
+                continue;
+
 			Th_args* arg_st = calloc(1,sizeof(Th_args));
 			if(!arg_st)
 			{
