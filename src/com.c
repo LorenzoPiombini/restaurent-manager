@@ -13,6 +13,7 @@
 
 static const char cache_id[] = "Restaurant man Server";
 SSL_CTX *ctx = NULL;
+SSL *ssl = NULL;
 static int set_non_blocking(int fd);
 
 
@@ -102,7 +103,7 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 }
 
 
-int start_SSL(SSL_CTX **ctx)
+int start_SSL(SSL_CTX **ctx, SSL **ssl, int *sock_fd)
 {
         long opts;
 
@@ -138,13 +139,11 @@ int start_SSL(SSL_CTX **ctx)
 
         if(SSL_CTX_use_certificate_chain_file(*ctx,"chain.pem") <= 0 ) {
                 fprintf(stderr,"error use certificate.\n");
-                SSL_CTX_free(*ctx);
                 return -1;
         }
 
         if(SSL_CTX_use_PrivateKey_file(*ctx, "pkey.pem",SSL_FILETYPE_PEM) <= 0) {
                 fprintf(stderr,"error use privatekey ");
-                SSL_CTX_free(*ctx);
                 return -1;
         }
 
@@ -153,9 +152,18 @@ int start_SSL(SSL_CTX **ctx)
         SSL_CTX_sess_set_cache_size(*ctx, 1024);
         SSL_CTX_set_timeout(*ctx,3600);
         SSL_CTX_set_verify(*ctx,SSL_VERIFY_NONE, NULL);
+        *ssl = SSL_new(*ctx);
+        if(!ssl) {
+                fprintf(stderr,"fail to create ssl object");
+                return -1;
+        }
+        
+        if(SSL_set_fd(*ssl,*sock_fd) == -1) {
+                fprintf(stderr,"fail to create ssl object");
+                return -1;
+        }
 
         return EXIT_SUCCESS;
-
 }
 
 unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instruction_buff, int buff_size)

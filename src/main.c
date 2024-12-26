@@ -68,8 +68,8 @@ if(arg == 0)
 	}
         
 
-       // if(start_SSL(&ctx) == -1)
-         //       goto handle_crash;
+       if(start_SSL(&ctx,&ssl,&fd_socket) == -1)
+               goto handle_crash;
 
         epoll_fd = epoll_create1(0);
         if (epoll_fd == -1) {  
@@ -192,7 +192,10 @@ handle_crash:
         }
 
         if(ctx)
-                SSL_free(ctx);
+                SSL_ctx_free(ctx);
+
+        if(ssl)
+                SSL_free(ssl);
 
         return EXIT_FAILURE;
 }
