@@ -137,11 +137,16 @@ if(arg == 0)
                                 continue;
                         }
 
+                        if(res == DT_INV) {
+                                close(fd_client);
+                                continue;
+                        }
 
 			arg_st = calloc(1,sizeof(Th_args));
 			if(!arg_st)
 			{
 				__er_calloc(F,L-3);
+                                goto handle_crash;
 			}
 
 			arg_st->socket_client = fd_client;
@@ -156,8 +161,8 @@ if(arg == 0)
 
 			if(!enqueue(&q,(void*)task))
 			{
-				printf("q_init() failed, %s:%d,\n",F,L-2);
-				break;
+				printf("enqueue() failed, %s:%d,\n",F,L-2);
+                                goto handle_crash;
 			}
 			pthread_cond_signal(&pool.notify);
 			memset(instruction,0,buff_size);

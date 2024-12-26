@@ -13,6 +13,7 @@
 
 #define CLI_NOT 15
 #define NO_CON 16
+#define DT_INV 17
 
 extern SSL_CTX *ctx;
 extern SSL *ssl;

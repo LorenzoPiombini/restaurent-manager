@@ -207,7 +207,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
         printf("invalid data.\n");
         char* mes ="{\"status\":\"error\"}";
         write(*client_sock,mes,strlen(mes)+1);
-        return 0;                                                                                         
+        return DT_INV;                                                                                         
     }                                                                                                         
                                                                                                                   
     if((index + 1) > instruction_size) {                                                                      
