@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netinet/in.h> /* for sockaddr_in */
+#include <sys/epoll.h>
 #include "file.h"
 #include "parse.h"
 #include "business.h"
@@ -41,79 +42,102 @@ int main(int argc, char** argv)
 		int arg = atoi(argv[1]);
 if(arg == 0)
 {	
-		/*this should be the real main program*/
+	/*this should be the real main program*/
 
-                /*shared locks is declared as a global variable in lock.h and define as NULL
-                                inside lock.c */
-		if(!set_memory_obj(&shared_locks))
-		{
-			printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
-			return EXIT_FAILURE;
+        /*shared locks is declared as a global variable in lock.h and define as NULL
+             inside lock.c */
+	if(!set_memory_obj(&shared_locks)) {
+		printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
+		return EXIT_FAILURE;
         }
 
-		int fd_socket = -1;
-		if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555))
-		{
-			printf("listen_set_up() failed %s:%d.\n",F,L-2);
-			close_file(1,fd_socket);
-			free_memory_object(SH_ILOCK);
-			return 1;
-		}
+	int fd_socket = -1;
+	if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555)) {
+		printf("listen_set_up() failed %s:%d.\n",F,L-2);
+		close_file(1,fd_socket);
+		free_memory_object(SH_ILOCK);
+		return 1;
+	}
 
-		/*init the thread pool */
-		Thread_pool pool = {0};
+	/*init the thread pool */
+	Thread_pool pool = {0};
 
-		Queue q = {NULL,NULL,0};
-		if(!q_init(&q))
-		{
-			printf("q_init() failed, %s:%d,\n",F,L-2);
-			close_file(1,fd_socket);
-			free_memory_object(SH_ILOCK);
-			return 1;
-		}
+	Queue q = {NULL,NULL,0};
+	if(!q_init(&q)) {	
+        	printf("q_init() failed, %s:%d,\n",F,L-2);
+	        close_file(1,fd_socket);
+	        free_memory_object(SH_ILOCK);
+		return 1;
+	}
 
-		pool.tasks = &q;
-		if(!pool_init(&pool))
-		{
-			printf("thread pool init failed, %s:%d.\n",F,L-2);
-			close_file(1,fd_socket);
-            q_free(&q);
-			free_memory_object(SH_ILOCK);
-			return 0;
-		}
+	pool.tasks = &q;
+	if(!pool_init(&pool))
+	{
+		printf("thread pool init failed, %s:%d.\n",F,L-2);
+        	close_file(1,fd_socket);
+                q_free(&q);
+		free_memory_object(SH_ILOCK);
+		return 0;
+	}
 
 		
+        
+	int fd_client = -1;
+        /* epoll() setup*/
+        struct epoll_event ev;
+        struct epoll_event events[10];
+        int nfds = 0;
 
-		int fd_client = -1;
-		for(;;)
-		{
-			int buff_size = 1000;
-			char instruction[buff_size];
-            int res = 0;
-			if((res = accept_instructions(&fd_socket,&fd_client,instruction,buff_size)) == 0)
-			{
-				printf("accept_instructions() failed %s:%d.\n",F,L-2);
-				continue;
-			}
+        int epoll_fd = epoll_create1(0);
+        if (epoll_fd == -1) {  
+                fprintf(stderr,"can't generate epoll.\n");
+        	close_file(1,fd_socket);
+                q_free(&q);
+		free_memory_object(SH_ILOCK);
+		return 0;
+        }
 
-            /*
-             * a not authorized client tried to connect
-             * so we resume the loop without perform any instruction
-             * */
-            if(res == CLI_NOT) {
-                close(fd_client);
-                continue;
-            }
+        ev.events = EPOLLIN;
+        ev.data.fd = fd_socket;
 
-            /*
-             * the socket is NON blocking so we need to ensure that 
-             * when accept failes becaus ethere are no connetion 
-             * the program does not crash or exit or try to execute invalid 
-             * instructions
-             * */
+        if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL, fd_socket, &ev) == -1) {
+                fprintf(stderr,"epoll_ctl failed");        
+        	close_file(1,fd_socket);
+                q_free(&q);
+		free_memory_object(SH_ILOCK);
+		return 0;
+        }
 
-            if(res == NO_CON)
-                continue;
+	for(;;)
+        {
+                nfds = epoll_wait(epoll_fd, events, 10,-1);
+                if(nfds == -1) {
+                        fprintf(stderr,"epoll_wait() failed");
+        	        close_file(1,fd_socket);
+                        q_free(&q);
+	        	free_memory_object(SH_ILOCK);
+		        return 0;
+                }
+
+                for(int i = 0; i < nfds; ++i) {
+		        int buff_size = 1000;
+		        char instruction[buff_size];
+                        int res = 0;
+		        if((res = accept_instructions(&fd_socket,&fd_client,instruction,buff_size)) == 0)
+		        {
+		        	printf("accept_instructions() failed %s:%d.\n",F,L-2);
+			        continue;
+		        }
+
+                        /*
+                         * a not authorized client tried to connect
+                        * so we resume the loop without perform any instruction
+                        **/
+                        if(res == CLI_NOT) {
+                                close(fd_client);
+                                continue;
+                        }
+
 
 			Th_args* arg_st = calloc(1,sizeof(Th_args));
 			if(!arg_st)
@@ -143,7 +167,8 @@ if(arg == 0)
 			}
 			pthread_cond_signal(&pool.notify);
 			memset(instruction,0,buff_size);
-		}
+                }
+	}
 		/*handle a gracefull crash*/
 
 }
