@@ -14,7 +14,6 @@
 #include "business.h"
 #include "str_op.h"
 #include "key_op.h"
-#include "debug.h"
 #include "crud.h"
 #include "common.h"
 #include "record.h"
@@ -28,6 +27,7 @@
 #include "multi_th.h"
 #include "queue.h"
 #include "com.h" /*for listen_set_up()*/
+#include "debug.h"
 
 
 int main(int argc, char** argv)
@@ -53,7 +53,7 @@ if(arg == 0)
         struct epoll_event events[10];
         int nfds = 0;
         int epoll_fd = -1;
-        
+               
         /*checking if the regex compiled succesfully for json parsng*/
         int rgx = -1;
         if((rgx = init_rgx()) != 0)
@@ -67,6 +67,9 @@ if(arg == 0)
                 goto handle_crash;
 	}
         
+
+       // if(start_SSL(&ctx) == -1)
+         //       goto handle_crash;
 
         epoll_fd = epoll_create1(0);
         if (epoll_fd == -1) {  
@@ -187,6 +190,9 @@ handle_crash:
                 free(arg_st->data_from_socket);
                 free(arg_st);
         }
+
+        if(ctx)
+                SSL_free(ctx);
 
         return EXIT_FAILURE;
 }

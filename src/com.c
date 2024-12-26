@@ -5,13 +5,14 @@
 #include <arpa/inet.h>
 #include <netinet/in.h> /* for sockaddr_in */
 #include <sys/un.h>
-#include <openssl/ssl.h>
 #include <unistd.h> /* for read()*/
-#include "debug.h"
 #include "str_op.h"
 #include "com.h"
 #include "file.h" /* for close_file() */
+#include "debug.h"
 
+static const char cache_id[] = "Restaurant man Server";
+SSL_CTX *ctx = NULL;
 static int set_non_blocking(int fd);
 
 
@@ -100,6 +101,63 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 	return 1; /*UNREACHABLE*/
 }
 
+
+int start_SSL(SSL_CTX **ctx)
+{
+        long opts;
+
+        *ctx = SSL_CTX_new(TLS_server_method());
+        if(!(*ctx)) {
+                fprintf(stderr,"failed to create SSL context");
+                return -1;
+        }
+
+
+        if(!SSL_CTX_set_min_proto_version(*ctx,TLS1_2_VERSION)) {
+                fprintf(stderr,"failed to set minimum TLS version\n");
+                SSL_CTX_free(*ctx);
+                return -1;
+        }
+
+        /*
+        * setting the option for the SSL context
+        *
+        * for documentation on what this option are please see
+        * openSSL documentaion at 
+        * https://docs.openssl.org/master/man7/ossl-guide-tls-server-block/
+        * or 
+        * https://github.com/openssl/openssl/blob/master/demos/guide/tls-server-block.c 
+        **/
+
+        opts = SSL_OP_IGNORE_UNEXPECTED_EOF;
+        opts |= SSL_OP_NO_RENEGOTIATION;
+        opts |= SSL_OP_CIPHER_SERVER_PREFERENCE;
+
+        /*apply the selction options */
+        SSL_CTX_set_options(*ctx, opts);
+
+        if(SSL_CTX_use_certificate_chain_file(*ctx,"chain.pem") <= 0 ) {
+                fprintf(stderr,"error use certificate.\n");
+                SSL_CTX_free(*ctx);
+                return -1;
+        }
+
+        if(SSL_CTX_use_PrivateKey_file(*ctx, "pkey.pem",SSL_FILETYPE_PEM) <= 0) {
+                fprintf(stderr,"error use privatekey ");
+                SSL_CTX_free(*ctx);
+                return -1;
+        }
+
+        SSL_CTX_set_session_id_context(*ctx,(void*)cache_id,sizeof(cache_id));
+        SSL_CTX_set_session_cache_mode(*ctx,SSL_SESS_CACHE_SERVER);
+        SSL_CTX_sess_set_cache_size(*ctx, 1024);
+        SSL_CTX_set_timeout(*ctx,3600);
+        SSL_CTX_set_verify(*ctx,SSL_VERIFY_NONE, NULL);
+
+        return EXIT_SUCCESS;
+
+}
+
 unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instruction_buff, int buff_size)
 {
 	struct sockaddr_in client_info = {0};
@@ -110,42 +168,6 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
 	{
         return NO_CON;
 	}
-    /**/
-	/*
-     *TODO: start an SSL section here 
-     * */
-    long opts;
-
-    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
-    if(!ctx) {
-        fprintf(stderr,"failed to create SSL context");
-    }
-
-
-    if(!SSL_CTX_set_min_proto_version(ctx,TLS1_2_VERSION)) {
-        fprintf(stderr,"failed to set minimum TLS version\n");
-        SSL_CTX_free(ctx);
-        return 0;
-    }
-
-
-    /*
-     * setting the option for the SSL context
-     *
-     * for documentation on what this option are please see
-     * openSSL documentaion at 
-     * https://docs.openssl.org/master/man7/ossl-guide-tls-server-block/
-     * or 
-     * https://github.com/openssl/openssl/blob/master/demos/guide/tls-server-block.c 
-     **/
-    opts = SSL_OP_IGNORE_UNEXPECTED_EOF;
-    opts |= SSL_OP_NO_RENEGOTIATION;
-    opts |= SSL_OP_CIPHER_SERVER_PREFERENCE;
-
-    /*apply the selction options */
-    SSL_CTX_set_options(ctx, opts);
-
-    SSL_CTX_free(ctx);
 
     struct sockaddr_in addr = {0};
     /*convert the ip adress from human readable to network endian*/
