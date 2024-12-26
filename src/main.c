@@ -129,11 +129,11 @@ if(arg == 0)
 			        continue;
 		        }
 
+                        if(res == CLI_NOT) {
                         /*
-                         * a not authorized client tried to connect
+                        * a not authorized client tried to connect
                         * so we resume the loop without perform any instruction
                         **/
-                        if(res == CLI_NOT) {
                                 close(fd_client);
                                 continue;
                         }
@@ -158,7 +158,7 @@ if(arg == 0)
 			task->interface = interface;
 			task->arg = (void*)arg_st;
 
-			if(!enqueue(pool.tasks,(void*)task))
+			if(!enqueue(&q,(void*)task))
 			{
 				printf("q_init() failed, %s:%d,\n",F,L-2);
 				close_file(2,fd_socket,fd_client);
@@ -170,7 +170,6 @@ if(arg == 0)
                 }
 	}
 		/*handle a gracefull crash*/
-
 }
 		/*---- main program end*/
 if(arg == 1)
