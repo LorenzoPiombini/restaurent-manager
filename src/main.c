@@ -100,7 +100,7 @@ if(arg == 0)
         ev.events = EPOLLIN;
         ev.data.fd = fd_socket;
 
-        if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL, fd_socket, &ev) == -1) {
+        if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD, fd_socket, &ev) == -1) {
                 fprintf(stderr,"epoll_ctl failed");        
         	close_file(1,fd_socket);
                 q_free(&q);
