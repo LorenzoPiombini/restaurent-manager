@@ -57,6 +57,9 @@
 
 /*--------------------------------------------------------------------------------------------------------*/
 
+extern regex_t regex;
+
+#define REG_FREE regfree(&regex);
 
 /*nested array element counter and nested object counter, used for correct memory allocation*/
 extern int nest_arr;
@@ -168,5 +171,6 @@ void free_json_pairs_array(JsonPair*** pairs,int jpcount);
 void free_token(Token* token);
 void free_tokens_array(Token*** tokens,int ptcount);
 unsigned char create_json_pair_tree(JsonPair*** pairs, int pairs_size, pBST_param);
+int init_rgx();
 
 #endif /* json.h */

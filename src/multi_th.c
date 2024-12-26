@@ -65,6 +65,7 @@ void* working_thread(void* th_pool)
 		
 	}
 }
+
 void* principal_interface(void* arg)
 {
 	char* err = TH_ERR;
@@ -151,4 +152,19 @@ void* principal_interface(void* arg)
 	free(arg_st);
 	return (void*)suc;
 
+}
+
+void pool_destroy(Thread_pool* pool)
+{
+        pthread_mutex_lock(&pool->lock);
+        pool->stop = 1;
+        pthread_cond_broadcast(&pool->notify);
+
+        pthread_mutex_unlock(&pool->lock);
+        
+        for(int i = 0; i < THREAD_POOL; i++)
+                pthread_join(pool->threads[i], NULL);
+        
+        pthread_mutex_destroy(&pool->lock);
+        pthread_cond_destroy(&pool->notify);
 }

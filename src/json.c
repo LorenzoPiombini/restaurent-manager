@@ -10,6 +10,12 @@
 
 int nest_arr = 0; /*global counter for nested array*/
 int nest_obj = 0; /*global counter for nested object*/
+regex_t regex; /*used to compile regexonly one time */
+
+int init_rgx() 
+{
+        return regcomp(&regex,JSRGX_OBJ,REG_EXTENDED);
+}
 
 unsigned char parse_json_object(char* json_str, JsonPair*** pairs, int* pairs_size)
 {
@@ -576,24 +582,15 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 	return 1;
 }
 
-
+/*in case of failure we do not free the compiled regex to increase performance */
 unsigned char check_json_input(char* json)
 {
-	regex_t regex;
-	if(regcomp(&regex,JSRGX_OBJ,REG_EXTENDED) > 0)
-	{
-		printf("regex compile failed, %s:%d.\n",F,L-2);
-		return 0;
-	}
-
 	if(regexec(&regex,json,0,NULL,0) > 0)
 	{
 		printf("invalid json string, %s:%d.\n",F,L-2);
-		regfree(&regex);
 		return 0;
 	}
 	
-	regfree(&regex);
 	return 1;
 }
 

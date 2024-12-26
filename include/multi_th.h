@@ -39,4 +39,6 @@ unsigned char new_thread(void* arg,void* (*interface)(void*));
 void* principal_interface(void* arg);
 unsigned char pool_init(Thread_pool* pool);
 void* working_thread(void* th_pool);
+void pool_destroy(Thread_pool* pool);
+
 #endif

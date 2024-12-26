@@ -42,59 +42,36 @@ int main(int argc, char** argv)
 		int arg = atoi(argv[1]);
 if(arg == 0)
 {	
+
 	/*this should be the real main program*/
-
-        /*shared locks is declared as a global variable in lock.h and define as NULL
-             inside lock.c */
-	if(!set_memory_obj(&shared_locks)) {
-		printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
-		return EXIT_FAILURE;
-        }
-
-	int fd_socket = -1;
-	if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555)) {
-		printf("listen_set_up() failed %s:%d.\n",F,L-2);
-		close_file(1,fd_socket);
-		free_memory_object(SH_ILOCK);
-		return 1;
-	}
-
-	/*init the thread pool */
-	Thread_pool pool = {0};
-
-	Queue q = {NULL,NULL,0};
-	if(!q_init(&q)) {	
-        	printf("q_init() failed, %s:%d,\n",F,L-2);
-	        close_file(1,fd_socket);
-	        free_memory_object(SH_ILOCK);
-		return 1;
-	}
-
-	pool.tasks = &q;
-	if(!pool_init(&pool))
-	{
-		printf("thread pool init failed, %s:%d.\n",F,L-2);
-        	close_file(1,fd_socket);
-                q_free(&q);
-		free_memory_object(SH_ILOCK);
-		return 0;
-	}
-
-		
-        
-	int fd_client = -1;
-        /* epoll() setup*/
+        int smo = 0;
+        int buff_size = 1000;
+        char instruction[buff_size];
+	Th_args* arg_st = NULL;
+        /* epoll() setup variables*/
         struct epoll_event ev;
         struct epoll_event events[10];
         int nfds = 0;
+        int epoll_fd = -1;
+        
+        /*checking if the regex compiled succesfully for json parsng*/
+        int rgx = -1;
+        if((rgx = init_rgx()) != 0)
+                goto handle_crash;
 
-        int epoll_fd = epoll_create1(0);
+        /*SOCKET setup*/
+	int fd_client = -1;
+	int fd_socket = -1;
+	if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555)) {
+		printf("listen_set_up() failed %s:%d.\n",F,L-2);
+                goto handle_crash;
+	}
+        
+
+        epoll_fd = epoll_create1(0);
         if (epoll_fd == -1) {  
                 fprintf(stderr,"can't generate epoll.\n");
-        	close_file(1,fd_socket);
-                q_free(&q);
-		free_memory_object(SH_ILOCK);
-		return 0;
+                goto handle_crash;
         }
 
         ev.events = EPOLLIN;
@@ -102,26 +79,45 @@ if(arg == 0)
 
         if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD, fd_socket, &ev) == -1) {
                 fprintf(stderr,"epoll_ctl failed");        
-        	close_file(1,fd_socket);
-                q_free(&q);
-		free_memory_object(SH_ILOCK);
-		return 0;
+                goto handle_crash;
         }
+
+        /*init the thread pool */
+	Thread_pool pool = {0};
+
+	Queue q = {NULL,NULL,0};
+	if(!q_init(&q)) {	
+        	printf("q_init() failed, %s:%d,\n",F,L-2);
+                goto handle_crash;
+	}
+
+	pool.tasks = &q;
+	if(!pool_init(&pool))
+	{
+		printf("thread pool init failed, %s:%d.\n",F,L-2);
+                goto handle_crash;
+	}
+
+        /*shared locks is declared as a global variable in lock.h and define as NULL
+             inside lock.c */
+	if(!set_memory_obj(&shared_locks)) {
+		printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
+                goto handle_crash;
+        }
+
+        smo = 1;
+		
+        
 
 	for(;;)
         {
                 nfds = epoll_wait(epoll_fd, events, 10,-1);
                 if(nfds == -1) {
                         fprintf(stderr,"epoll_wait() failed");
-        	        close_file(1,fd_socket);
-                        q_free(&q);
-	        	free_memory_object(SH_ILOCK);
-		        return 0;
+                        goto handle_crash;
                 }
 
                 for(int i = 0; i < nfds; ++i) {
-		        int buff_size = 1000;
-		        char instruction[buff_size];
                         int res = 0;
 		        if((res = accept_instructions(&fd_socket,&fd_client,instruction,buff_size)) == 0)
 		        {
@@ -139,13 +135,10 @@ if(arg == 0)
                         }
 
 
-			Th_args* arg_st = calloc(1,sizeof(Th_args));
+			arg_st = calloc(1,sizeof(Th_args));
 			if(!arg_st)
 			{
 				__er_calloc(F,L-3);
-				close_file(1,fd_socket);
-				free_memory_object(SH_ILOCK);
-				return 1;
 			}
 
 			arg_st->socket_client = fd_client;
@@ -161,15 +154,41 @@ if(arg == 0)
 			if(!enqueue(&q,(void*)task))
 			{
 				printf("q_init() failed, %s:%d,\n",F,L-2);
-				close_file(2,fd_socket,fd_client);
-				free_memory_object(SH_ILOCK);
 				break;
 			}
 			pthread_cond_signal(&pool.notify);
 			memset(instruction,0,buff_size);
                 }
 	}
-		/*handle a gracefull crash*/
+	/*handle a gracefull crash*/
+        
+handle_crash:
+        /*free regex for json parsing*/
+        if(rgx == 0)
+                REG_FREE
+
+        if(smo)
+	        free_memory_object(SH_ILOCK);
+
+        /*free resourses for thread pool*/
+        if(pool.tasks)
+                pool_destroy(&pool);
+
+        if(q.front)
+                q_free(&q);
+
+        if(fd_socket > -1 )
+	        close(fd_socket);
+
+        if(fd_client > -1 )
+	        close(fd_client);
+
+	if(arg_st) {
+                free(arg_st->data_from_socket);
+                free(arg_st);
+        }
+
+        return EXIT_FAILURE;
 }
 		/*---- main program end*/
 if(arg == 1)
