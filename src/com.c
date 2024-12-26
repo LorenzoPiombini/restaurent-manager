@@ -204,7 +204,9 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instructi
     /*trimming the string, eleminating all garbage from the network*/                                         
     int index = 0;                                                                                            
     if((index = find_last_char('}',instruction_buff)) == -1) {                                                
-        printf("invalid data.\n");                                                                        
+        printf("invalid data.\n");
+        char* mes ="{\"status\":\"error\"}";
+        write(*client_sock,mes,strlen(mes)+1);
         return 0;                                                                                         
     }                                                                                                         
                                                                                                                   
