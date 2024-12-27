@@ -11,6 +11,8 @@
 #include "queue.h"
 #include "db_instruction.h"
 
+struct login_u user_login = {NULL,-1};
+
 unsigned char pool_init(Thread_pool* pool)
 {
 	pool->stop = 0;
@@ -124,8 +126,7 @@ void* principal_interface(void* arg)
 		free_BST(&BST_tree);
 		char* message = "{\"status\":\"error\"}";
 		size_t size = strlen(message);
-		if(write(arg_st->socket_client,message,size) == -1)
-		{
+		if(write(arg_st->socket_client,message,size) == -1) {
 			close_file(1,arg_st->socket_client);
 			return (void*)err;
 		}
@@ -135,6 +136,11 @@ void* principal_interface(void* arg)
 		return (void*)err;
 	}
 	
+
+	if(ret == S_LOG) {
+		/*if login succedfull send back user id and user home path*/	
+	}
+
 	free_BST(&BST_tree);
 	char* message = "{\"status\":\"succeed\"}";
 	size_t size = strlen(message);

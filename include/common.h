@@ -27,7 +27,8 @@ typedef enum
 	WRITE_TIP,
 	CK_IN,
 	CK_OUT,
-	NW_REST
+	NW_REST,
+        LG_REST
 }Instructions;
 
 

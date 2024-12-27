@@ -445,6 +445,26 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 
 			break;
 		}
+                case LG_REST:
+                {
+                        char* username = NULL;
+			if(!find(t_s,"username",&pairs_tree.root,(void**)&username,t_s)) {
+				fprintf(stderr,"error new user.\n");
+				return 0;
+			}
+
+			char *passwd = NULL;
+			if(!find(t_s,"password",&pairs_tree.root,(void**)&passwd,t_s)) {
+				fprintf(stderr,"error new user.\n");
+				return 0;
+			}
+			
+			if(login(username,passwd) == -1) {
+				fprintf(stderr,"login failed.\n");
+			}
+
+			break;
+                }
 		default:
 			printf("unknow instruction.\n");
 			return 0;	

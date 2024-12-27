@@ -7,6 +7,13 @@
 /* for Instructions */
 #include "common.h"
 
+#define S_LOG 20
+
+struct login_u{
+	char* home_pth;
+	int uid;	
+};
+
 unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst);
 
 
