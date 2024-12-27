@@ -7,6 +7,7 @@
 /* for Instructions */
 #include "common.h"
 
+/* login succesful */
 #define S_LOG 20
 
 struct login_u{

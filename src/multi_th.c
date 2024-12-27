@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "multi_th.h"
+#include "str_op.h"
 #include "json.h"
 #include "file.h"
 #include "bst.h"
@@ -124,7 +125,7 @@ void* principal_interface(void* arg)
 	if(ret == 0 || ret == EUSER) {
 		printf("convert_pairs_in_db_instruction() failed, %s:%d.\n",F,L-2);
 		free_BST(&BST_tree);
-		char* message = "{\"status\":\"error\"}";
+		char message[] = "{\"status\":\"error\"}";
 		size_t size = strlen(message);
 		if(write(arg_st->socket_client,message,size) == -1) {
 			close_file(1,arg_st->socket_client);
@@ -138,7 +139,55 @@ void* principal_interface(void* arg)
 	
 
 	if(ret == S_LOG) {
-		/*if login succedfull send back user id and user home path*/	
+		char message[1000];
+		memset(message,0,1000);
+		/*
+		 * if login ok, send back user id and user home path
+		 * - 1 is for '\0'
+		 * - 2 is for two count of ":"
+		 * - 2 is for braces  "{}"
+		 **/
+		size_t l = strlen(user_login.home_pth) + 
+				number_of_digit(user_login.uid)
+				+ strlen("\"status\":\"succeed\",")
+				+ strlen("\"home_path\":\"\",")
+				+ strlen("\"uid\":\"\"") + 1 + 2 + 2;
+
+		if(snprintf(message,l,
+				"{\"status\":\"succeed\",\"home_path\":\"%s\",\
+				\"uid\":\"%d\"}",user_login.home_pth, 
+				user_login.uid) < 0) {
+			fprintf(stderr,"snprintf() failed.%s:%d.\n",
+					F,L-5);
+			free_BST(&BST_tree);
+			char error[] = "{\"status\":\"error\"}";
+			size_t size = strlen(error);
+			if(write(arg_st->socket_client,error,size) == -1) {
+				close_file(1,arg_st->socket_client);
+				free(arg_st->data_from_socket);
+				free(arg_st);
+				return (void*)err;
+			}
+			close_file(1,arg_st->socket_client);
+			free(arg_st->data_from_socket);
+			free(arg_st);
+			return (void*)err;
+		}
+
+		free_BST(&BST_tree);
+		size_t size = strlen(message);
+
+		if(write(arg_st->socket_client,message,size) == -1) {
+			close_file(1,arg_st->socket_client);
+			free(arg_st->data_from_socket);
+			free(arg_st);
+			return (void*)err;
+		}
+
+		close_file(1,arg_st->socket_client);
+		free(arg_st->data_from_socket);
+		free(arg_st);
+		return (void*)suc;
 	}
 
 	free_BST(&BST_tree);

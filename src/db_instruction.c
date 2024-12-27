@@ -462,8 +462,8 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 			if(login(username,passwd) == -1) {
 				fprintf(stderr,"login failed.\n");
 			}
-
-			break;
+			
+			return S_LOG;
                 }
 		default:
 			printf("unknow instruction.\n");
