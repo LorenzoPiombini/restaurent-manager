@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <string.h>
 #include "json.h"
 #include "user_create.h"
@@ -380,12 +382,24 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 	{
 		case WRITE_EMP:
 			{
-				/*loads the schema from the header file and creates the string to write
-					to the file */
-			 	
+				/*find restaurant id (user in the linux system)*/
+				long* node_data = NULL;	
+				/* find the data in the tree */ 
+				if(!find(t_s,(void*)REST_ID,
+					&pairs_tree.root,(void**)&node_data,t_l)) {
+					fprintf(stderr,"restaurant does not exist.\n");
+						return 0;
+				}
+				
+				struct passwd* pwd = getpwuid((int)node_value);
+				if()
+				/*
+				 * loads the schema from the header file 
+				 * and creates the string to write to the file 
+				 * */
+				
 				int fd_data = open_file("employee.dat",0);
-				if(file_error_handler(1,fd_data) > 0)
-				{
+				if(file_error_handler(1,fd_data) > 0) {
 					printf("error opening file, %s:%d.\n",F,L-2);
 					return 0;
 				}
@@ -426,6 +440,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				break;
 			}  
 		case NW_REST:
+                case LG_REST:
 		{
 			char* username = NULL;
 			if(!find(t_s,"username",&pairs_tree.root,(void**)&username,t_s)) {
@@ -439,32 +454,21 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				return 0;
 			}
 
-			int r = add_user(username,passwd);
-			if(r == -1 || r == EALRDY_U) 
-				return EUSER; 
+			if(ints == NW_REST) {
+				int r = add_user(username,passwd);
+				if(r == -1 || r == EALRDY_U) 
+					return EUSER; 
+				break;
+			} else if(inst == LG_REST) {
+				if(login(username,passwd) == -1) {
+					fprintf(stderr,"login failed.\n");
+					return 0;
+				}
+				/*YOU WILL HAVE TO KEEP TRACK OF WHO EVER IS ALREADY LOGGED IN*/
+				return S_LOG;
+			}
 
-			break;
 		}
-                case LG_REST:
-                {
-                        char* username = NULL;
-			if(!find(t_s,"username",&pairs_tree.root,(void**)&username,t_s)) {
-				fprintf(stderr,"error new user.\n");
-				return 0;
-			}
-
-			char *passwd = NULL;
-			if(!find(t_s,"password",&pairs_tree.root,(void**)&passwd,t_s)) {
-				fprintf(stderr,"error new user.\n");
-				return 0;
-			}
-			
-			if(login(username,passwd) == -1) {
-				fprintf(stderr,"login failed.\n");
-			}
-			
-			return S_LOG;
-                }
 		default:
 			printf("unknow instruction.\n");
 			return 0;	

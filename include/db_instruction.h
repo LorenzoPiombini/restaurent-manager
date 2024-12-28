@@ -7,6 +7,8 @@
 /* for Instructions */
 #include "common.h"
 
+/**/
+#define REST_ID "restaurant_id"
 /* login succesful */
 #define S_LOG 20
 

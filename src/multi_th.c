@@ -12,6 +12,7 @@
 #include "queue.h"
 #include "db_instruction.h"
 
+/*global structure for ligin data */
 struct login_u user_login = {NULL,-1};
 
 unsigned char pool_init(Thread_pool* pool)
@@ -206,7 +207,6 @@ void* principal_interface(void* arg)
 	free(arg_st->data_from_socket);
 	free(arg_st);
 	return (void*)suc;
-
 }
 
 void pool_destroy(Thread_pool* pool)
