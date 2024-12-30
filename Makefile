@@ -3,9 +3,9 @@ SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 OBJ_PROD = $(patsubst src/%.c, obj/%_prod.o, $(SRC))
 
-default:$(TARGET)
+default:file_sys $(TARGET)
 
-prod:$(TARGET)_prod 
+prod: file_sys $(TARGET)_prod 
 
 data:
 	rm -f *.dat *.inx
@@ -15,6 +15,21 @@ clean:
 	rm -f bin/*
 	rm *core*
          
+file_sys:
+	@if [ ! -d "/u" ]; then\
+		sudo echo "creating directory and file system... " ; \
+		sudo mkdir /u ;\
+		sudo touch /u/file_sys.txt ;\
+		sudo echo -e "employee|name:t_s:last_name:t_s:shift_id:t_i:role:t_i|0|1\n" >> /u/file_sys.txt ;\
+		sudo echo -e "schedule|date:t_s:shift_id:t_s|52|1\n" >> /u/file_sys.txt ;\
+		sudo echo -e "tips|credit_card:t_f:cash:t_f:date:t_s:service:t_i:employee_id:t_s|365|0\n" >> /u/file_sys.txt ;\
+		sudo echo -e "percentage|value:t_f:role:t_i|0|1\n" >> /u/file_sys.txt ;\
+		sudo echo -e "shift|start_time:t_s:end_time:t_s:role:t_i:employee_id:t_s|0|1\n" >> /u/file_sys.txt ;\
+		sudo echo -e "timecard|clock_in:t_l:clock_out:t_l:employee_id:t_s|365|0\n" >> /u/file_sys.txt ;\
+		sudo touch /u/global_file_sys.txt ;\
+		sudo echo -e "users|user_name:t_s:password:t_s:permission:t_b:employee_id:t_s:restaurant_id:t_i|500|2\n" >> /u/global_file_sys ;\
+	fi
+
 $(TARGET): $(OBJ)
 	gcc -o $@ $? -lssl -lcrypt -luser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -fsanitize=address -fpie -pie -z relro -z now -z noexecstack
 
@@ -26,3 +41,4 @@ $(TARGET)_prod:$(OBJ_PROD)
 
 obj/%_prod.o : src/%.c
 	gcc -Wall  -c $< -o $@ -Iinclude -fstack-protector-strong  -D_FORTIFY_SOURCE=2 -fPIC
+

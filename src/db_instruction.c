@@ -402,23 +402,16 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				 * + 2 is  1 for  '\0' and 1 for '/'
 				 * */
 
-				size_t path_l = strlen(pwd->pw_dir) + strlen(EMPL) + 2;
-				char path[path_l];
-				memset(path,0,path_l);
-
-				if(snprintf(path,path_l,"%s/%s",
-							pwd->pw_dir,EMPL) < 0) {
-					fprintf(stderr,
-							"spritnf() failed.\n");
-					return 0;
+				if(chdir(pwd->pw_dir) != 0) {
+					fprintf(stderr,"can't change directory.");
+					return EUSER;
 				}
-
 				/*
 				 * loads the schema from the header file 
 				 * and creates the string to write to the file 
 				 * */
 				
-				int fd_data = open_file(path,0);
+				int fd_data = open_file(EMPL,0);
 				if(file_error_handler(1,fd_data) > 0) {
 					printf("error opening file, %s:%d.\n",F,L-2);
 					return 0;
@@ -478,6 +471,25 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				int r = add_user(username,passwd);
 				if(r == -1 || r == EALRDY_U) 
 					return EUSER; 
+
+				/* here you have to create the file in the new home*/
+				struct passwd *pwd = getpwuid(r);
+				if(pwd) {
+					fprintf(stderr,"fail to get the new user");
+					return EUSER;
+				}
+
+				if(chdir(pwd->pw_dir) != 0) {
+					fprintf(stderr,"can't change directory.");
+					return EUSER;
+				}
+				
+				if(!create_system_from_txt_file(FSYS)) {
+					fprintf(stderr,
+							"failed to create restaurant system");
+					return 0;
+				}
+					
 				break;
 			} else if(inst == LG_REST) {
 				if(login(username,passwd) == -1) {

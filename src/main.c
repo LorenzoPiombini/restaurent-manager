@@ -116,7 +116,7 @@ if(arg == 0)
         {
                 nfds = epoll_wait(epoll_fd, events, 10,-1);
                 if(nfds == -1) {
-                        fprintf(stderr,"epoll_wait() failed");
+                        fprintf(stderr,"epoll_wait() failed.\n");
                         goto handle_crash;
                 }
 
