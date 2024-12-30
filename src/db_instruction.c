@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
 #include <string.h>
@@ -12,6 +13,7 @@
 #include "crud.h"
 #include "parse.h"
 #include "bst.h"
+#include "build.h"
 #include "db_instruction.h"
 #include "common.h"
 
