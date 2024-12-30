@@ -476,7 +476,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 
 				/* here you have to create the file in the new home*/
 				struct passwd *pwd = getpwuid(r);
-				if(pwd) {
+				if(!pwd) {
 					fprintf(stderr,"fail to get the new user");
 					return EUSER;
 				}
