@@ -9,6 +9,13 @@
 
 /**/
 #define REST_ID "restaurant_id"
+
+/* files in the restaurant sysytem*/
+#define EMPL "employee.dat"
+
+
+
+
 /* login succesful */
 #define S_LOG 20
 

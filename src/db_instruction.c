@@ -391,14 +391,34 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 						return 0;
 				}
 				
-				struct passwd* pwd = getpwuid((int)node_value);
-				if()
+				struct passwd* pwd = getpwuid((int)*node_data);
+				if(!pwd) {
+					fprintf(stderr,"user does not exist.");
+					return 0;
+				}
+
+				/*
+				 * create the path to open the files 
+				 * + 2 is  1 for  '\0' and 1 for '/'
+				 * */
+
+				size_t path_l = strlen(pwd->pw_dir) + strlen(EMPL) + 2;
+				char path[path_l];
+				memset(path,0,path_l);
+
+				if(snprintf(path,path_l,"%s/%s",
+							pwd->pw_dir,EMPL) < 0) {
+					fprintf(stderr,
+							"spritnf() failed.\n");
+					return 0;
+				}
+
 				/*
 				 * loads the schema from the header file 
 				 * and creates the string to write to the file 
 				 * */
 				
-				int fd_data = open_file("employee.dat",0);
+				int fd_data = open_file(path,0);
 				if(file_error_handler(1,fd_data) > 0) {
 					printf("error opening file, %s:%d.\n",F,L-2);
 					return 0;
@@ -454,7 +474,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				return 0;
 			}
 
-			if(ints == NW_REST) {
+			if(inst == NW_REST) {
 				int r = add_user(username,passwd);
 				if(r == -1 || r == EALRDY_U) 
 					return EUSER; 
