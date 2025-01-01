@@ -480,6 +480,15 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					fprintf(stderr,"fail to get the new user");
 					return EUSER;
 				}
+				/*
+				 *	get the current directory
+				 * */
+				char cur_dir[1024];
+				memset(cur_dir,0,1024);
+				if(getcwd(cur_dir,1024) == NULL) {
+					fprintf(stderr,"can't get the current directory.\n");
+					return 0;
+				}
 
 				if(chdir(pwd->pw_dir) != 0) {
 					fprintf(stderr,"can't change directory.");
@@ -491,7 +500,14 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 							"failed to create restaurant system");
 					return 0;
 				}
-					
+				
+				/*change back to the original directory*/
+				if(chdir(cur_dir) !=0) {	
+					fprintf(stderr,
+							"failed to create restaurant system");
+					return 0;
+				}
+
 				break;
 			} else if(inst == LG_REST) {
 				if(login(username,passwd) == -1) {

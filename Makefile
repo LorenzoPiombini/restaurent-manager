@@ -3,7 +3,7 @@ SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 OBJ_PROD = $(patsubst src/%.c, obj/%_prod.o, $(SRC))
 
-default:file_sys $(TARGET)
+default:file_sys obj_dir bin_dir $(TARGET)
 
 prod: file_sys $(TARGET)_prod 
 
@@ -14,7 +14,20 @@ clean:
 	rm -f obj/*.o 
 	rm -f bin/*
 	rm *core*
-         
+
+obj_dir:
+	@if [ ! -d ./obj ]; then\
+		echo "creating obj directory"\
+		mkdir obj
+	fi
+
+
+bin_dir: 
+	@if [ ! -d ./bin ]; then\
+		echo "creating bin directory";\
+		mkdir bin\ ;\
+	fi
+
 file_sys:
 	@if [ ! -d "/u" ]; then\
 		sudo echo "creating directory and file system... " ; \
