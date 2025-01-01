@@ -188,13 +188,13 @@ handle_crash:
         if(fd_socket > -1 )
 	        close(fd_socket);
 
-        if(fd_client > -1 )
-	        close(fd_client);
+        //if(fd_client > -1 )
+	        //close(fd_client);
 
-	if(arg_st) {
-                free(arg_st->data_from_socket);
-                free(arg_st);
-        }
+	//if(arg_st) {
+               // free(arg_st->data_from_socket);
+               // free(arg_st);
+        //}
 
         if(ctx)
                 SSL_ctx_free(ctx);
