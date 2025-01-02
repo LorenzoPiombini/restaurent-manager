@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h> /* for sockaddr_in */
 #include <sys/epoll.h>
+#include <errno.h>
 #include "file.h"
 #include "parse.h"
 #include "business.h"
@@ -116,6 +117,9 @@ if(arg == 0)
         {
                 nfds = epoll_wait(epoll_fd, events, 10,-1);
                 if(nfds == -1) {
+			if(errno == EINTR)
+				continue;
+
                         fprintf(stderr,"epoll_wait() failed.\n");
                         goto handle_crash;
                 }
