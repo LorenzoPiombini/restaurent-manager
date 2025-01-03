@@ -18,14 +18,14 @@ clean:
 obj_dir:
 	@if [ ! -d ./obj ]; then\
 		echo "creating obj directory"\
-		mkdir obj
+		mkdir obj ;\
 	fi
 
 
 bin_dir: 
 	@if [ ! -d ./bin ]; then\
 		echo "creating bin directory";\
-		mkdir bin\ ;\
+		mkdir bin ;\
 	fi
 
 file_sys:
