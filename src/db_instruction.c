@@ -16,7 +16,7 @@
 #include "common.h"
 
 
-
+/* global login data to send back to the user loggin in */
 struct login_u user_login = {NULL,-1};
 
 /*local function prototypes */
@@ -386,28 +386,29 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 	{
 		case WRITE_EMP:
 			{
-				/*find restaurant id (user in the linux system)*/
-				long* node_data = NULL;	
-				/* find the data in the tree */ 
-				if(!find(t_s,(void*)REST_ID,
-					&pairs_tree.root,(void**)&node_data,t_l)) {
+				/* find the data in the tree */
+			       char *node_data = NULL;	       
+				if(!find(t_s,(void*)REST_HM,
+					&pairs_tree.root,(void**)&node_data,t_s)) {
 					fprintf(stderr,"restaurant does not exist.\n");
 						return 0;
 				}
 				
-				struct passwd* pwd = getpwuid((int)*node_data);
-				if(!pwd) {
-					fprintf(stderr,"user does not exist.");
+				/*
+				 * get the current directory
+				 * */
+
+				char cur_dir[1024];
+				memset(cur_dir,0,1024);
+				if(getcwd(cur_dir,1024) == NULL) {
+					fprintf(stderr,"can't get the current directory.\n");
+					free(node_data);
 					return 0;
 				}
 
-				/*
-				 * create the path to open the files 
-				 * + 2 is  1 for  '\0' and 1 for '/'
-				 * */
-
-				if(chdir(pwd->pw_dir) != 0) {
+				if(chdir(node_data) != 0) {
 					fprintf(stderr,"can't change directory.");
+					free(node_data);
 					return EUSER;
 				}
 				/*
@@ -436,8 +437,12 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					close_file(1,fd_data);
 					return 0;
 				}
-
+				/*
+				 * we might have to keep an user master file where we save the employee
+				 * for login porpuses;
+				 * */
 				free(db_data);
+				free(node_data);
 				close_file(1,fd_data);
 				break;
 			}

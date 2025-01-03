@@ -8,7 +8,7 @@
 #include "common.h"
 
 /**/
-#define REST_ID "restaurant_id"
+#define REST_HM "restaurant_hm"
 
 /* files in the restaurant system*/
 #define EMPL "employee.dat"
