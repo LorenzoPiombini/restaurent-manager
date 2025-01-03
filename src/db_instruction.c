@@ -17,6 +17,10 @@
 #include "db_instruction.h"
 #include "common.h"
 
+
+
+struct login_u user_login = {NULL,-1};
+
 /*local function prototypes */
 static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, BST pairs_tree);
 
@@ -512,6 +516,14 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 			} else if(inst == LG_REST) {
 				if(login(username,passwd) == -1) {
 					fprintf(stderr,"login failed.\n");
+					return 0;
+				}
+				
+				if(get_user_info(username,
+							&user_login.home_pth,
+							&user_login.uid) == -1) {
+					frpintf(stderr,
+						"can't get user info upon login\n");
 					return 0;
 				}
 				/*YOU WILL HAVE TO KEEP TRACK OF WHO EVER IS ALREADY LOGGED IN*/

@@ -24,6 +24,8 @@ struct login_u{
 	int uid;	
 };
 
+extern struct login_u user_login;
+
 unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst);
 
 

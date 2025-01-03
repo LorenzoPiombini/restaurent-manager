@@ -12,8 +12,6 @@
 #include "queue.h"
 #include "db_instruction.h"
 
-/*global structure for ligin data */
-struct login_u user_login = {NULL,-1};
 
 unsigned char pool_init(Thread_pool* pool)
 {
@@ -166,12 +164,14 @@ void* principal_interface(void* arg)
 			if(write(arg_st->socket_client,error,size) == -1) {
 				close_file(1,arg_st->socket_client);
 				free(arg_st->data_from_socket);
+				free(user_login.home_pth);
 				free(arg_st);
 				return (void*)err;
 			}
 			close_file(1,arg_st->socket_client);
 			free(arg_st->data_from_socket);
 			free(arg_st);
+			free(user_login.home_pth);
 			return (void*)err;
 		}
 
@@ -180,11 +180,13 @@ void* principal_interface(void* arg)
 
 		if(write(arg_st->socket_client,message,size) == -1) {
 			close_file(1,arg_st->socket_client);
+			free(user_login.home_pth);
 			free(arg_st->data_from_socket);
 			free(arg_st);
 			return (void*)err;
 		}
-
+		
+		free(user_login.home_pth);
 		close_file(1,arg_st->socket_client);
 		free(arg_st->data_from_socket);
 		free(arg_st);
