@@ -530,7 +530,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				if(get_user_info(username,
 							&user_login.home_pth,
 							&user_login.uid) == -1) {
-					frpintf(stderr,
+					fprintf(stderr,
 						"can't get user info upon login\n");
 					return 0;
 				}
