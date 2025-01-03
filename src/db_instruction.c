@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
 #include <string.h>
 #include "json.h"
 #include "user_create.h"
@@ -479,26 +477,31 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return EUSER; 
 
 				/* here you have to create the file in the new home*/
-				struct passwd *pwd = getpwuid(r);
-				if(!pwd) {
-					fprintf(stderr,"fail to get the new user");
-					return EUSER;
+				char *home = NULL;
+				int uid = 0;	
+				if(get_user_info(username,&home,&uid) == -1) {
+					fprintf(stderr,"can't get user info.\n");
+					return 0;
 				}
+
 				/*
-				 *	get the current directory
+				 * get the current directory
 				 * */
+
 				char cur_dir[1024];
 				memset(cur_dir,0,1024);
 				if(getcwd(cur_dir,1024) == NULL) {
 					fprintf(stderr,"can't get the current directory.\n");
+					free(home);
 					return 0;
 				}
 
-				if(chdir(pwd->pw_dir) != 0) {
+				if(chdir(home) != 0) {
 					fprintf(stderr,"can't change directory.");
+					free(home);
 					return EUSER;
 				}
-				
+				free(home);
 				if(!create_system_from_txt_file(FSYS)) {
 					fprintf(stderr,
 							"failed to create restaurant system");
@@ -506,7 +509,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 				
 				/*change back to the original directory*/
-				if(chdir(cur_dir) !=0) {	
+				if(chdir(cur_dir) != 0 ) {	
 					fprintf(stderr,
 							"failed to create restaurant system");
 					return 0;
