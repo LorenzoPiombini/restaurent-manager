@@ -442,7 +442,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				 * for login porpuses;
 				 * */
 				free(db_data);
-				free(node_data);
 				close_file(1,fd_data);
 				break;
 			}
