@@ -714,7 +714,7 @@ if(arg == 5)
 	{
 		
 		
-		if(!__write_safe(fd_ed,employees[i],"employee"))
+		if(!__write_safe(fd_ed,employees[i],"employee",NULL))
 		{
 			printf("__write_safe() failed %s:%d.\n",F,L-2);	
 			close_file(1,fd_ed);

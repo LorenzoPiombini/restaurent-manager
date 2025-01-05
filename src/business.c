@@ -835,7 +835,7 @@ unsigned char compute_tips(float credit_card_tips, float cash_tips, int service,
 		}
 
 
-		if(!__write_safe(fd_td,data_to_add,"tips"))
+		if(!__write_safe(fd_td,data_to_add,"tips",NULL))
 		{
 			printf("__write_safe() failed %s:%d.\n",F,L-2);
 			free(date_str);

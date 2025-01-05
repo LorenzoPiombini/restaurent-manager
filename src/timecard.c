@@ -47,7 +47,7 @@ unsigned char clock_in(char* employee_id)
 	}
 	
 		
-	if(!__write_safe(fd_tcd,data_to_add,"timecard"))
+	if(!__write_safe(fd_tcd,data_to_add,"timecard",NULL))
 	{
 		printf("__write_safe failed, %s:%d.\n",F,L-2);
 		close_file(1,fd_tcd);

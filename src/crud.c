@@ -122,7 +122,7 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 		do
 		{
 			if((result_i = release_lock_smo(&shared_locks,
-				ilp_i,plpa_i)) == 0 )
+				plp_i,plpa_i)) == 0 )
 			{
 				__er_release_lock_smo(F,L-3);
 				return 0;
@@ -297,7 +297,7 @@ int look_for(char *file_name, char *param, struct Record_f *recs)
 	
 	close_file(1,fd_index);
 	for(int i = 0; i < ht_i; i++) {
-		char **keys_arr = keys(ht[i]);
+		char **keys_arr = keys(&ht[i]);
 	       	if(!keys_arr) {
 			fprintf(stderr,"can't get keys from index.\n");
 			free_ht_array(ht,*pht_i);

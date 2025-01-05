@@ -427,7 +427,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				if(!creates_string_instruction("employee", 
 							fd_data, &db_data, 
 							pairs_tree)) {
-					printf("creates_string_instruction() failed,
+					printf("creates_string_instruction() failed,\
 						       	%s:%d.\n",F,L-2);
 					close_file(1,fd_data);
 					return 0;
@@ -501,19 +501,19 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 						+ strlen(export_key)
 						+ strlen(r_id)
 						+ number_of_digit(permission)
-						+ (number_of_digit(rest_id) * 2) + 1;
+						+ (number_of_digit((int)*rest_id) * 2) + 1;
 
 				char data[len];
 				memset(data,0,len);
 
-				if(snprintf(data,len,"%s%s%s%s%d%s%d%s%s%s%d",
+				if(snprintf(data,len,"%s%s%s%s%ld%s%d%s%s%s%ld",
 							user_name,first_name,
-							last_name,pass,*rest_id
+							last_name,pass,*rest_id,
 							perm,permission,
-							employee_id,export_key
+							employee_id,export_key,
 							r_id,*rest_id) < 0) {
-					fpritnf(stderr,"snprintf() failed. %s:%d.\n",
-							F,L - 7);
+					fprintf(stderr,"snprintf() failed. %s:%d.\n"
+							,F,L - 7);
 					return 0;
 				}
 					
