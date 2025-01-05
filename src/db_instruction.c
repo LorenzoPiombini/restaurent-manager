@@ -543,8 +543,16 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					fprintf(stderr,"can't open users.\n");
 					return 0;
 				}
+				
 
-				if(!__write_safe(fd_users,data,"/u/users", NULL)) {
+				/*change directory to u*/
+				if( chdir("/u") != 0 ) {	
+					fprintf(stderr,
+							"failed to create restaurant system");
+					return 0;
+				}
+
+				if(!__write_safe(fd_users,data,"users", NULL)) {
 					fprintf(stderr,"can't write to users.\n");
 					close_file(1,fd_users);
 					return 0;
