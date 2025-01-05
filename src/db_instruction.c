@@ -457,7 +457,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				 * for login porpuses;
 				 * */
 				char *first_name = NULL;	       
-				if(!find(t_s,(void*)"first name",
+				if(!find(t_s,(void*)"name",
 					&pairs_tree.root,(void**)&first_name,t_s)) {
 					fprintf(stderr,"first name not found.\n");
 						return 0;
