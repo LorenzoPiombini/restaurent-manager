@@ -17,6 +17,7 @@ typedef unsigned char (*indexing)(HashTable *ht, char* key);
 
 unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* ht, int* ht_array_size);
 unsigned char is_a_db_file(int fd_data, char* file_name, struct Header_d *hd_caller);
+int look_for(char *file_name, char *param, struct Record_f *recs);
 unsigned char get_rec(int fd_dat,int fd_inx, int* index,char* key, struct Record_f ***recs, char* file_name, int lock);
 unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_name,char* data_to_add,
 				 struct Record_f **rec_c,struct Schema **sch_c, unsigned char update,
@@ -31,6 +32,6 @@ unsigned char __write(char* file_name, int* fd_index, int fd_data, char* data_to
 			struct Record_f *rec, char* key, indexing ixgn, int lock);
 unsigned char __update(char* file_name, int fd_index, int fd_data, char* data_to_add,char* key);
 unsigned char __delete(char* file_name, int* fd_index, char* key);
-unsigned char __write_safe(int fd_data,char* db_data, char* file_name);
+unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **export_key);
 
 #endif /*crud.h*/

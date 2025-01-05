@@ -447,13 +447,28 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			{
 			 	char f = return_first_char(rec->file_name); 
 				int n = len(*ht);
+				
+				size_t buff_l = strlen(rec->fields[0].data.s)
+						+ number_of_digit(rec->fields[4].data.i)
+						+ 1;
+				
+				char buff[buff_l];
+				memset(buff,0,buff_l);
+				if(snprintf(buff,buff_l,"%s%s",rec->fields[0].data.s,
+							rec->fields[4].data.s) < 0) {
+					fprintf(stderr,
+							"snprintf() failed %s:%d.\n",
+							F,L-3);
+					free_strs(*p_l,1,files);
+					return 0;
+				}
 
-				if(!assemble_key(&key,n,f,rec->fields[1].data.s))
-				{
+				if(!assemble_key(&key,n,f,buff)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
 					return 0;
 				}
+
 				free_strs(*p_l,1,files);
 				break;
 			}

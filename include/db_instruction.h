@@ -9,11 +9,12 @@
 
 /**/
 #define REST_HM "restaurant hm"
+#define REST_ID "restaurant id"
 
 /* files in the restaurant system*/
 #define EMPL "employee.dat"
 #define FSYS "/u/file_sys.txt"
-#define GLUSR "/u/global_file_sys.txt"
+#define GLUSR "/u"
 
 
 /* login succesful */

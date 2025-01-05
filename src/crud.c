@@ -122,7 +122,7 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 		do
 		{
 			if((result_i = release_lock_smo(&shared_locks,
-				plp_i,plpa_i)) == 0 )
+				ilp_i,plpa_i)) == 0 )
 			{
 				__er_release_lock_smo(F,L-3);
 				return 0;
@@ -269,6 +269,50 @@ unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_call
 		return 1;
 	}
 	return 1;
+}
+
+/*i don't know if this make sense*/
+int look_for(char *file_name, char *param, struct Record_f *recs)
+{
+	char **files = two_file_path(file_name);
+	if(!files) {
+		fprintf(stderr,"can't create file name");
+		return -1;
+	}
+
+	int fd_index = open_file(files[0],0);
+	if(!file_error_handler(1,fd_index)) {
+		fprintf(stderr,
+				"can't open file %s.\n",
+				files[0]);
+		return -1;
+	}
+
+	HashTable *ht = NULL;	
+	int ht_i = 0, *pht_i = &ht_i;	
+	if(!read_all_index_file(fd_index,&ht,pht_i)) {
+		fprintf(stderr,"can't read all indexes,\n");
+		return -1;
+	}
+	
+	close_file(1,fd_index);
+	for(int i = 0; i < ht_i; i++) {
+		char **keys_arr = keys(ht[i]);
+	       	if(!keys_arr) {
+			fprintf(stderr,"can't get keys from index.\n");
+			free_ht_array(ht,*pht_i);
+			return -1;
+		}
+		
+		if(strstr(keys_arr[i],param) != NULL) {
+			/*
+			 * get the record 
+			 * put the record in recs
+			 * */
+		}
+
+
+	}
 }
 unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Record_f ***recs, char* file_name, int lock)
 {
@@ -2256,7 +2300,7 @@ unsigned char __delete(char* file_name, int* fd_index,char* key)
 	return 1;
 }
 
-unsigned char __write_safe(int fd_data,char* db_data, char* file_name)
+unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **export_key)
 {
 
 	/* this variables are needed for the lock system */
@@ -2322,7 +2366,34 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name)
 		return 0;
 	}
 				
-	int fd_index = open_file("employee.inx",0);
+	size_t l = strlen(file_name) + strlen(".inx") + 1 ;
+	char file_pt[l];
+	memset(file_pt,0,l);
+
+	if(snprintf(file_pt,l,"%s%s",file_name,".inx") < 0) {
+		fprintf(stderr,"snprintf() failed.\n");
+		if(shared_locks)
+		{
+			int result_i = 0, result_d = 0;
+			do
+			{
+				if(((result_i = release_lock_smo(&shared_locks,
+					plp_i,plpa_i)) == 0) ||
+					((result_d = release_lock_smo(&shared_locks,
+					plp,plpa)) == 0))
+			{
+				__er_release_lock_smo(F,L-5);
+				return 0;
+			}
+
+			}while(result_i == WTLK || result_d == WTLK);
+
+			return 0;	
+		}
+		return 0;
+	}
+
+	int fd_index = open_file(file_pt,0);
 	if(file_error_handler(1,fd_index) > 0)
 	{
 		printf("error opening file, %s:%d.\n",F,L-2);
@@ -2375,6 +2446,15 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name)
 		}
 
 		return 0;
+	}
+	
+	if(export_key) {
+		(*export_key) = strdup(key);
+		if(!(*export_key)) {
+			fprintf(stderr,"can't export key %s:%d.\n",
+					F,L-2);
+			*export_key = NULL;
+		}
 	}
 
 	if(!__write(file_name,&fd_index,fd_data,NULL,rec,key,NULL,NO_OP))

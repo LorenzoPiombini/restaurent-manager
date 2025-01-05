@@ -14,6 +14,7 @@
 #include "build.h"
 #include "db_instruction.h"
 #include "common.h"
+#include "restaurant_t.h"
 
 
 /* global login data to send back to the user loggin in */
@@ -423,26 +424,120 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 			
 				char* db_data = NULL;
-				if(!creates_string_instruction("employee", fd_data, &db_data, pairs_tree))
-				{
-					printf("creates_string_instruction() failed, %s:%d.\n",F,L-2);
+				if(!creates_string_instruction("employee", 
+							fd_data, &db_data, 
+							pairs_tree)) {
+					printf("creates_string_instruction() failed,
+						       	%s:%d.\n",F,L-2);
 					close_file(1,fd_data);
 					return 0;
 				}
-				
-				if(!__write_safe(fd_data,db_data,"employee"))
-				{
+			
+				char *export_key = NULL;	
+				if(!__write_safe(fd_data,db_data,"employee",&export_key)) {
 					printf("__write_safe() failed %s:%d.\n",F,L-2);
 					free(db_data);
 					close_file(1,fd_data);
 					return 0;
 				}
+				
+				close_file(1,fd_data);
+				free(db_data);
+				
+				/*change back to the original directory*/
+				if( chdir(cur_dir) != 0 ) {	
+					fprintf(stderr,
+							"failed to create restaurant system");
+					return 0;
+				}
+
 				/*
-				 * we might have to keep an user master file where we save the employee
+				 * save the employee
+				 * into teh users master file 
 				 * for login porpuses;
 				 * */
-				free(db_data);
-				close_file(1,fd_data);
+				char *first_name = NULL;	       
+				if(!find(t_s,(void*)"first name",
+					&pairs_tree.root,(void**)&first_name,t_s)) {
+					fprintf(stderr,"first name not found.\n");
+						return 0;
+				}
+
+				char *last_name = NULL;	       
+				if(!find(t_s,(void*)"last name",
+					&pairs_tree.root,(void**)&last_name,t_s)) {
+					fprintf(stderr,"last name does not exist.\n");
+						return 0;
+				}
+				
+				long *rest_id = NULL;
+				if(!find(t_s,(void*)REST_ID,
+					&pairs_tree.root,(void**)&rest_id,t_l)) {
+					fprintf(stderr,"resaurant id does not exist.\n");
+						return 0;
+				}
+
+				long *role = NULL;
+				if(!find(t_s,(void*)"role",
+					&pairs_tree.root,(void**)&role,t_l)) {
+					fprintf(stderr,"role does not exist.\n");
+						return 0;
+				}
+				
+				/*create the users master file entry*/
+				int permission = (*role) == SERVER ? 1 : 0;
+				char *user_name = "user_name:t_s:";
+				char *pass = "password:t_s:";
+				char *perm = "permission:t_b:";
+				char *employee_id = "employee_id:t_s:";
+				char *r_id = "restaurant_id:t_i";
+
+				size_t len = strlen(first_name) 
+						+ strlen(last_name)
+						+ strlen(user_name)
+						+ strlen(pass)
+						+ strlen(perm)
+						+ strlen(employee_id)
+						+ strlen(export_key)
+						+ strlen(r_id)
+						+ number_of_digit(permission)
+						+ (number_of_digit(rest_id) * 2) + 1;
+
+				char data[len];
+				memset(data,0,len);
+
+				if(snprintf(data,len,"%s%s%s%s%d%s%d%s%s%s%d",
+							user_name,first_name,
+							last_name,pass,*rest_id
+							perm,permission,
+							employee_id,export_key
+							r_id,*rest_id) < 0) {
+					fpritnf(stderr,"snprintf() failed. %s:%d.\n",
+							__FILE__,__LINE__ - 7);
+					return 0;
+				}
+					
+				/*change directory */
+					
+				if(chdir(GLUSR) != 0) {
+					fprintf(stderr,"can't change directory.");
+					return 0;
+				}
+
+				/*write to the file users*/
+				int fd_users = open_file("users.dat",0);
+				if(!file_error_handler(1,fd_users)) {
+					fprintf(stderr,"can't open users.\n");
+					free(export_key);
+					return 0;
+				}
+
+				if(!__write_safe(fd_users,data,"users", NULL)) {
+					fprintf(stderr,"can't open users.\n");
+					free(export_key);
+					return 0;
+				}
+
 				break;
 			}
 		case CK_IN:
@@ -505,6 +600,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					free(home);
 					return EUSER;
 				}
+
 				free(home);
 				if(!create_system_from_txt_file(FSYS)) {
 					fprintf(stderr,
