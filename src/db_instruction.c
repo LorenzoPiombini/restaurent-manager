@@ -542,11 +542,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					
 				free(export_key);
 				free(hash);
-				/*change directory */
-				if(chdir(GLUSR) != 0) {
-					fprintf(stderr,"can't change directory.");
-					return 0;
-				}
 
 				/*write to the file users*/
 				int fd_users = open_file("/u/users.dat",0);
@@ -562,12 +557,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 
 				close_file(1,fd_users);
-
-				/*change back to  origin directory */
-				if(chdir(cur_dir) != 0) {
-					fprintf(stderr,"can't change directory.");
-					return 0;
-				}
 
 				break;
 			}
