@@ -487,10 +487,10 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				/*create the users master file entry*/
 				int permission = (*role) == SERVER ? 1 : 0;	
 				char *user_name = "user_name:t_s:";
-				char *pass = "password:t_s:";
-				char *perm = "permission:t_b:";
-				char *employee_id = "employee_id:t_s:";
-				char *r_id = "restaurant_id:t_i";
+				char *pass = ":password:t_s:";
+				char *perm = ":permission:t_b:";
+				char *employee_id = ":employee_id:t_s:";
+				char *r_id = ":restaurant_id:t_i:";
 
 				char *hash = NULL;
 				size_t l = number_of_digit((int)*rest_id) + 1;
