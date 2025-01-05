@@ -527,7 +527,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				memset(data,0,len);
 				
 				
-				if(snprintf(data,len,"%s%s%s%s%ld%s%d%s%s%s%ld",
+				if(snprintf(data,len,"%s%s%s%s%s%s%d%s%s%s%ld",
 							user_name,first_name,
 							last_name,pass,hash,
 							perm,permission,
