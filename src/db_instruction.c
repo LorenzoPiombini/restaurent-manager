@@ -550,7 +550,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return 0;
 				}
 
-				if(!__write_safe(fd_users,data,"users", NULL)) {
+				if(!__write_safe(fd_users,data,"/u/users", NULL)) {
 					fprintf(stderr,"can't write to users.\n");
 					close_file(1,fd_users);
 					return 0;
