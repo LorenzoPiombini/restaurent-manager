@@ -525,8 +525,8 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 
 				/*write to the file users*/
-				int fd_users = open_file("users.dat",0);
-				if(!file_error_handler(1,fd_users)) {
+				int fd_users = open_file("/u/users.dat",0);
+				if(file_error_handler(1,fd_users) > 0 ) {
 					fprintf(stderr,"can't open users.\n");
 					free(export_key);
 					return 0;
@@ -542,7 +542,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				free(export_key);
 				close_file(1,fd_users);
 
-				/*change back to teh origin directory */
+				/*change back to  origin directory */
 				if(chdir(cur_dir) != 0) {
 					fprintf(stderr,"can't change directory.");
 					return 0;
