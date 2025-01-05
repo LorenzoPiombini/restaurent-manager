@@ -485,42 +485,66 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 				
 				/*create the users master file entry*/
-				int permission = (*role) == SERVER ? 1 : 0;
+				int permission = (*role) == SERVER ? 1 : 0;	
 				char *user_name = "user_name:t_s:";
 				char *pass = "password:t_s:";
 				char *perm = "permission:t_b:";
 				char *employee_id = "employee_id:t_s:";
 				char *r_id = "restaurant_id:t_i";
 
+				char *hash = NULL;
+				size_t l = number_of_digit((int)*rest_id) + 1;
+				char paswd[l];
+				memset(paswd,0,l);
+
+				if(snprintf(paswd,l,"%ld",*rest_id) < 0) {
+					fprintf(stderr
+							,"snprintf() failed %s:%d\n"
+							,F,L-3);
+					return 0;
+				}
+
+				if(crypt_pswd(paswd,&hash) == -1) {
+					fprintf(stderr
+							,"crypt_paswd() failed %s:%d\n"
+							,F,L-3);
+					return 0;
+				}
+
 				size_t len = strlen(first_name) 
 						+ strlen(last_name)
 						+ strlen(user_name)
 						+ strlen(pass)
+						+ strlen(hash)
 						+ strlen(perm)
 						+ strlen(employee_id)
 						+ strlen(export_key)
 						+ strlen(r_id)
 						+ number_of_digit(permission)
-						+ (number_of_digit((int)*rest_id) * 2) + 1;
+						+ number_of_digit((int)*rest_id) + 1;
 
 				char data[len];
 				memset(data,0,len);
-
+				
+				
 				if(snprintf(data,len,"%s%s%s%s%ld%s%d%s%s%s%ld",
 							user_name,first_name,
-							last_name,pass,*rest_id,
+							last_name,pass,hash,
 							perm,permission,
 							employee_id,export_key,
 							r_id,*rest_id) < 0) {
 					fprintf(stderr,"snprintf() failed. %s:%d.\n"
 							,F,L - 7);
+					free(hash);
+					free(export_key);
 					return 0;
 				}
 					
+				free(export_key);
+				free(hash);
 				/*change directory */
 				if(chdir(GLUSR) != 0) {
 					fprintf(stderr,"can't change directory.");
-					free(export_key);
 					return 0;
 				}
 
@@ -528,18 +552,15 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				int fd_users = open_file("/u/users.dat",0);
 				if(file_error_handler(1,fd_users) > 0 ) {
 					fprintf(stderr,"can't open users.\n");
-					free(export_key);
 					return 0;
 				}
 
 				if(!__write_safe(fd_users,data,"users", NULL)) {
 					fprintf(stderr,"can't write to users.\n");
-					free(export_key);
 					close_file(1,fd_users);
 					return 0;
 				}
 
-				free(export_key);
 				close_file(1,fd_users);
 
 				/*change back to  origin directory */
