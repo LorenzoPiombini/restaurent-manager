@@ -444,12 +444,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				close_file(1,fd_data);
 				free(db_data);
 				
-				/*change back to the original directory*/
-				if( chdir(cur_dir) != 0 ) {	
-					fprintf(stderr,
-							"failed to create restaurant system");
-					return 0;
-				}
 
 				/*
 				 * save the employee
@@ -558,6 +552,12 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 
 				close_file(1,fd_users);
 
+				/*change back to the original directory*/
+				if( chdir(cur_dir) != 0 ) {	
+					fprintf(stderr,
+							"failed to create restaurant system");
+					return 0;
+				}
 				break;
 			}
 		case CK_IN:
