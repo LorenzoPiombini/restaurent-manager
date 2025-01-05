@@ -513,14 +513,14 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 							employee_id,export_key
 							r_id,*rest_id) < 0) {
 					fpritnf(stderr,"snprintf() failed. %s:%d.\n",
-							__FILE__,__LINE__ - 7);
+							F,L - 7);
 					return 0;
 				}
 					
 				/*change directory */
-					
 				if(chdir(GLUSR) != 0) {
 					fprintf(stderr,"can't change directory.");
+					free(export_key);
 					return 0;
 				}
 
@@ -533,8 +533,18 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 
 				if(!__write_safe(fd_users,data,"users", NULL)) {
-					fprintf(stderr,"can't open users.\n");
+					fprintf(stderr,"can't write to users.\n");
 					free(export_key);
+					close_file(1,fd_users);
+					return 0;
+				}
+
+				free(export_key);
+				close_file(1,fd_users);
+
+				/*change back to teh origin directory */
+				if(chdir(cur_dir) != 0) {
+					fprintf(stderr,"can't change directory.");
 					return 0;
 				}
 
