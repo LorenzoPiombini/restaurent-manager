@@ -454,7 +454,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				
 				char buff[buff_l];
 				memset(buff,0,buff_l);
-				if(snprintf(buff,buff_l,"%s%s",rec->fields[0].data.s,
+				if(snprintf(buff,buff_l,"%s%ld",rec->fields[0].data.s,
 							rec->fields[4].data.l) < 0) {
 					fprintf(stderr,
 							"snprintf() failed %s:%d.\n",
