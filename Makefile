@@ -49,6 +49,7 @@ file_sys:
 		sudo echo "shift" >> /u/file_sys.txt ;\
 		sudo echo "users" >> /u/file_sys.txt ;\
 		sudo echo "timecard" >> /u/file_sys.txt ;\
+		isam.db -nf /u/users -R user_name:t_s:password:t_s:permission:t_b:employee_id:t_s:restaurant_id:t_i -s 500 -i 2 ;\
 	fi
 
 $(TARGET): $(OBJ)
