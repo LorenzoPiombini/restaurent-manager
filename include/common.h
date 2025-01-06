@@ -28,7 +28,8 @@ typedef enum
 	CK_IN,
 	CK_OUT,
 	NW_REST,
-        LG_REST
+        LG_REST,
+	LG_EMP
 }Instructions;
 
 
