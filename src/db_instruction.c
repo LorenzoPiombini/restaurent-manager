@@ -537,20 +537,20 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				free(export_key);
 				free(hash);
 
-				/*write to the file users*/
-				int fd_users = open_file("/u/users.dat",0);
-				if(file_error_handler(1,fd_users) > 0 ) {
-					fprintf(stderr,"can't open users.\n");
-					return 0;
-				}
-				
-
 				/*change directory to u*/
 				if( chdir("/u") != 0 ) {	
 					fprintf(stderr,
 							"failed to create restaurant system");
 					return 0;
 				}
+
+				/*write to the file users*/
+				int fd_users = open_file("users.dat",0);
+				if(file_error_handler(1,fd_users) > 0 ) {
+					fprintf(stderr,"can't open users.\n");
+					return 0;
+				}
+				
 
 				if(!__write_safe(fd_users,data,"users", NULL)) {
 					fprintf(stderr,"can't write to users.\n");
