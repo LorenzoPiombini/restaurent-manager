@@ -22,7 +22,7 @@ struct login_u user_login = {NULL,-1};
 
 /*local function prototypes */
 static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, BST pairs_tree);
-
+static int login_employee(char *username, char * passwd);
 
 
 static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, BST pairs_tree)
@@ -381,6 +381,12 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 		free_strs(blocks,1,dta_blocks);
 		return 1;
 }
+
+static int login_employee(char *username, char * passwd)
+{
+	
+
+}
 unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 {
 	switch(inst)
@@ -661,6 +667,10 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				return S_LOG;
 			}
 
+		}
+		case LG_EMP:
+		{
+			
 		}
 		default:
 			printf("unknow instruction.\n");

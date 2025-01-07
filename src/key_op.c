@@ -89,11 +89,36 @@ unsigned char extract_time(char* key_src, long* time)
 	
 }
 
+int extract_username(char *key_src, char *usrname_rslt)
+{
+	size_t l = strlen(key_src);
+	int start = 0;
+	int end = 0;
+	for(int i = 0; i < l; ++i) {
+		if(key_src[i] == '.' && start == 0)
+			start = i;
+		else if(key_src[i] == '.')
+			end = i;
+	}
+
+	/* length for the username string */
+	size_t len = end - start;
+	*usrname_rslt = calloc(len,sizeof(char));
+	if(!(*usrname_rslt)) {
+		__er_calloc(F,L-1);
+		return -1;
+	}
+	
+	strncpy(*usrname_rslt,len,&key_src[start]);
+	(*usrname_rslt)[len] = '\0';
+
+	return 0;
+}
+
 unsigned char load_files_system(char*** files, int* len)
 {
 	FILE* fp = fopen("file_sys.txt","r");
-	if(!fp)
-	{
+	if(!fp) {
 		printf("failed to open file or it does not exist. %s:%d",F,L-3);
 		return 0;
 	}
@@ -448,13 +473,18 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			 	char f = return_first_char(rec->file_name); 
 				int n = len(*ht);
 				
+				/*
+				 * +1 for '\0' 
+				 * +2 for two '.' used as a delimeter
+				 * */
+
 				size_t buff_l = strlen(rec->fields[0].data.s)
 						+ number_of_digit(rec->fields[4].data.l)
-						+ 1;
+						+ 1 + 2;
 				
 				char buff[buff_l];
 				memset(buff,0,buff_l);
-				if(snprintf(buff,buff_l,"%s%ld",rec->fields[0].data.s,
+				if(snprintf(buff,buff_l,".%s.%ld",rec->fields[0].data.s,
 							rec->fields[4].data.l) < 0) {
 					fprintf(stderr,
 							"snprintf() failed %s:%d.\n",
@@ -482,8 +512,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				}
 
 				char** keys_ar = keys(&ht[1]);
-				if(!keys_ar)
-				{
+				if(!keys_ar) {
 					printf("fetch keys faield.%s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
 					free_ht_array(ht,*pht_i);
