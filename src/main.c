@@ -49,6 +49,7 @@ if(arg == 0)
         int buff_size = 1000;
         char instruction[buff_size];
 	Th_args* arg_st = NULL;
+
         /* epoll() setup variables*/
         struct epoll_event ev;
         struct epoll_event events[10];
@@ -60,7 +61,12 @@ if(arg == 0)
         if((rgx = init_rgx()) != 0)
                 goto handle_crash;
 
-        /*SOCKET setup*/
+        /*
+	 * SOCKET setup
+	 * listen_set_up will create a NON BLOCKING stream socket,
+	 * and call the function bind() and listen() to set up 
+	 * the connection
+	 * */
 	int fd_client = -1;
 	int fd_socket = -1;
 	if(!listen_set_up(&fd_socket,AF_INET,SOCK_STREAM | SOCK_NONBLOCK,5555)) {
@@ -71,6 +77,7 @@ if(arg == 0)
 
        if(start_SSL(&ctx,&ssl,&fd_socket) == -1)
                goto handle_crash;
+
 
         epoll_fd = epoll_create1(0);
         if (epoll_fd == -1) {  

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <openssl/err.h> /* SSL errors */
 #include <arpa/inet.h>
 #include <netinet/in.h> /* for sockaddr_in */
 #include <sys/un.h>
@@ -103,7 +104,7 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 }
 
 
-int start_SSL(SSL_CTX **ctx, SSL **ssl, int *sock_fd)
+int start_SSL(SSL_CTX **ctx)
 {
         long opts;
 
@@ -152,30 +153,106 @@ int start_SSL(SSL_CTX **ctx, SSL **ssl, int *sock_fd)
         SSL_CTX_sess_set_cache_size(*ctx, 1024);
         SSL_CTX_set_timeout(*ctx,3600);
         SSL_CTX_set_verify(*ctx,SSL_VERIFY_NONE, NULL);
-        *ssl = SSL_new(*ctx);
-        if(!ssl) {
-                fprintf(stderr,"fail to create ssl object");
-                return -1;
-        }
-        
-        if(SSL_set_fd(*ssl,*sock_fd) == -1) {
-                fprintf(stderr,"fail to create ssl object");
-                return -1;
-        }
 
         return EXIT_SUCCESS;
 }
 
+/*
+ * this fucntion is to be use in a webserver
+ * like application.
+ * */
+unsigned char accept_connection(int *fd_sock, int *client_sock,char* request, int req_size, 
+		SSL_CTX *ctx, SSL *ssl)
+{
+	struct sockaddr_in client_info = {0};
+	socklen_t client_size = sizeof(client_info);
+
+	*client_sock = accept4(*fd_sock,(struct sockaddr*)&client_info, &client_size,SOCK_NONBLOCK);
+	if(*client_sock == -1)
+	{
+		return NO_CON;
+	}
+
+	if((ssl = SSL_new(ctx)) == NULL) {
+		fprintf(stderr,"error creating SSL handle for new connection");
+		close(*clien_sock);
+		return SSL_HD_F;
+	}
+
+	if(!SSL_set_fd(ssl,*clien_sock)) {
+		ERR_print_errors_fp(stderr);
+		fprintf(stderr,"error setting socket to SSL context");
+		close(*clien_sock);
+		SSL_free(ssl);
+		return SSL_SET_E;		
+	}		
+
+	/*try handshake with the client*/	
+	int hs_res = 0;
+	if((hs_res = SSL_accept(ssl)) <= 0) {
+		int err = SSL_get_error(ssl,0);
+		if(err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE) {
+			/* 
+			 * socket is not ready
+			 * so we add the file descriptor to the epoll system
+			 * and return;
+			 *  
+			 * */
+
+			
+		} else if(err == SSL_ERROR_WANT_WRITE) {
+			fprintf(stderr,"socket needs to be writable.\n");
+			return SSL_ERROR_WANT_WRITE;	
+		}else {
+			fprintf(stderr,"read failed.\n");
+			SSL_free(ssl);
+			close(*client_sock);
+			return -1;
+		}
+
+		ERR_print_errors_fp(stderr);
+		fprintf(stderr,"error setting socket to SSL context");
+		close(*clien_sock);
+		SSL_free(ssl);
+		return HANDSHAKE;		
+	}
+
+	/*handshake succesfull so we read the data*/
+	size_t bread = 0;
+	int result = 0;
+	if((result = SSL_read_ex(ssl,request,req_size,&bread)) == 0) {
+	}
+	
+	if(bread == req_size)
+		request[bread - 1]= '\0';
+	else 
+		request[bread] = '\0';
+
+
+	return bread;
+}
+
+
+/*
+ * this fucntion is to be used 
+ * in application that exchange data over a TCP socket
+ * */
 unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instruction_buff, int buff_size)
 {
 	struct sockaddr_in client_info = {0};
 	socklen_t client_size = sizeof(client_info);
 
-	*client_sock = accept(*fd_sock,(struct sockaddr*)&client_info, &client_size);
+	*client_sock = accept4(*fd_sock,(struct sockaddr*)&client_info, &client_size,SOCK_NONBLOCK);
 	if(*client_sock == -1)
 	{
-        return NO_CON;
+		return NO_CON;
 	}
+	
+	/*
+	 * here you have to pass the client_socket 
+	 * to the SSL context created, to perform SSL 
+	 * handshake and have secure comunication 
+	 * */
 
     struct sockaddr_in addr = {0};
     /*convert the ip adress from human readable to network endian*/
