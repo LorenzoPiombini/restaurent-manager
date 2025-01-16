@@ -53,7 +53,7 @@ file_sys:
 	fi
 
 $(TARGET): $(OBJ)
-	gcc -o $@ $? -lssl -lcrypt -luser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -fsanitize=address -fpie -pie -z relro -z now -z noexecstack
+	gcc -o $@ $? -lcrypto -lssl -lcrypt -luser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -fsanitize=address -fpie -pie -z relro -z now -z noexecstack
 
 obj/%.o : src/%.c
 	gcc -Wall -g3 -c $< -o $@ -Iinclude -fstack-protector-strong  -D_FORTIFY_SOURCE=2 -fpie -fPIE -pie -fsanitize=address

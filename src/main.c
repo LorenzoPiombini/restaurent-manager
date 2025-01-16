@@ -75,7 +75,7 @@ if(arg == 0)
 	}
         
 
-       if(start_SSL(&ctx,&ssl,&fd_socket) == -1)
+       if(start_SSL(&ctx,"null") == -1)
                goto handle_crash;
 
 
@@ -210,8 +210,6 @@ handle_crash:
         if(ctx)
                 SSL_ctx_free(ctx);
 
-        if(ssl)
-                SSL_free(ssl);
 
         return EXIT_FAILURE;
 }

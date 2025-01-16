@@ -89,7 +89,7 @@ unsigned char extract_time(char* key_src, long* time)
 	
 }
 
-int extract_username(char *key_src, char *usrname_rslt)
+int extract_username(char *key_src, char **usrname_rslt)
 {
 	size_t l = strlen(key_src);
 	int start = 0;
@@ -109,7 +109,7 @@ int extract_username(char *key_src, char *usrname_rslt)
 		return -1;
 	}
 	
-	strncpy(*usrname_rslt,len,&key_src[start]);
+	strncpy(*usrname_rslt,&key_src[start],len);
 	(*usrname_rslt)[len] = '\0';
 
 	return 0;
