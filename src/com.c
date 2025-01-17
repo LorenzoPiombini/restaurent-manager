@@ -169,7 +169,7 @@ int start_SSL(SSL_CTX **ctx,char *port)
         SSL_CTX_set_timeout(*ctx,3600);
         SSL_CTX_set_verify(*ctx,SSL_VERIFY_NONE, NULL);
 	
-	if(strcmp(port,"null") == 0) {	
+	if(strcmp(port,"null") != 0) {	
 		acceptor_bio = BIO_new_accept(port);
 		if(acceptor_bio == NULL) {
 			SSL_CTX_free(*ctx);
