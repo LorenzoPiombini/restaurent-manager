@@ -12,6 +12,7 @@
 
 #define IP_ADR "71.187.166.234"
 
+#define EPOLL_ADD_E 14
 #define CLI_NOT 15
 #define NO_CON 16
 #define DT_INV 17
@@ -41,7 +42,8 @@ struct con_i
 int con_set_up(struct con_i ***vector);
 int open_socket(int domain,int type);
 unsigned char listen_set_up(int* fd_sock, int domain, int type, short port);
-unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instruction_buff, int buff_size);
+unsigned char accept_instructions(int* fd_sock,int* client_sock,
+	       	char* instruction_buff, int buff_size, int epoll_fd);
 int start_SSL(SSL_CTX **ctx, char *port);
 int accept_connection(int *fd_sock, int *client_sock,char* request, int req_size, 
 		SSL_CTX *ctx, SSL **ssl, int epoll_fd,int max_ev);

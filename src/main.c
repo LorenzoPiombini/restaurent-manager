@@ -133,50 +133,62 @@ if(arg == 0)
 
                 for(int i = 0; i < nfds; ++i) {
                         int res = 0;
-		        if((res = accept_instructions(&fd_socket,&fd_client,instruction,buff_size)) == 0)
-		        {
-		        	printf("accept_instructions() failed %s:%d.\n",F,L-2);
-			        continue;
-		        }
+			if(events[i].events == EPOLLIN && 
+					events[i].data.fd == fd_socket) {
+				if((res = accept_instructions(&fd_socket,&fd_client,
+							instruction,buff_size,epoll_fd)) == 0) {
+					printf("accept_instructions() failed %s:%d.\n",F,L-2);
+					continue;
+				}
 
-                        if(res == CLI_NOT) {
-                        /*
-                        * a not authorized client tried to connect
-                        * so we resume the loop without perform any instruction
-                        **/
+				if(res == EAGAIN || res == EWOULDBLOCK || res == EPOLL_ADD_E)
+					continue;
+
+				if(res == CLI_NOT) {
+				/*
+				* a not authorized client tried to connect
+				* so we resume the loop without perform any instruction
+				**/
                                 close(fd_client);
                                 continue;
-                        }
+				}
 
-                        if(res == DT_INV) {
-                                close(fd_client);
-                                continue;
-                        }
+				if(res == DT_INV) {
+					close(fd_client);
+					continue;
+				}
 
-			arg_st = calloc(1,sizeof(Th_args));
-			if(!arg_st)
-			{
-				__er_calloc(F,L-3);
-                                goto handle_crash;
-			}
+				arg_st = calloc(1,sizeof(Th_args));
+				if(!arg_st) {
+					__er_calloc(F,L-3);
+					goto handle_crash;
+				}
 
-			arg_st->socket_client = fd_client;
-			arg_st->data_from_socket = strdup(instruction);
+				arg_st->socket_client = fd_client;
+				arg_st->data_from_socket = strdup(instruction);
 			
-			/*put the function in a task que*/
-			void* (*interface)(void*) = principal_interface;
+				/*put the function in a task que*/
+				void* (*interface)(void*) = principal_interface;
 			
-			task_db* task = calloc(1,sizeof(task_db));
-			task->interface = interface;
-			task->arg = (void*)arg_st;
+				task_db* task = calloc(1,sizeof(task_db));
+				task->interface = interface;
+				task->arg = (void*)arg_st;
 
-			if(!enqueue(&q,(void*)task))
-			{
-				printf("enqueue() failed, %s:%d,\n",F,L-2);
-                                goto handle_crash;
+				if(!enqueue(&q,(void*)task)) {
+					printf("enqueue() failed, %s:%d,\n",F,L-2);
+					goto handle_crash;
+				}
+				pthread_cond_signal(&pool.notify);
+				memset(instruction,0,buff_size);
+
+			} else if() {
+				/*
+				 * the file descriptor is a 
+				 * client so we have to retry
+				 * reading or write operation 
+				 * */
+					
 			}
-			pthread_cond_signal(&pool.notify);
-			memset(instruction,0,buff_size);
                 }
 	}
 	/*handle a gracefull crash*/

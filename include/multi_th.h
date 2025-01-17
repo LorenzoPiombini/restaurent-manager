@@ -13,7 +13,7 @@ typedef struct
 {
 	int socket_client;
 	char* data_from_socket;
-
+	int epoll_fd;
 }Th_args;
 
 /*pointer function*/

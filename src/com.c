@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <openssl/bio.h>
 #include <sys/socket.h>
+#include <errno.h>
 #include <openssl/err.h> /* SSL errors */
 #include <arpa/inet.h>
 #include <netinet/in.h> /* for sockaddr_in */
@@ -318,17 +319,38 @@ int retry_SSL_read(SSL **ssl,char *request, int req_size)
  * this fucntion is to be used 
  * in application that exchange data over a TCP socket
  * */
-unsigned char accept_instructions(int* fd_sock,int* client_sock, char* instruction_buff, int buff_size)
+unsigned char accept_instructions(int* fd_sock,int* client_sock,
+	       	char* instruction_buff, int buff_size, int epoll_fd)
 {
 	struct sockaddr_in client_info = {0};
 	socklen_t client_size = sizeof(client_info);
 
+	/*set errno to 0 */
+	errno = 0;
 	*client_sock = accept4(*fd_sock,(struct sockaddr*)&client_info, &client_size,SOCK_NONBLOCK);
 	if(*client_sock == -1)
 	{
 		return NO_CON;
 	}
 	
+	if(errno == EAGAIN || errno == EWOULDBLOCK) {
+		/*
+		 * add the socket file descriptor 
+		 * to the epoll system
+		 * */
+		 struct epoll_event ev;
+		 ev.events = EPOLLIN | EPOLLET
+		 if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD,*client_sock,&ev) == -1){
+			close(*client_sock);
+			return EPOLL_ADD_E;
+		 }
+
+		 return errno;
+	} else if (errno > 0) {
+		close(*client_sock);
+		return 0;
+	}
+
 	/*
 	 * here you have to pass the client_socket 
 	 * to the SSL context created, to perform SSL 
