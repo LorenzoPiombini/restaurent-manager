@@ -8,12 +8,25 @@
 /* for Queue*/
 #include "queue.h"
 
-/* arguments structure to hold thread arguments */
-typedef struct
+
+enum IO 
 {
+	WRIO,
+	RDIO
+};
+
+/* 
+ * arguments structure to hold thread arguments 
+ *  - we saved all the data regarding the client 
+ *    conection, we need to keep track of all the operations
+ *    on the client socket since is non blocking.
+ *
+ * */
+struct {
 	int socket_client;
 	char* data_from_socket;
 	int epoll_fd;
+	int op;
 }Th_args;
 
 /*pointer function*/

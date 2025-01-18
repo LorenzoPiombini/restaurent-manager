@@ -315,6 +315,159 @@ int retry_SSL_read(SSL **ssl,char *request, int req_size)
 	return  (int)bread;
 
 }
+
+/*
+ * retry_RDIO retry on read operation on a client socket
+ *	the fucntions return -1 in case of failure.
+ *	client sock gets close on failure and the epoll API 
+ *	is taking care of, removing the file descriptor
+ *	accordingly.
+ * */
+int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epoll_fd)
+{
+	errno = 0;
+	int err = -1;
+	int instruction_size = read(*client_sock,instruction_buff,buff_size);
+	if(instruction_size <= 0) {
+		if(errno == EAGAIN || errno == EWOULDBLOCK) {
+			 return errno;
+		} else if (errno > 0) {
+			printf("%s() failed to read instruction,"\
+					" or socket is closed, %s:%d.\n"
+					,__func__,__FILE__,__LINE__-3);
+			errno = 0;
+			if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
+						*client_sock,NULL) == -1) {
+				if(errno == ENOENT) {
+					close(*client_sock);
+					return -1;
+				}
+			}
+			close(*client_sock);
+			return -1;
+		}
+	}
+
+	if(instruction_size == buff_size) {
+		printf("data too large!.\n");
+		err = -1;
+		goto send_error;
+	}
+
+	 /*trimming the string, eleminating all garbage from the network*/                                         
+	 int index = 0;                                                                                            
+	 if((index = find_last_char('}',instruction_buff)) == -1) {                                                
+		printf("invalid data.\n");
+		err = DT_INV;
+		goto send_error;
+	}                                                                                                         
+                                                                                                                  
+	if((index + 1) > instruction_size) {                                                                      
+		printf("error in socket data.\n");                                                                
+		err = DT_INV;
+		goto send_error;
+	} else if((index + 1) < instruction_size) {                                                               
+		memset(&instruction_buff[index + 1],0,(instruction_size - (index + 1)));                          
+	} else if ((index + 1) == instruction_size) {                                                             
+            instruction_buff[instruction_size] = '\0';                                                        
+	}
+
+	return 0;
+
+send_error:
+	char* mes ="{\"status\":\"error\"}";
+	if(write(*client_sock,mes,strlen(mes)+1) == -1) {
+		if(errno == EAGAIN || errno == EWOULDBLOCK) {
+			/*
+			 * error during write operation in the
+			 * reading process. 
+			 * */
+			struct epoll_events ev;
+			ev.events = EPOLLOUT | EPOLLET;
+			ev.data.fd = *client_sock;
+			errno = 0;
+			if(epoll_ctl(epoll_fd,
+					EPOLL_CTL_MOD,
+					*client_sock,&ev) == -1) {
+				if(errno == ENOENT) {
+					close(*client_sock);
+					return -1;
+				} else if(errno == ENOMEM) {
+					close(*client_sock);
+					return ENOMEM;
+				}
+				return -1;
+			}
+		return ER_WR;
+		}
+	}
+	/*
+	 * if the write op is succesfull we do not need the socket anymore
+	 * so we deregister it from the epoll API 
+	 * and we close it 
+	 * */
+	if(epoll_ctl(epoll_fd,EPOLL_CTL_DELL,
+				*client_sock,NULL) == -1) {
+			if(errno == ENOENT) {
+				close(*client_sock);
+				return -1;
+			}
+		close(*client_sock);
+		return -1;
+	}
+
+	close(*client_sock)
+	return err;                                                                                         
+                 
+}
+
+int write_err(int *client_sock, int epoll_ed)
+{
+	char* mes ="{\"status\":\"error\"}";
+	int bwrite = 0;
+	if((bwrite = write(*client_sock,mes,strlen(mes)+1)) == -1) {
+		if(errno == EAGAIN || errno == EWOULDBLOCK) {
+			/*
+			 * error during write operation in the
+			 * reading process. 
+			 * */
+			struct epoll_events ev;
+			ev.events = EPOLLOUT | EPOLLET;
+			ev.data.fd = *client_sock;
+			errno = 0;
+			if(epoll_ctl(epoll_fd,
+					EPOLL_CTL_MOD,
+					*client_sock,&ev) == -1) {
+				if(errno == ENOENT) {
+					close(*client_sock);
+					return -1;
+				} else if(errno == ENOMEM) {
+					close(*client_sock);
+					return ENOMEM;
+				}
+				return -1;
+			}
+		return ER_WR;
+		}
+	}
+	/*
+	 * if the write op is succesfull we do not need the socket anymore
+	 * so we deregister it from the epoll API 
+	 * and we close it 
+	 * */
+	if(epoll_ctl(epoll_fd,EPOLL_CTL_DELL,
+				*client_sock,NULL) == -1) {
+			if(errno == ENOENT) {
+				close(*client_sock);
+				return -1;
+			}
+		close(*client_sock);
+		return -1;
+	}
+
+	close(*client_sock)
+	return bwrite; 
+}
 /*
  * this fucntion is to be used 
  * in application that exchange data over a TCP socket
@@ -334,20 +487,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 	}
 	
 	if(errno == EAGAIN || errno == EWOULDBLOCK) {
-		/*
-		 * add the socket file descriptor 
-		 * to the epoll system
-		 * */
-		 struct epoll_event ev;
-		 ev.events = EPOLLIN | EPOLLET
-		 ev.data.fd = *client_sock;
-
-		 if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD,*client_sock,&ev) == -1){
-			close(*client_sock);
-			return EPOLL_ADD_E;
-		 }
-
-		 return errno;
+			 return NO_CON;
 	} else if (errno > 0) {
 		close(*client_sock);
 		return 0;
@@ -359,48 +499,67 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 	 * handshake and have secure comunication 
 	 * */
 
-    struct sockaddr_in addr = {0};
-    /*convert the ip adress from human readable to network endian*/
-    inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
+	struct sockaddr_in addr = {0};
+	/*convert the ip adress from human readable to network endian*/
+	inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
 
-    if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
-        fprintf(stderr,"client not allowed. connection dropped.\n");
-        return CLI_NOT; 
-    }
-
-	int instruction_size = read(*client_sock,instruction_buff,buff_size);
-	if(instruction_size <= 0)
-	{
-		printf("%s() failed to read instruction, or socket is closed, %s:%d.\n",__func__
-				,__FILE__,__LINE__-3);
-		return 0;
+	 if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
+		fprintf(stderr,"client not allowed. connection dropped.\n");
+		return CLI_NOT; 
 	}
 
-	if(instruction_size > buff_size)
-	{
-		printf("data to large!.\n");
+	errno = 0;
+	int instruction_size = read(*client_sock,instruction_buff,buff_size);
+	if(instruction_size <= 0) {
+		/*
+		 * add the socket file descriptor 
+		 * to the epoll system
+		 * */
+		if(errno == EAGAIN || errno == EWOULDBLOCK) {
+			 struct epoll_event ev;
+			 ev.events = EPOLLIN | EPOLLET;
+			 ev.data.fd = *client_sock;
+
+			 if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD,
+						 *client_sock,&ev) == -1){
+				close(*client_sock);
+				return EPOLL_ADD_E;
+			 }
+
+			 return errno;
+		} else if (errno > 0) {
+			close(*client_sock);
+			printf("%s() failed to read instruction,"\
+					" or socket is closed, %s:%d.\n"
+					,__func__,__FILE__,__LINE__-3);
+			return 0;
+		}
+	}
+
+	if(instruction_size == buff_size) {
+		printf("data too large!.\n");
 		return 0;
 	}	
 
 	printf("read %d bytes from buffer.\n",instruction_size);
 
-    /*trimming the string, eleminating all garbage from the network*/                                         
-    int index = 0;                                                                                            
-    if((index = find_last_char('}',instruction_buff)) == -1) {                                                
-        printf("invalid data.\n");
-        char* mes ="{\"status\":\"error\"}";
-        write(*client_sock,mes,strlen(mes)+1);
-        return DT_INV;                                                                                         
-    }                                                                                                         
+	 /*trimming the string, eleminating all garbage from the network*/                                         
+	 int index = 0;                                                                                            
+	 if((index = find_last_char('}',instruction_buff)) == -1) {                                                
+		printf("invalid data.\n");
+		char* mes ="{\"status\":\"error\"}";
+		write(*client_sock,mes,strlen(mes)+1);
+		return DT_INV;                                                                                         
+	}                                                                                                         
                                                                                                                   
-    if((index + 1) > instruction_size) {                                                                      
+	if((index + 1) > instruction_size) {                                                                      
             printf("error in socket data.\n");                                                                
             return 0;                                                                                         
-    } else if((index + 1) < instruction_size) {                                                               
-            memset(&instruction_buff[index + 1],0,(instruction_size - (index + 1)));                          
-    } else if ((index + 1) == instruction_size) {                                                             
+	} else if((index + 1) < instruction_size) {                                                               
+		memset(&instruction_buff[index + 1],0,(instruction_size - (index + 1)));                          
+	} else if ((index + 1) == instruction_size) {                                                             
             instruction_buff[instruction_size] = '\0';                                                        
-    }
+	}
 
 	return 1;
 }

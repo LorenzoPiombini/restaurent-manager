@@ -45,10 +45,11 @@ if(arg == 0)
 {	
 
 	/*this should be the real main program*/
+	int send_err = 0;
         int smo = 0;
         int buff_size = 1000;
         char instruction[buff_size];
-	Th_args* arg_st = NULL;
+	struct Th_args* arg_st = NULL;
 
         /* epoll() setup variables*/
         struct epoll_event ev;
@@ -119,7 +120,6 @@ if(arg == 0)
         smo = 1;
 		
         
-
 	for(;;)
         {
                 nfds = epoll_wait(epoll_fd, events, 10,-1);
@@ -149,8 +149,8 @@ if(arg == 0)
 				* a not authorized client tried to connect
 				* so we resume the loop without perform any instruction
 				**/
-                                close(fd_client);
-                                continue;
+					close(fd_client);
+					continue;
 				}
 
 				if(res == DT_INV) {
@@ -158,7 +158,7 @@ if(arg == 0)
 					continue;
 				}
 
-				arg_st = calloc(1,sizeof(Th_args));
+				arg_st = calloc(1,sizeof(struct Th_args));
 				if(!arg_st) {
 					__er_calloc(F,L-3);
 					goto handle_crash;
@@ -166,7 +166,9 @@ if(arg == 0)
 
 				arg_st->socket_client = fd_client;
 				arg_st->data_from_socket = strdup(instruction);
-			
+				arg_st->op = WRIO;
+				arg_st->epoll_fd = epoll_fd;
+
 				/*put the function in a task que*/
 				void* (*interface)(void*) = principal_interface;
 			
@@ -178,16 +180,42 @@ if(arg == 0)
 					printf("enqueue() failed, %s:%d,\n",F,L-2);
 					goto handle_crash;
 				}
+
 				pthread_cond_signal(&pool.notify);
 				memset(instruction,0,buff_size);
 
-			} else if() {
+			} else if(events[i].events == EPOLLIN){
 				/*
 				 * the file descriptor is a 
 				 * client so we have to retry
-				 * reading or write operation 
+				 * reading from the socket 
 				 * */
-					
+				int ret = retry_RDIO(&events[i].data.fd, 
+						instruction,buff_size,
+						epoll_fd);
+
+				switch(ret) {
+				case EAGAIN:
+				case ENOMEM:
+				case EWOULDBLOCK:
+				case DT_INV:
+					continue;
+				case ER_WR:
+					send_err = 1;
+					break;		
+				}
+				
+				continue;
+			} else if(events[i].events == EPOLLOUT) {
+				size_t written = 0;
+				if(send_err) {
+					 written = write_err(*events[i].data.fd,
+							 epoll_fd);
+					 if(written == ER_WR)
+						 continue;
+
+					send_err = 0;
+				}
 			}
                 }
 	}
@@ -210,14 +238,6 @@ handle_crash:
 
         if(fd_socket > -1 )
 	        close(fd_socket);
-
-        //if(fd_client > -1 )
-	        //close(fd_client);
-
-	//if(arg_st) {
-               // free(arg_st->data_from_socket);
-               // free(arg_st);
-        //}
 
         if(ctx)
                 SSL_ctx_free(ctx);

@@ -73,7 +73,7 @@ void* principal_interface(void* arg)
 	char* err = TH_ERR;
 	char* suc = TH_SUC;
 
-	Th_args* arg_st = ((Th_args*)arg);	
+	struct Th_args* arg_st = ((struct Th_args*)arg);	
 	
  	JsonPair** pairs = NULL;
 	int psize = 0;

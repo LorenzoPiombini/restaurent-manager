@@ -12,13 +12,19 @@
 
 #define IP_ADR "71.187.166.234"
 
-#define EPOLL_ADD_E 14
-#define CLI_NOT 15
-#define NO_CON 16
-#define DT_INV 17
-#define SSL_HD_F 18
-#define SSL_SET_E 19
-#define HANDSHAKE 20
+ /*
+  * non blocking socket error during read, 
+  * we still have to send an error message before closing
+  * the connections
+  * */
+#define ER_WR 13
+#define EPOLL_ADD_E 14	/*error suring EPOLL_CTL_ADD*/
+#define CLI_NOT 15	/*CLIENT NOT ALLOWED*/
+#define NO_CON 16	/* no connection */
+#define DT_INV 17	/* invalid data */
+#define SSL_HD_F 18	/*SSL handshake failed*/	
+#define SSL_SET_E 19	/*set SSL handle failed*/
+#define HANDSHAKE 20	/*SSL handshake failed but we can try again*/
 #define SSL_READ_E 21
 #define SSL_WRITE_E 22
 
@@ -49,5 +55,6 @@ int accept_connection(int *fd_sock, int *client_sock,char* request, int req_size
 		SSL_CTX *ctx, SSL **ssl, int epoll_fd,int max_ev);
 int retry_SSL_handshake(SSL **ssl);
 int retry_SSL_read(SSL **ssl,char *request, int req_size);
-
+int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epoll_fd);
+int write_err(int *client_sock, int epoll_ed);
 #endif
