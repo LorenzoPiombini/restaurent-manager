@@ -323,11 +323,11 @@ int retry_SSL_read(SSL **ssl,char *request, int req_size)
  *	is taking care of, removing the file descriptor
  *	accordingly.
  * */
-int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epoll_fd)
+int retry_RDIO(int client_sock, char *instruction_buff, int buff_size, int epoll_fd)
 {
 	errno = 0;
 	int err = -1;
-	int instruction_size = read(*client_sock,instruction_buff,buff_size);
+	int instruction_size = read(client_sock,instruction_buff,buff_size);
 	if(instruction_size <= 0) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			 return errno;
@@ -337,13 +337,13 @@ int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epol
 					,__func__,__FILE__,__LINE__-3);
 			errno = 0;
 			if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
-						*client_sock,NULL) == -1) {
+						client_sock,NULL) == -1) {
 				if(errno == ENOENT) {
-					close(*client_sock);
+					close(client_sock);
 					return -1;
 				}
 			}
-			close(*client_sock);
+			close(client_sock);
 			return -1;
 		}
 	}
@@ -376,24 +376,24 @@ int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epol
 
 send_error:
 	char* mes ="{\"status\":\"error\"}";
-	if(write(*client_sock,mes,strlen(mes)+1) == -1) {
+	if(write(client_sock,mes,strlen(mes)+1) == -1) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			/*
 			 * error during write operation in the
 			 * reading process. 
 			 * */
-			struct epoll_events ev;
+			struct epoll_event ev;
 			ev.events = EPOLLOUT | EPOLLET;
-			ev.data.fd = *client_sock;
+			ev.data.fd = client_sock;
 			errno = 0;
 			if(epoll_ctl(epoll_fd,
 					EPOLL_CTL_MOD,
-					*client_sock,&ev) == -1) {
+					client_sock,&ev) == -1) {
 				if(errno == ENOENT) {
-					close(*client_sock);
+					close(client_sock);
 					return -1;
 				} else if(errno == ENOMEM) {
-					close(*client_sock);
+					close(client_sock);
 					return ENOMEM;
 				}
 				return -1;
@@ -406,47 +406,37 @@ send_error:
 	 * so we deregister it from the epoll API 
 	 * and we close it 
 	 * */
-	if(epoll_ctl(epoll_fd,EPOLL_CTL_DELL,
-				*client_sock,NULL) == -1) {
+	if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
+				client_sock,NULL) == -1) {
 			if(errno == ENOENT) {
-				close(*client_sock);
+				close(client_sock);
 				return -1;
 			}
-		close(*client_sock);
+		close(client_sock);
 		return -1;
 	}
 
-	close(*client_sock)
+	close(client_sock);
 	return err;                                                                                         
                  
 }
 
-int write_err(int *client_sock, int epoll_ed)
+
+/* this functions is 
+ * used only after ER_WR already happend once
+ * */
+int write_err(int client_sock, int epoll_fd)
 {
 	char* mes ="{\"status\":\"error\"}";
 	int bwrite = 0;
-	if((bwrite = write(*client_sock,mes,strlen(mes)+1)) == -1) {
+	if((bwrite = write(client_sock,mes,strlen(mes)+1)) == -1) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			/*
-			 * error during write operation in the
-			 * reading process. 
+			 * error during write operation
+			 * we have already the fd in the epoll
+			 * so there is no need to save it again
 			 * */
-			struct epoll_events ev;
-			ev.events = EPOLLOUT | EPOLLET;
-			ev.data.fd = *client_sock;
-			errno = 0;
-			if(epoll_ctl(epoll_fd,
-					EPOLL_CTL_MOD,
-					*client_sock,&ev) == -1) {
-				if(errno == ENOENT) {
-					close(*client_sock);
-					return -1;
-				} else if(errno == ENOMEM) {
-					close(*client_sock);
-					return ENOMEM;
-				}
-				return -1;
-			}
+			
 		return ER_WR;
 		}
 	}
@@ -455,17 +445,17 @@ int write_err(int *client_sock, int epoll_ed)
 	 * so we deregister it from the epoll API 
 	 * and we close it 
 	 * */
-	if(epoll_ctl(epoll_fd,EPOLL_CTL_DELL,
-				*client_sock,NULL) == -1) {
+	if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
+				client_sock,NULL) == -1) {
 			if(errno == ENOENT) {
-				close(*client_sock);
+				close(client_sock);
 				return -1;
 			}
-		close(*client_sock);
+		close(client_sock);
 		return -1;
 	}
 
-	close(*client_sock)
+	close(client_sock);
 	return bwrite; 
 }
 /*

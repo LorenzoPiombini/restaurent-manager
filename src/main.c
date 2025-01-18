@@ -190,26 +190,27 @@ if(arg == 0)
 				 * client so we have to retry
 				 * reading from the socket 
 				 * */
-				int ret = retry_RDIO(&events[i].data.fd, 
+				int ret = retry_RDIO(events[i].data.fd, 
 						instruction,buff_size,
 						epoll_fd);
 
 				switch(ret) {
 				case EAGAIN:
 				case ENOMEM:
-				case EWOULDBLOCK:
 				case DT_INV:
 					continue;
 				case ER_WR:
 					send_err = 1;
 					break;		
+				default:
+					break;
 				}
 				
 				continue;
 			} else if(events[i].events == EPOLLOUT) {
 				size_t written = 0;
 				if(send_err) {
-					 written = write_err(*events[i].data.fd,
+					 written = write_err(events[i].data.fd,
 							 epoll_fd);
 					 if(written == ER_WR)
 						 continue;

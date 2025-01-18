@@ -55,6 +55,6 @@ int accept_connection(int *fd_sock, int *client_sock,char* request, int req_size
 		SSL_CTX *ctx, SSL **ssl, int epoll_fd,int max_ev);
 int retry_SSL_handshake(SSL **ssl);
 int retry_SSL_read(SSL **ssl,char *request, int req_size);
-int retry_RDIO(int *client_sock, char *instruction_buff, int buff_size, int epoll_fd);
-int write_err(int *client_sock, int epoll_ed);
+int retry_RDIO(int client_sock, char *instruction_buff, int buff_size, int epoll_fd);
+int write_err(int client_sock, int epoll_fd);
 #endif

@@ -22,12 +22,12 @@ enum IO
  *    on the client socket since is non blocking.
  *
  * */
-struct {
+struct Th_args {
 	int socket_client;
 	char* data_from_socket;
 	int epoll_fd;
 	int op;
-}Th_args;
+};
 
 /*pointer function*/
 extern void* (*interface)(void*);
