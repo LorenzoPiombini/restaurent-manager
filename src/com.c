@@ -340,6 +340,8 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		 * */
 		 struct epoll_event ev;
 		 ev.events = EPOLLIN | EPOLLET
+		 ev.data.fd = *client_sock;
+
 		 if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD,*client_sock,&ev) == -1){
 			close(*client_sock);
 			return EPOLL_ADD_E;
