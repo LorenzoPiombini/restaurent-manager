@@ -111,7 +111,6 @@ void* principal_interface(void* arg)
 		free(arg_st->data_from_socket);
 		free(arg_st);
 		return (void*)err;
-
 	}
 	
 	/* extract the type of operation to perform on the database */
@@ -119,9 +118,12 @@ void* principal_interface(void* arg)
 
 	free_json_pairs_array(&pairs,psize);
 	
+	printf("before converting pairs in instruction. outside if.\n");
 	int ret = convert_pairs_in_db_instruction(BST_tree,inst);
 
+	printf("after converting pairs in instruction. outside if.\n");
 	if(ret == 0 || ret == EUSER) {
+	printf("after converting pairs in instruction. inside if.\n");
 		printf("convert_pairs_in_db_instruction() failed, %s:%d.\n",F,L-2);
 		free_BST(&BST_tree);
 		char message[] = "{\"status\":\"error\"}";
@@ -130,6 +132,7 @@ void* principal_interface(void* arg)
 			close_file(1,arg_st->socket_client);
 			return (void*)err;
 		}
+		
 		close_file(1,arg_st->socket_client);
 		free(arg_st->data_from_socket);
 		free(arg_st);

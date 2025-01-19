@@ -136,7 +136,7 @@ if(arg == 0)
 			if(events[i].events == EPOLLIN && 
 					events[i].data.fd == fd_socket) {
 				if((res = accept_instructions(&fd_socket,&fd_client,
-							instruction,buff_size,epoll_fd)) == 0) {
+							instruction,buff_size,epoll_fd)) == -1) {
 					printf("accept_instructions() failed %s:%d.\n",F,L-2);
 					continue;
 				}
@@ -158,6 +158,11 @@ if(arg == 0)
 					continue;
 				}
 
+				if(res == ER_WR) {
+					send_err = 1;
+					continue;
+				}
+
 				arg_st = calloc(1,sizeof(struct Th_args));
 				if(!arg_st) {
 					__er_calloc(F,L-3);
@@ -166,8 +171,6 @@ if(arg == 0)
 
 				arg_st->socket_client = fd_client;
 				arg_st->data_from_socket = strdup(instruction);
-				arg_st->op = WRIO;
-				arg_st->epoll_fd = epoll_fd;
 
 				/*put the function in a task que*/
 				void* (*interface)(void*) = principal_interface;
@@ -190,11 +193,39 @@ if(arg == 0)
 				 * client so we have to retry
 				 * reading from the socket 
 				 * */
+				printf("trying to read again\n");
 				int ret = retry_RDIO(events[i].data.fd, 
 						instruction,buff_size,
 						epoll_fd);
 
 				switch(ret) {
+				case 0:
+				{
+					arg_st = calloc(1,sizeof(struct Th_args));
+					if(!arg_st) {
+						__er_calloc(F,L-3);
+						goto handle_crash;
+					}
+	
+					arg_st->socket_client = fd_client;
+					arg_st->data_from_socket = strdup(instruction);
+	
+					/*put the function in a task que*/
+					void* (*interface)(void*) = principal_interface;
+			
+					task_db* task = calloc(1,sizeof(task_db));
+					task->interface = interface;
+					task->arg = (void*)arg_st;
+
+					if(!enqueue(&q,(void*)task)) {
+						printf("enqueue() failed, %s:%d,\n",F,L-2);
+						goto handle_crash;
+					}
+
+					pthread_cond_signal(&pool.notify);
+					memset(instruction,0,buff_size);
+					break;
+				}
 				case EAGAIN:
 				case ENOMEM:
 				case DT_INV:

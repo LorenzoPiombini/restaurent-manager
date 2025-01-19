@@ -71,10 +71,8 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 		}
 
 		return 1;
-	}
 
-	else if(domain == AF_UNIX)
-	{
+	} else if(domain == AF_UNIX) {
 		struct sockaddr_un intercom = {0};
 		intercom.sun_family = domain;	
 		strncpy(intercom.sun_path,SOCKET_NAME,sizeof(intercom.sun_path)-1);
@@ -88,6 +86,13 @@ unsigned char listen_set_up(int* fd_sock,int domain, int type, short port)
 			return 0;
 		}
 
+		/*set ptions for the socket*/
+		int opt = 1;
+		if(setsockopt(*fd_sock,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt)) == -1) { 
+			perror("setsockopt: ");
+			close(*fd_sock);
+			return 0;
+		}
 		/*bind the soket for internal communication*/
 
 		if(bind(*fd_sock,(const struct sockaddr*)&intercom,sizeof(intercom)) == -1)
@@ -154,12 +159,12 @@ int start_SSL(SSL_CTX **ctx,char *port)
         /*apply the selction options */
         SSL_CTX_set_options(*ctx, opts);
 
-        if(SSL_CTX_use_certificate_chain_file(*ctx,"your cert") <= 0 ) {
+        if(SSL_CTX_use_certificate_chain_file(*ctx,"chain.pem") <= 0 ) {
                 fprintf(stderr,"error use certificate.\n");
                 return -1;
         }
 
-        if(SSL_CTX_use_PrivateKey_file(*ctx, "your key",SSL_FILETYPE_PEM) <= 0) {
+        if(SSL_CTX_use_PrivateKey_file(*ctx, "pkey.pem",SSL_FILETYPE_PEM) <= 0) {
                 fprintf(stderr,"error use privatekey ");
                 return -1;
         }
@@ -372,6 +377,16 @@ int retry_RDIO(int client_sock, char *instruction_buff, int buff_size, int epoll
             instruction_buff[instruction_size] = '\0';                                                        
 	}
 
+	/* reading the socket has completed,
+	 * we deregister the fd*/
+	if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
+			client_sock,NULL) == -1) {
+		if(errno == ENOENT) {
+			close(client_sock);
+			return -1;
+		}
+	}
+
 	return 0;
 
 send_error:
@@ -480,7 +495,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 			 return NO_CON;
 	} else if (errno > 0) {
 		close(*client_sock);
-		return 0;
+		return -1;
 	}
 
 	/*
@@ -488,7 +503,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 	 * to the SSL context created, to perform SSL 
 	 * handshake and have secure comunication 
 	 * */
-
+	printf("socket connected %s:%d.\n",__FILE__,__LINE__);
 	struct sockaddr_in addr = {0};
 	/*convert the ip adress from human readable to network endian*/
 	inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
@@ -497,7 +512,8 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		fprintf(stderr,"client not allowed. connection dropped.\n");
 		return CLI_NOT; 
 	}
-
+ 
+	printf("about to read the data%s:%d.\n",__FILE__,__LINE__);
 	errno = 0;
 	int instruction_size = read(*client_sock,instruction_buff,buff_size);
 	if(instruction_size <= 0) {
@@ -505,6 +521,7 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		 * add the socket file descriptor 
 		 * to the epoll system
 		 * */
+		printf("read the data failed, inside if %s:%d.\n",__FILE__,__LINE__);
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			 struct epoll_event ev;
 			 ev.events = EPOLLIN | EPOLLET;
@@ -522,13 +539,14 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 			printf("%s() failed to read instruction,"\
 					" or socket is closed, %s:%d.\n"
 					,__func__,__FILE__,__LINE__-3);
-			return 0;
+			return -1;
 		}
 	}
 
+	printf("about to check the data%s:%d.\n",__FILE__,__LINE__);
 	if(instruction_size == buff_size) {
 		printf("data too large!.\n");
-		return 0;
+		return DT_INV;
 	}	
 
 	printf("read %d bytes from buffer.\n",instruction_size);
@@ -544,12 +562,13 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
                                                                                                                   
 	if((index + 1) > instruction_size) {                                                                      
             printf("error in socket data.\n");                                                                
-            return 0;                                                                                         
+            return DT_INV;                                                                                         
 	} else if((index + 1) < instruction_size) {                                                               
 		memset(&instruction_buff[index + 1],0,(instruction_size - (index + 1)));                          
 	} else if ((index + 1) == instruction_size) {                                                             
             instruction_buff[instruction_size] = '\0';                                                        
 	}
 
+	printf("reading succesfull\n");
 	return 1;
 }
