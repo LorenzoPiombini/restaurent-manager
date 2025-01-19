@@ -193,7 +193,6 @@ if(arg == 0)
 				 * client so we have to retry
 				 * reading from the socket 
 				 * */
-				printf("trying to read again\n");
 				int ret = retry_RDIO(events[i].data.fd, 
 						instruction,buff_size,
 						epoll_fd);
@@ -207,9 +206,13 @@ if(arg == 0)
 						goto handle_crash;
 					}
 	
-					arg_st->socket_client = fd_client;
+					arg_st->socket_client = events[i].data.fd;
 					arg_st->data_from_socket = strdup(instruction);
-	
+					if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
+								events[i].data.fd,
+								NULL) == -1) {
+					/*handle this */	
+					}
 					/*put the function in a task que*/
 					void* (*interface)(void*) = principal_interface;
 			
@@ -224,6 +227,7 @@ if(arg == 0)
 
 					pthread_cond_signal(&pool.notify);
 					memset(instruction,0,buff_size);
+
 					break;
 				}
 				case EAGAIN:

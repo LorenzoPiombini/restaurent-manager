@@ -438,7 +438,9 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					close_file(1,fd_data);
 					return 0;
 				}
-			
+				
+				printf("before write_safe %s:%d.\n",__FILE__,__LINE__);
+
 				char *export_key = NULL;	
 				if(!__write_safe(fd_data,db_data,"employee",&export_key)) {
 					printf("__write_safe() failed %s:%d.\n",F,L-2);

@@ -118,12 +118,9 @@ void* principal_interface(void* arg)
 
 	free_json_pairs_array(&pairs,psize);
 	
-	printf("before converting pairs in instruction. outside if.\n");
 	int ret = convert_pairs_in_db_instruction(BST_tree,inst);
 
-	printf("after converting pairs in instruction. outside if.\n");
 	if(ret == 0 || ret == EUSER) {
-	printf("after converting pairs in instruction. inside if.\n");
 		printf("convert_pairs_in_db_instruction() failed, %s:%d.\n",F,L-2);
 		free_BST(&BST_tree);
 		char message[] = "{\"status\":\"error\"}";

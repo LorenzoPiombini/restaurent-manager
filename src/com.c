@@ -503,7 +503,6 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 	 * to the SSL context created, to perform SSL 
 	 * handshake and have secure comunication 
 	 * */
-	printf("socket connected %s:%d.\n",__FILE__,__LINE__);
 	struct sockaddr_in addr = {0};
 	/*convert the ip adress from human readable to network endian*/
 	inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
@@ -513,7 +512,6 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		return CLI_NOT; 
 	}
  
-	printf("about to read the data%s:%d.\n",__FILE__,__LINE__);
 	errno = 0;
 	int instruction_size = read(*client_sock,instruction_buff,buff_size);
 	if(instruction_size <= 0) {
@@ -521,7 +519,6 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		 * add the socket file descriptor 
 		 * to the epoll system
 		 * */
-		printf("read the data failed, inside if %s:%d.\n",__FILE__,__LINE__);
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			 struct epoll_event ev;
 			 ev.events = EPOLLIN | EPOLLET;
@@ -543,7 +540,6 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 		}
 	}
 
-	printf("about to check the data%s:%d.\n",__FILE__,__LINE__);
 	if(instruction_size == buff_size) {
 		printf("data too large!.\n");
 		return DT_INV;
@@ -569,6 +565,5 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
             instruction_buff[instruction_size] = '\0';                                                        
 	}
 
-	printf("reading succesfull\n");
 	return 1;
 }

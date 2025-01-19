@@ -2340,7 +2340,7 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 
 	free_strs(2,1,files);
 	files = NULL;
-
+	
 	struct Record_f *rec = NULL; 
 	if(!schema_control(fd_data,NULL,file_name,db_data,&rec,NULL,0,NULL,NO_OP))
 	{
@@ -2426,6 +2426,10 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 		free_record(rec,rec->fields_num);
 		if(key)	
 			free(key);
+		
+		printf("at the end of %s, freeing the lock,%s:%d.\n",
+			__func__,__FILE__,__LINE__);
+
 		if(shared_locks)
 		{
 			int result_i = 0, result_d = 0;
@@ -2437,14 +2441,17 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 					plp,plpa)) == 0))
 			{
 				__er_release_lock_smo(F,L-5);
+				close_file(1,fd_index);
 				return 0;
 			}
 
 			}while(result_i == WTLK || result_d == WTLK);
 
+			close_file(1,fd_index);
 			return 0;	
 		}
 
+		close_file(1,fd_index);
 		return 0;
 	}
 	
@@ -2470,17 +2477,19 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 				if(((result_i = release_lock_smo(&shared_locks,
 					plp_i,plpa_i)) == 0) ||
 					((result_d = release_lock_smo(&shared_locks,
-					plp,plpa)) == 0))
-			{
-				__er_release_lock_smo(F,L-5);
-				return 0;
-			}
+					plp,plpa)) == 0)) {
+					__er_release_lock_smo(F,L-5);
+					close_file(1,fd_index);
+					return 0;
+				}
 
 			}while(result_i == WTLK || result_d == WTLK);
-
+		
+			close_file(1,fd_index);
 			return 0;	
 		}
 
+		close_file(1,fd_index);
 		return 0;
 	}
 
@@ -2495,16 +2504,18 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 			if(((result_i = release_lock_smo(&shared_locks,
 				plp_i,plpa_i)) == 0) ||
 	      		   ((result_d = release_lock_smo(&shared_locks,
-				plp,plpa)) == 0))
-			{
+				plp,plpa)) == 0)) {
 				__er_release_lock_smo(F,L-5);
+				close_file(1,fd_index);
 				return 0;
 			}
 
-			}while(result_i == WTLK || result_d == WTLK);
-
-			return 1;	
+		}while(result_i == WTLK || result_d == WTLK);
+		
+		close_file(1,fd_index);
+		return 1;	
 	}
 
+	close_file(1,fd_index);
 	return 1;
 }
