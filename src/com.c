@@ -324,9 +324,7 @@ int retry_SSL_read(SSL **ssl,char *request, int req_size)
 /*
  * retry_RDIO retry on read operation on a client socket
  *	the fucntions return -1 in case of failure.
- *	client sock gets close on failure and the epoll API 
- *	is taking care of, removing the file descriptor
- *	accordingly.
+ *	client sock gets close on failure and the epoll API
  * */
 int retry_RDIO(int client_sock, char *instruction_buff, int buff_size, int epoll_fd)
 {
@@ -416,24 +414,8 @@ send_error:
 		return ER_WR;
 		}
 	}
-	/*
-	 * if the write op is succesfull we do not need the socket anymore
-	 * so we deregister it from the epoll API 
-	 * and we close it 
-	 * */
-	if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
-				client_sock,NULL) == -1) {
-			if(errno == ENOENT) {
-				close(client_sock);
-				return -1;
-			}
-		close(client_sock);
-		return -1;
-	}
-
 	close(client_sock);
 	return err;                                                                                         
-                 
 }
 
 

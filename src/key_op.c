@@ -117,7 +117,7 @@ int extract_username(char *key_src, char **usrname_rslt)
 
 unsigned char load_files_system(char*** files, int* len)
 {
-	FILE* fp = fopen("file_sys.txt","r");
+	FILE* fp = fopen(FSYSK,"r");
 	if(!fp) {
 		printf("failed to open file or it does not exist. %s:%d",F,L-3);
 		return 0;

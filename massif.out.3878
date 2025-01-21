@@ -1,0 +1,2301 @@
+desc: (none)
+cmd: bin/restaurant_prod 0
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=7199017
+mem_heap_B=7595840
+mem_heap_extra_B=23480
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=15283139
+mem_heap_B=8632200
+mem_heap_extra_B=50016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=22872801
+mem_heap_B=9631432
+mem_heap_extra_B=75632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=34996613
+mem_heap_B=11200696
+mem_heap_extra_B=115840
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=44912774
+mem_heap_B=12435528
+mem_heap_extra_B=147472
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=57485436
+mem_heap_B=14062128
+mem_heap_extra_B=189144
+mem_stacks_B=0
+heap_tree=detailed
+n11: 14062128 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2463560 0x5072A59: create_token_tree (regcomp.c:3828)
+  n1: 2170256 0x5083464: create_tree (regcomp.c:3818)
+   n2: 2170256 0x5083464: parse_branch (regcomp.c:2222)
+    n1: 1680448 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 1680448 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 1680448 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 1680448 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 847968 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 846032 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 846032 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 846032 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 838288 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 838288 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 838288 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 838288 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 426888 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 420112 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 420112 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 420112 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 410432 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 410432 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 410432 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 410432 0x50834A7: parse_branch (regcomp.c:2213)
+                        n2: 217800 0x5083569: parse_reg_exp (regcomp.c:2158)
+                         n1: 199408 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 199408 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n2: 199408 0x50834A7: parse_branch (regcomp.c:2213)
+                            n1: 188760 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                             n1: 188760 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                              n1: 188760 0x5081EC9: parse_expression (regcomp.c:2281)
+                               n1: 188760 0x50834A7: parse_branch (regcomp.c:2213)
+                                n0: 188760 in 2 places, all below massif's threshold (1.00%)
+                            n0: 10648 in 1 place, below massif's threshold (1.00%)
+                         n0: 18392 in 1 place, below massif's threshold (1.00%)
+                        n1: 192632 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 192632 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 192632 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 192632 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 192632 in 2 places, all below massif's threshold (1.00%)
+                    n0: 9680 in 1 place, below massif's threshold (1.00%)
+                 n0: 6776 in 1 place, below massif's threshold (1.00%)
+                n1: 411400 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 411400 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 411400 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 411400 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 213928 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 202312 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 202312 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 202312 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 184888 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 184888 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 184888 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 184888 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 184888 in 2 places, all below massif's threshold (1.00%)
+                        n0: 17424 in 1 place, below massif's threshold (1.00%)
+                     n0: 11616 in 1 place, below massif's threshold (1.00%)
+                    n1: 197472 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 197472 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 197472 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 197472 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 197472 in 2 places, all below massif's threshold (1.00%)
+            n0: 7744 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 832480 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 832480 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 832480 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 832480 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 420112 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 414304 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 414304 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 414304 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 399784 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 399784 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 399784 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 399784 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 211992 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 194568 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 194568 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 194568 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 186824 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 186824 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 186824 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 186824 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 186824 in 2 places, all below massif's threshold (1.00%)
+                        n0: 7744 in 1 place, below massif's threshold (1.00%)
+                     n0: 17424 in 1 place, below massif's threshold (1.00%)
+                    n1: 187792 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 187792 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 187792 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 187792 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 187792 in 2 places, all below massif's threshold (1.00%)
+                n0: 14520 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 412368 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 412368 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 412368 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 412368 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 216832 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 202312 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 202312 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 202312 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 184888 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 184888 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 184888 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 184888 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 184888 in 2 places, all below massif's threshold (1.00%)
+                    n0: 17424 in 1 place, below massif's threshold (1.00%)
+                 n0: 14520 in 1 place, below massif's threshold (1.00%)
+                n1: 195536 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 195536 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 195536 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 195536 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 195536 in 2 places, all below massif's threshold (1.00%)
+    n1: 489808 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 489808 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 489808 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 489808 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 365904 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 365904 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 365904 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 365904 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 186824 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 186824 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 186824 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 186824 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 186824 in 2 places, all below massif's threshold (1.00%)
+            n2: 179080 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 177144 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 177144 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 177144 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 176176 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 176176 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 176176 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 176176 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 176176 in 2 places, all below massif's threshold (1.00%)
+                n0: 968 in 1 place, below massif's threshold (1.00%)
+             n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n0: 123904 in 1 place, below massif's threshold (1.00%)
+  n1: 293304 0x508172B: create_tree (regcomp.c:3818)
+   n1: 293304 0x508172B: parse_dup_op (regcomp.c:2655)
+    n2: 293304 0x508172B: parse_expression (regcomp.c:2448)
+     n1: 156816 0x50834A7: parse_branch (regcomp.c:2213)
+      n0: 156816 in 2 places, all below massif's threshold (1.00%)
+     n0: 136488 in 1 place, below massif's threshold (1.00%)
+ n1: 2213816 0x5083349: create_token_tree (regcomp.c:3828)
+  n2: 2213816 0x5083349: parse_expression (regcomp.c:2254)
+   n2: 1611720 0x50834A7: parse_branch (regcomp.c:2213)
+    n1: 1390048 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 1390048 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 1390048 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 1390048 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 698896 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 696960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 696960 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 696960 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 692120 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 692120 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 692120 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 692120 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 346544 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 341704 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 341704 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 341704 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 331056 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 331056 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 331056 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 331056 0x50834A7: parse_branch (regcomp.c:2213)
+                        n2: 175208 0x5083569: parse_reg_exp (regcomp.c:2158)
+                         n1: 167464 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 167464 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n2: 167464 0x50834A7: parse_branch (regcomp.c:2213)
+                            n1: 158752 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                             n1: 158752 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                              n1: 158752 0x5081EC9: parse_expression (regcomp.c:2281)
+                               n1: 158752 0x50834A7: parse_branch (regcomp.c:2213)
+                                n0: 158752 in 2 places, all below massif's threshold (1.00%)
+                            n0: 8712 in 1 place, below massif's threshold (1.00%)
+                         n0: 7744 in 1 place, below massif's threshold (1.00%)
+                        n1: 155848 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 155848 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 155848 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 155848 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 155848 in 2 places, all below massif's threshold (1.00%)
+                    n0: 10648 in 1 place, below massif's threshold (1.00%)
+                 n0: 4840 in 1 place, below massif's threshold (1.00%)
+                n1: 345576 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 345576 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 345576 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 345576 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 175208 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 162624 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 162624 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 162624 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 151008 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 151008 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 151008 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 151008 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 151008 in 2 places, all below massif's threshold (1.00%)
+                        n0: 11616 in 1 place, below massif's threshold (1.00%)
+                     n0: 12584 in 1 place, below massif's threshold (1.00%)
+                    n1: 170368 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 170368 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 170368 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 170368 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 170368 in 2 places, all below massif's threshold (1.00%)
+            n0: 4840 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 691152 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 691152 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 691152 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 691152 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 350416 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 350416 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 350416 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 350416 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 181984 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 172304 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 172304 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 172304 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 156816 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 156816 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 156816 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 156816 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 156816 in 2 places, all below massif's threshold (1.00%)
+                    n0: 15488 in 1 place, below massif's threshold (1.00%)
+                 n0: 9680 in 1 place, below massif's threshold (1.00%)
+                n1: 168432 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 168432 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 168432 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 168432 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 168432 in 2 places, all below massif's threshold (1.00%)
+            n2: 340736 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 334928 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 334928 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 334928 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 325248 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 325248 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 325248 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 325248 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 168432 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 160688 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 160688 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 160688 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 151008 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 151008 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 151008 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 151008 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 151008 in 2 places, all below massif's threshold (1.00%)
+                        n0: 9680 in 1 place, below massif's threshold (1.00%)
+                     n0: 7744 in 1 place, below massif's threshold (1.00%)
+                    n1: 156816 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 156816 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 156816 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 156816 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 156816 in 2 places, all below massif's threshold (1.00%)
+                n0: 9680 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+    n2: 221672 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 220704 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 220704 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 220704 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 161656 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 161656 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 161656 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 161656 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 161656 in 2 places, all below massif's threshold (1.00%)
+        n0: 59048 in 1 place, below massif's threshold (1.00%)
+     n0: 968 in 1 place, below massif's threshold (1.00%)
+   n2: 602096 0x50833FD: parse_branch (regcomp.c:2206)
+    n1: 471416 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 471416 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 471416 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 471416 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 240064 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 240064 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 240064 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 240064 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 240064 in 2 places, all below massif's threshold (1.00%)
+        n2: 231352 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 230384 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 230384 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 230384 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 226512 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 226512 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 226512 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 226512 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 226512 in 2 places, all below massif's threshold (1.00%)
+            n0: 3872 in 1 place, below massif's threshold (1.00%)
+         n0: 968 in 1 place, below massif's threshold (1.00%)
+    n0: 130680 in 1 place, below massif's threshold (1.00%)
+ n1: 659208 0x50814DE: create_token_tree (regcomp.c:3828)
+  n1: 659208 0x50814DE: create_tree (regcomp.c:3818)
+   n1: 659208 0x50814DE: parse_dup_op (regcomp.c:2633)
+    n2: 659208 0x50814DE: parse_expression (regcomp.c:2448)
+     n2: 454960 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 236192 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 236192 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 236192 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 236192 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 236192 in 2 places, all below massif's threshold (1.00%)
+      n1: 218768 0x5083569: parse_reg_exp (regcomp.c:2158)
+       n1: 218768 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 218768 0x5081EC9: parse_expression (regcomp.c:2281)
+         n2: 218768 0x50834A7: parse_branch (regcomp.c:2213)
+          n1: 148104 0x50835DB: parse_reg_exp (regcomp.c:2170)
+           n1: 148104 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+            n1: 148104 0x5081EC9: parse_expression (regcomp.c:2281)
+             n1: 148104 0x50834A7: parse_branch (regcomp.c:2213)
+              n0: 148104 in 2 places, all below massif's threshold (1.00%)
+          n0: 70664 in 1 place, below massif's threshold (1.00%)
+     n1: 204248 0x50833FD: parse_branch (regcomp.c:2206)
+      n0: 204248 in 2 places, all below massif's threshold (1.00%)
+ n1: 584672 0x50836D7: create_token_tree (regcomp.c:3828)
+  n1: 584672 0x50836D7: create_tree (regcomp.c:3818)
+   n1: 584672 0x50836D7: parse_reg_exp (regcomp.c:2181)
+    n1: 584672 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+     n1: 584672 0x5081EC9: parse_expression (regcomp.c:2281)
+      n2: 584672 0x50834A7: parse_branch (regcomp.c:2213)
+       n1: 293304 0x5083569: parse_reg_exp (regcomp.c:2158)
+        n1: 293304 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 293304 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 293304 0x50834A7: parse_branch (regcomp.c:2213)
+           n1: 292336 0x50835DB: parse_reg_exp (regcomp.c:2170)
+            n1: 292336 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 292336 0x5081EC9: parse_expression (regcomp.c:2281)
+              n2: 292336 0x50834A7: parse_branch (regcomp.c:2213)
+               n2: 151976 0x5083569: parse_reg_exp (regcomp.c:2158)
+                n1: 149072 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                 n1: 149072 0x5081EC9: parse_expression (regcomp.c:2281)
+                  n2: 149072 0x50834A7: parse_branch (regcomp.c:2213)
+                   n1: 146168 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                    n1: 146168 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                     n1: 146168 0x5081EC9: parse_expression (regcomp.c:2281)
+                      n1: 146168 0x50834A7: parse_branch (regcomp.c:2213)
+                       n0: 146168 in 2 places, all below massif's threshold (1.00%)
+                   n0: 2904 in 1 place, below massif's threshold (1.00%)
+                n0: 2904 in 1 place, below massif's threshold (1.00%)
+               n0: 140360 in 1 place, below massif's threshold (1.00%)
+           n0: 968 in 1 place, below massif's threshold (1.00%)
+       n1: 291368 0x50835DB: parse_reg_exp (regcomp.c:2170)
+        n1: 291368 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 291368 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 291368 0x50834A7: parse_branch (regcomp.c:2213)
+           n2: 156816 0x5083569: parse_reg_exp (regcomp.c:2158)
+            n1: 154880 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 154880 0x5081EC9: parse_expression (regcomp.c:2281)
+              n2: 154880 0x50834A7: parse_branch (regcomp.c:2213)
+               n1: 151976 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                n1: 151976 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                 n1: 151976 0x5081EC9: parse_expression (regcomp.c:2281)
+                  n1: 151976 0x50834A7: parse_branch (regcomp.c:2213)
+                   n0: 151976 in 2 places, all below massif's threshold (1.00%)
+               n0: 2904 in 1 place, below massif's threshold (1.00%)
+            n0: 1936 in 1 place, below massif's threshold (1.00%)
+           n0: 134552 in 1 place, below massif's threshold (1.00%)
+ n0: 282712 in 8 places, all below massif's threshold (1.00%)
+ n1: 281688 0x5082809: create_token_tree (regcomp.c:3828)
+  n1: 281688 0x5082809: parse_bracket_exp (regcomp.c:3391)
+   n2: 281688 0x5082809: parse_expression (regcomp.c:2287)
+    n1: 155848 0x50834A7: parse_branch (regcomp.c:2213)
+     n0: 155848 in 2 places, all below massif's threshold (1.00%)
+    n0: 125840 in 1 place, below massif's threshold (1.00%)
+ n1: 278784 0x5079A00: create_token_tree (regcomp.c:3828)
+  n1: 278784 0x5079A00: build_charclass_op (regcomp.c:3727)
+   n2: 278784 0x5080816: parse_expression (regcomp.c:2422)
+    n1: 204248 0x50834A7: parse_branch (regcomp.c:2213)
+     n0: 204248 in 2 places, all below massif's threshold (1.00%)
+    n0: 74536 in 1 place, below massif's threshold (1.00%)
+ n1: 276848 0x5081959: create_token_tree (regcomp.c:3828)
+  n1: 276848 0x5081959: duplicate_tree (regcomp.c:3908)
+   n1: 276848 0x5081959: parse_dup_op (regcomp.c:2619)
+    n2: 276848 0x5081959: parse_expression (regcomp.c:2448)
+     n1: 152944 0x50834A7: parse_branch (regcomp.c:2213)
+      n0: 152944 in 2 places, all below massif's threshold (1.00%)
+     n0: 123904 in 1 place, below massif's threshold (1.00%)
+ n1: 182952 0x5082C69: create_token_tree (regcomp.c:3828)
+  n1: 182952 0x5082C69: create_tree (regcomp.c:3818)
+   n1: 182952 0x5082C69: parse_sub_exp (regcomp.c:2510)
+    n1: 182952 0x5082C69: parse_expression (regcomp.c:2281)
+     n1: 182952 0x50834A7: parse_branch (regcomp.c:2213)
+      n0: 182952 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=7
+#-----------
+time=66031939
+mem_heap_B=15166048
+mem_heap_extra_B=217416
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=74680112
+mem_heap_B=16309192
+mem_heap_extra_B=246704
+mem_stacks_B=0
+heap_tree=detailed
+n13: 16309192 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 3246672 0x5072A59: create_token_tree (regcomp.c:3828)
+  n1: 2858504 0x5083464: create_tree (regcomp.c:3818)
+   n2: 2858504 0x5083464: parse_branch (regcomp.c:2222)
+    n1: 2209944 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 2209944 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 2209944 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 2209944 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 1107392 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 1105456 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1105456 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1105456 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 1097712 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 1097712 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 1097712 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 1097712 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 559504 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 552728 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 552728 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 552728 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 540144 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 540144 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 540144 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 540144 0x50834A7: parse_branch (regcomp.c:2213)
+                        n2: 281688 0x5083569: parse_reg_exp (regcomp.c:2158)
+                         n1: 263296 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 263296 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n2: 263296 0x50834A7: parse_branch (regcomp.c:2213)
+                            n1: 249744 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                             n1: 249744 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                              n1: 249744 0x5081EC9: parse_expression (regcomp.c:2281)
+                               n1: 249744 0x50834A7: parse_branch (regcomp.c:2213)
+                                n0: 249744 in 2 places, all below massif's threshold (1.00%)
+                            n0: 13552 in 1 place, below massif's threshold (1.00%)
+                         n0: 18392 in 1 place, below massif's threshold (1.00%)
+                        n1: 258456 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 258456 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 258456 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 258456 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 258456 in 2 places, all below massif's threshold (1.00%)
+                    n0: 12584 in 1 place, below massif's threshold (1.00%)
+                 n0: 6776 in 1 place, below massif's threshold (1.00%)
+                n1: 538208 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 538208 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 538208 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 538208 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 283624 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 272008 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 272008 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 272008 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 253616 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 253616 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 253616 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 253616 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 253616 in 2 places, all below massif's threshold (1.00%)
+                        n0: 18392 in 1 place, below massif's threshold (1.00%)
+                     n0: 11616 in 1 place, below massif's threshold (1.00%)
+                    n1: 254584 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 254584 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 254584 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 254584 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 254584 in 2 places, all below massif's threshold (1.00%)
+            n0: 7744 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 1102552 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 1102552 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1102552 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1102552 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 555632 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 549824 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 549824 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 549824 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 534336 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 534336 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 534336 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 534336 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 280720 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 263296 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 263296 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 263296 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 251680 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 251680 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 251680 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 251680 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 251680 in 2 places, all below massif's threshold (1.00%)
+                        n0: 11616 in 1 place, below massif's threshold (1.00%)
+                     n0: 17424 in 1 place, below massif's threshold (1.00%)
+                    n1: 253616 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 253616 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 253616 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 253616 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 253616 in 2 places, all below massif's threshold (1.00%)
+                n0: 15488 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 546920 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 546920 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 546920 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 546920 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 294272 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 279752 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 279752 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 279752 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 261360 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 261360 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 261360 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 261360 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 261360 in 2 places, all below massif's threshold (1.00%)
+                    n0: 18392 in 1 place, below massif's threshold (1.00%)
+                 n0: 14520 in 1 place, below massif's threshold (1.00%)
+                n1: 252648 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 252648 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 252648 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 252648 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 252648 in 2 places, all below massif's threshold (1.00%)
+    n1: 648560 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 648560 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 648560 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 648560 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 480128 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 480128 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 480128 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 480128 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 245872 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 245872 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 245872 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 245872 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 245872 in 2 places, all below massif's threshold (1.00%)
+            n2: 234256 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 232320 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 232320 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 232320 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 231352 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 231352 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 231352 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 231352 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 231352 in 2 places, all below massif's threshold (1.00%)
+                n0: 968 in 1 place, below massif's threshold (1.00%)
+             n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n2: 168432 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 167464 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 167464 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 167464 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 167464 in 2 places, all below massif's threshold (1.00%)
+         n0: 968 in 1 place, below massif's threshold (1.00%)
+  n1: 388168 0x508172B: create_tree (regcomp.c:3818)
+   n1: 388168 0x508172B: parse_dup_op (regcomp.c:2655)
+    n2: 388168 0x508172B: parse_expression (regcomp.c:2448)
+     n2: 210056 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 182952 0x5083569: parse_reg_exp (regcomp.c:2158)
+       n1: 182952 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 182952 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 182952 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 182952 in 2 places, all below massif's threshold (1.00%)
+      n0: 27104 in 1 place, below massif's threshold (1.00%)
+     n1: 178112 0x50833FD: parse_branch (regcomp.c:2206)
+      n1: 178112 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 178112 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 178112 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 178112 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 178112 in 2 places, all below massif's threshold (1.00%)
+ n1: 2890448 0x5083349: create_token_tree (regcomp.c:3828)
+  n2: 2890448 0x5083349: parse_expression (regcomp.c:2254)
+   n2: 2103464 0x50834A7: parse_branch (regcomp.c:2213)
+    n1: 1820808 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 1820808 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 1820808 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 1820808 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 912824 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 910888 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 910888 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 910888 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 906048 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 906048 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 906048 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 906048 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 457864 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 453024 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 453024 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 453024 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 441408 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 441408 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 441408 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 441408 0x50834A7: parse_branch (regcomp.c:2213)
+                        n2: 233288 0x5083569: parse_reg_exp (regcomp.c:2158)
+                         n1: 225544 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 225544 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n2: 225544 0x50834A7: parse_branch (regcomp.c:2213)
+                            n1: 212960 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                             n1: 212960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                              n1: 212960 0x5081EC9: parse_expression (regcomp.c:2281)
+                               n1: 212960 0x50834A7: parse_branch (regcomp.c:2213)
+                                n0: 212960 in 2 places, all below massif's threshold (1.00%)
+                            n0: 12584 in 1 place, below massif's threshold (1.00%)
+                         n0: 7744 in 1 place, below massif's threshold (1.00%)
+                        n1: 208120 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 208120 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 208120 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 208120 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 208120 in 2 places, all below massif's threshold (1.00%)
+                    n0: 11616 in 1 place, below massif's threshold (1.00%)
+                 n0: 4840 in 1 place, below massif's threshold (1.00%)
+                n1: 448184 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 448184 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 448184 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 448184 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 225544 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 212960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 212960 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 212960 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 200376 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 200376 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 200376 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 200376 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 200376 in 2 places, all below massif's threshold (1.00%)
+                        n0: 12584 in 1 place, below massif's threshold (1.00%)
+                     n0: 12584 in 1 place, below massif's threshold (1.00%)
+                    n1: 222640 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 222640 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 222640 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 222640 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 222640 in 2 places, all below massif's threshold (1.00%)
+            n0: 4840 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 907984 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 907984 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 907984 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 907984 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 454960 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 454960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 454960 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 454960 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 232320 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 222640 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 222640 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 222640 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 206184 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 206184 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 206184 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 206184 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 206184 in 2 places, all below massif's threshold (1.00%)
+                    n0: 16456 in 1 place, below massif's threshold (1.00%)
+                 n0: 9680 in 1 place, below massif's threshold (1.00%)
+                n1: 222640 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 222640 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 222640 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 222640 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 222640 in 2 places, all below massif's threshold (1.00%)
+            n2: 453024 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 447216 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 447216 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 447216 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 436568 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 436568 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 436568 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 436568 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 225544 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 217800 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 217800 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 217800 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 205216 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                         n1: 205216 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                          n1: 205216 0x5081EC9: parse_expression (regcomp.c:2281)
+                           n1: 205216 0x50834A7: parse_branch (regcomp.c:2213)
+                            n0: 205216 in 2 places, all below massif's threshold (1.00%)
+                        n0: 12584 in 1 place, below massif's threshold (1.00%)
+                     n0: 7744 in 1 place, below massif's threshold (1.00%)
+                    n1: 211024 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 211024 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 211024 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 211024 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 211024 in 2 places, all below massif's threshold (1.00%)
+                n0: 10648 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+    n2: 282656 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 281688 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 281688 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 281688 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 204248 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 204248 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 204248 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 204248 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 204248 in 2 places, all below massif's threshold (1.00%)
+        n0: 77440 in 1 place, below massif's threshold (1.00%)
+     n0: 968 in 1 place, below massif's threshold (1.00%)
+   n2: 786984 0x50833FD: parse_branch (regcomp.c:2206)
+    n1: 613712 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 613712 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 613712 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 613712 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 309760 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 309760 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 309760 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 309760 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 170368 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 169400 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 169400 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 169400 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 169400 in 2 places, all below massif's threshold (1.00%)
+             n0: 968 in 1 place, below massif's threshold (1.00%)
+            n0: 139392 in 1 place, below massif's threshold (1.00%)
+        n2: 303952 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 302984 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 302984 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 302984 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 299112 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 299112 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 299112 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 299112 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 299112 in 2 places, all below massif's threshold (1.00%)
+            n0: 3872 in 1 place, below massif's threshold (1.00%)
+         n0: 968 in 1 place, below massif's threshold (1.00%)
+    n1: 173272 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 173272 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 173272 0x5081EC9: parse_expression (regcomp.c:2281)
+       n1: 173272 0x50834A7: parse_branch (regcomp.c:2213)
+        n0: 173272 in 2 places, all below massif's threshold (1.00%)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 850872 0x50814DE: create_token_tree (regcomp.c:3828)
+  n1: 850872 0x50814DE: create_tree (regcomp.c:3818)
+   n1: 850872 0x50814DE: parse_dup_op (regcomp.c:2633)
+    n2: 850872 0x50814DE: parse_expression (regcomp.c:2448)
+     n2: 591448 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 307824 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 307824 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 307824 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 307824 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 307824 in 2 places, all below massif's threshold (1.00%)
+      n1: 283624 0x5083569: parse_reg_exp (regcomp.c:2158)
+       n1: 283624 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 283624 0x5081EC9: parse_expression (regcomp.c:2281)
+         n2: 283624 0x50834A7: parse_branch (regcomp.c:2213)
+          n1: 192632 0x50835DB: parse_reg_exp (regcomp.c:2170)
+           n1: 192632 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+            n1: 192632 0x5081EC9: parse_expression (regcomp.c:2281)
+             n1: 192632 0x50834A7: parse_branch (regcomp.c:2213)
+              n0: 192632 in 2 places, all below massif's threshold (1.00%)
+          n0: 90992 in 1 place, below massif's threshold (1.00%)
+     n2: 259424 0x50833FD: parse_branch (regcomp.c:2206)
+      n1: 172304 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 172304 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 172304 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 172304 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 172304 in 2 places, all below massif's threshold (1.00%)
+      n0: 87120 in 1 place, below massif's threshold (1.00%)
+ n1: 774400 0x50836D7: create_token_tree (regcomp.c:3828)
+  n1: 774400 0x50836D7: create_tree (regcomp.c:3818)
+   n1: 774400 0x50836D7: parse_reg_exp (regcomp.c:2181)
+    n1: 774400 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+     n1: 774400 0x5081EC9: parse_expression (regcomp.c:2281)
+      n2: 774400 0x50834A7: parse_branch (regcomp.c:2213)
+       n1: 390104 0x5083569: parse_reg_exp (regcomp.c:2158)
+        n1: 390104 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 390104 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 390104 0x50834A7: parse_branch (regcomp.c:2213)
+           n1: 389136 0x50835DB: parse_reg_exp (regcomp.c:2170)
+            n1: 389136 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 389136 0x5081EC9: parse_expression (regcomp.c:2281)
+              n2: 389136 0x50834A7: parse_branch (regcomp.c:2213)
+               n2: 204248 0x5083569: parse_reg_exp (regcomp.c:2158)
+                n1: 201344 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                 n1: 201344 0x5081EC9: parse_expression (regcomp.c:2281)
+                  n2: 201344 0x50834A7: parse_branch (regcomp.c:2213)
+                   n1: 197472 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                    n1: 197472 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                     n1: 197472 0x5081EC9: parse_expression (regcomp.c:2281)
+                      n1: 197472 0x50834A7: parse_branch (regcomp.c:2213)
+                       n0: 197472 in 2 places, all below massif's threshold (1.00%)
+                   n0: 3872 in 1 place, below massif's threshold (1.00%)
+                n0: 2904 in 1 place, below massif's threshold (1.00%)
+               n1: 184888 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                n1: 184888 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                 n1: 184888 0x5081EC9: parse_expression (regcomp.c:2281)
+                  n1: 184888 0x50834A7: parse_branch (regcomp.c:2213)
+                   n0: 184888 in 2 places, all below massif's threshold (1.00%)
+           n0: 968 in 1 place, below massif's threshold (1.00%)
+       n1: 384296 0x50835DB: parse_reg_exp (regcomp.c:2170)
+        n1: 384296 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 384296 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 384296 0x50834A7: parse_branch (regcomp.c:2213)
+           n2: 203280 0x5083569: parse_reg_exp (regcomp.c:2158)
+            n1: 201344 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 201344 0x5081EC9: parse_expression (regcomp.c:2281)
+              n2: 201344 0x50834A7: parse_branch (regcomp.c:2213)
+               n1: 198440 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                n1: 198440 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                 n1: 198440 0x5081EC9: parse_expression (regcomp.c:2281)
+                  n1: 198440 0x50834A7: parse_branch (regcomp.c:2213)
+                   n0: 198440 in 2 places, all below massif's threshold (1.00%)
+               n0: 2904 in 1 place, below massif's threshold (1.00%)
+            n0: 1936 in 1 place, below massif's threshold (1.00%)
+           n1: 181016 0x50835DB: parse_reg_exp (regcomp.c:2170)
+            n1: 181016 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 181016 0x5081EC9: parse_expression (regcomp.c:2281)
+              n1: 181016 0x50834A7: parse_branch (regcomp.c:2213)
+               n0: 181016 in 2 places, all below massif's threshold (1.00%)
+ n1: 366872 0x5082809: create_token_tree (regcomp.c:3828)
+  n1: 366872 0x5082809: parse_bracket_exp (regcomp.c:3391)
+   n2: 366872 0x5082809: parse_expression (regcomp.c:2287)
+    n2: 202312 0x50834A7: parse_branch (regcomp.c:2213)
+     n1: 176176 0x5083569: parse_reg_exp (regcomp.c:2158)
+      n1: 176176 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+       n1: 176176 0x5081EC9: parse_expression (regcomp.c:2281)
+        n1: 176176 0x50834A7: parse_branch (regcomp.c:2213)
+         n0: 176176 in 2 places, all below massif's threshold (1.00%)
+     n0: 26136 in 1 place, below massif's threshold (1.00%)
+    n0: 164560 in 1 place, below massif's threshold (1.00%)
+ n1: 365904 0x5079A00: create_token_tree (regcomp.c:3828)
+  n1: 365904 0x5079A00: build_charclass_op (regcomp.c:3727)
+   n2: 365904 0x5080816: parse_expression (regcomp.c:2422)
+    n2: 265232 0x50834A7: parse_branch (regcomp.c:2213)
+     n1: 167464 0x50835DB: parse_reg_exp (regcomp.c:2170)
+      n1: 167464 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+       n1: 167464 0x5081EC9: parse_expression (regcomp.c:2281)
+        n1: 167464 0x50834A7: parse_branch (regcomp.c:2213)
+         n0: 167464 in 2 places, all below massif's threshold (1.00%)
+     n0: 97768 in 1 place, below massif's threshold (1.00%)
+    n0: 100672 in 1 place, below massif's threshold (1.00%)
+ n1: 361064 0x5081959: create_token_tree (regcomp.c:3828)
+  n1: 361064 0x5081959: duplicate_tree (regcomp.c:3908)
+   n1: 361064 0x5081959: parse_dup_op (regcomp.c:2619)
+    n2: 361064 0x5081959: parse_expression (regcomp.c:2448)
+     n2: 200376 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 170368 0x5083569: parse_reg_exp (regcomp.c:2158)
+       n1: 170368 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 170368 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 170368 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 170368 in 2 places, all below massif's threshold (1.00%)
+      n0: 30008 in 1 place, below massif's threshold (1.00%)
+     n0: 160688 in 1 place, below massif's threshold (1.00%)
+ n1: 244904 0x5082C69: create_token_tree (regcomp.c:3828)
+  n1: 244904 0x5082C69: create_tree (regcomp.c:3818)
+   n1: 244904 0x5082C69: parse_sub_exp (regcomp.c:2510)
+    n1: 244904 0x5082C69: parse_expression (regcomp.c:2281)
+     n2: 244904 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 168432 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 168432 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 168432 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 168432 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 168432 in 2 places, all below massif's threshold (1.00%)
+      n0: 76472 in 1 place, below massif's threshold (1.00%)
+ n1: 186624 0x5081043: parse_bracket_exp (regcomp.c:3136)
+  n1: 186624 0x5081043: parse_expression (regcomp.c:2287)
+   n0: 186624 in 2 places, all below massif's threshold (1.00%)
+ n1: 182016 0x50796BD: build_charclass_op (regcomp.c:3678)
+  n1: 182016 0x5080816: parse_expression (regcomp.c:2422)
+   n0: 182016 in 2 places, all below massif's threshold (1.00%)
+ n0: 1528 in 6 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=9
+#-----------
+time=85858823
+mem_heap_B=24154240
+mem_heap_extra_B=268952
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=98778082
+mem_heap_B=24156180
+mem_heap_extra_B=269004
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=110629355
+mem_heap_B=24955072
+mem_heap_extra_B=1194936
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=118454431
+mem_heap_B=25808540
+mem_heap_extra_B=1737772
+mem_stacks_B=0
+heap_tree=detailed
+n15: 25808540 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n3: 3828440 0x5072A59: create_token_tree (regcomp.c:3828)
+  n1: 2913680 0x5083464: create_tree (regcomp.c:3818)
+   n2: 2913680 0x5083464: parse_branch (regcomp.c:2222)
+    n1: 2252536 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 2252536 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 2252536 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 2252536 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 1129656 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 1127720 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1127720 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1127720 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 1119976 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 1119976 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 1119976 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 1119976 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 574992 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 568216 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 568216 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 568216 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 554664 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 554664 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 554664 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n2: 554664 0x50834A7: parse_branch (regcomp.c:2213)
+                        n1: 291368 0x5083569: parse_reg_exp (regcomp.c:2158)
+                         n0: 291368 in 2 places, all below massif's threshold (1.00%)
+                        n0: 263296 in 1 place, below massif's threshold (1.00%)
+                    n0: 13552 in 1 place, below massif's threshold (1.00%)
+                 n0: 6776 in 1 place, below massif's threshold (1.00%)
+                n1: 544984 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 544984 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 544984 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 544984 0x50834A7: parse_branch (regcomp.c:2213)
+                    n2: 288464 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n1: 276848 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 276848 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 276848 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 276848 in 2 places, all below massif's threshold (1.00%)
+                     n0: 11616 in 1 place, below massif's threshold (1.00%)
+                    n0: 256520 in 1 place, below massif's threshold (1.00%)
+            n0: 7744 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 1122880 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 1122880 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1122880 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1122880 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 568216 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 562408 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 562408 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 562408 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 546920 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 546920 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 546920 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 546920 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 287496 0x5083569: parse_reg_exp (regcomp.c:2158)
+                     n0: 287496 in 2 places, all below massif's threshold (1.00%)
+                    n0: 259424 in 1 place, below massif's threshold (1.00%)
+                n0: 15488 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 554664 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 554664 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 554664 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 554664 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 299112 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 284592 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 284592 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 284592 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 284592 in 2 places, all below massif's threshold (1.00%)
+                 n0: 14520 in 1 place, below massif's threshold (1.00%)
+                n0: 255552 in 1 place, below massif's threshold (1.00%)
+    n1: 661144 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 661144 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 661144 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 661144 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 490776 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 490776 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 490776 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 490776 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 490776 in 2 places, all below massif's threshold (1.00%)
+        n0: 170368 in 1 place, below massif's threshold (1.00%)
+  n0: 519816 in 2 places, all below massif's threshold (1.00%)
+  n1: 394944 0x508172B: create_tree (regcomp.c:3818)
+   n1: 394944 0x508172B: parse_dup_op (regcomp.c:2655)
+    n1: 394944 0x508172B: parse_expression (regcomp.c:2448)
+     n0: 394944 in 2 places, all below massif's threshold (1.00%)
+ n1: 2951432 0x5083349: create_token_tree (regcomp.c:3828)
+  n2: 2951432 0x5083349: parse_expression (regcomp.c:2254)
+   n2: 2146056 0x50834A7: parse_branch (regcomp.c:2213)
+    n1: 1857592 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 1857592 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 1857592 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 1857592 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 929280 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 927344 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 927344 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 927344 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 922504 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 922504 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 922504 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 922504 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 467544 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 462704 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 462704 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 462704 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 451088 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 451088 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 451088 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 451088 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 451088 in 2 places, all below massif's threshold (1.00%)
+                    n0: 11616 in 1 place, below massif's threshold (1.00%)
+                 n0: 4840 in 1 place, below massif's threshold (1.00%)
+                n1: 454960 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 454960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 454960 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 454960 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 454960 in 2 places, all below massif's threshold (1.00%)
+            n0: 4840 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 928312 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 928312 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 928312 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 928312 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 464640 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 458832 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 458832 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 458832 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 448184 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 448184 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 448184 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 448184 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 448184 in 2 places, all below massif's threshold (1.00%)
+                n0: 10648 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 463672 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 463672 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 463672 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 463672 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 463672 in 2 places, all below massif's threshold (1.00%)
+    n2: 288464 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 287496 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 287496 0x5081EC9: parse_expression (regcomp.c:2281)
+       n1: 287496 0x50834A7: parse_branch (regcomp.c:2213)
+        n0: 287496 in 2 places, all below massif's threshold (1.00%)
+     n0: 968 in 1 place, below massif's threshold (1.00%)
+   n2: 805376 0x50833FD: parse_branch (regcomp.c:2206)
+    n1: 628232 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 628232 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 628232 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 628232 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 316536 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 316536 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 316536 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 316536 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 316536 in 2 places, all below massif's threshold (1.00%)
+        n2: 311696 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 310728 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 310728 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 310728 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 306856 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 306856 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 306856 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 306856 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 306856 in 2 places, all below massif's threshold (1.00%)
+            n0: 3872 in 1 place, below massif's threshold (1.00%)
+         n0: 968 in 1 place, below massif's threshold (1.00%)
+    n0: 177144 in 1 place, below massif's threshold (1.00%)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 1525100 in 15 places, all below massif's threshold (1.00%)
+ n1: 1275656 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 1275656 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 894224 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 623696 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n1: 388912 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n0: 388912 in 2 places, all below massif's threshold (1.00%)
+     n0: 234784 in 1 place, below massif's threshold (1.00%)
+    n0: 270528 in 1 place, below massif's threshold (1.00%)
+   n1: 381432 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 381432 0x50844B2: analyze (regcomp.c:1205)
+     n1: 381432 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 381432 0x5085770: regcomp (regcomp.c:491)
+       n1: 381432 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 381432 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 875072 0x50814DE: create_token_tree (regcomp.c:3828)
+  n1: 875072 0x50814DE: create_tree (regcomp.c:3818)
+   n1: 875072 0x50814DE: parse_dup_op (regcomp.c:2633)
+    n2: 875072 0x50814DE: parse_expression (regcomp.c:2448)
+     n2: 606936 0x50834A7: parse_branch (regcomp.c:2213)
+      n1: 316536 0x50835DB: parse_reg_exp (regcomp.c:2170)
+       n1: 316536 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 316536 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 316536 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 316536 in 2 places, all below massif's threshold (1.00%)
+      n2: 290400 0x5083569: parse_reg_exp (regcomp.c:2158)
+       n1: 289432 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+        n1: 289432 0x5081EC9: parse_expression (regcomp.c:2281)
+         n1: 289432 0x50834A7: parse_branch (regcomp.c:2213)
+          n0: 289432 in 2 places, all below massif's threshold (1.00%)
+       n0: 968 in 1 place, below massif's threshold (1.00%)
+     n0: 268136 in 1 place, below massif's threshold (1.00%)
+ n1: 787952 0x50836D7: create_token_tree (regcomp.c:3828)
+  n1: 787952 0x50836D7: create_tree (regcomp.c:3818)
+   n1: 787952 0x50836D7: parse_reg_exp (regcomp.c:2181)
+    n1: 787952 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+     n1: 787952 0x5081EC9: parse_expression (regcomp.c:2281)
+      n2: 787952 0x50834A7: parse_branch (regcomp.c:2213)
+       n1: 397848 0x5083569: parse_reg_exp (regcomp.c:2158)
+        n1: 397848 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 397848 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 397848 0x50834A7: parse_branch (regcomp.c:2213)
+           n1: 396880 0x50835DB: parse_reg_exp (regcomp.c:2170)
+            n1: 396880 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 396880 0x5081EC9: parse_expression (regcomp.c:2281)
+              n1: 396880 0x50834A7: parse_branch (regcomp.c:2213)
+               n0: 396880 in 2 places, all below massif's threshold (1.00%)
+           n0: 968 in 1 place, below massif's threshold (1.00%)
+       n1: 390104 0x50835DB: parse_reg_exp (regcomp.c:2170)
+        n1: 390104 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 390104 0x5081EC9: parse_expression (regcomp.c:2281)
+          n1: 390104 0x50834A7: parse_branch (regcomp.c:2213)
+           n0: 390104 in 2 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 660896 0x5083F73: analyze (regcomp.c:1171)
+  n1: 660896 0x5083F73: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 375584 0x5082809: create_token_tree (regcomp.c:3828)
+  n1: 375584 0x5082809: parse_bracket_exp (regcomp.c:3391)
+   n1: 375584 0x5082809: parse_expression (regcomp.c:2287)
+    n0: 375584 in 2 places, all below massif's threshold (1.00%)
+ n1: 372680 0x5079A00: create_token_tree (regcomp.c:3828)
+  n1: 372680 0x5079A00: build_charclass_op (regcomp.c:3727)
+   n1: 372680 0x5080816: parse_expression (regcomp.c:2422)
+    n0: 372680 in 2 places, all below massif's threshold (1.00%)
+ n1: 369776 0x5081959: create_token_tree (regcomp.c:3828)
+  n1: 369776 0x5081959: duplicate_tree (regcomp.c:3908)
+   n1: 369776 0x5081959: parse_dup_op (regcomp.c:2619)
+    n1: 369776 0x5081959: parse_expression (regcomp.c:2448)
+     n0: 369776 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=13
+#-----------
+time=125161347
+mem_heap_B=26540308
+mem_heap_extra_B=2203076
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=135230422
+mem_heap_B=29278116
+mem_heap_extra_B=3078580
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=143901755
+mem_heap_B=30494356
+mem_heap_extra_B=4030388
+mem_stacks_B=0
+heap_tree=peak
+n17: 30494356 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n3: 3828440 0x5072A59: create_token_tree (regcomp.c:3828)
+  n1: 2913680 0x5083464: create_tree (regcomp.c:3818)
+   n2: 2913680 0x5083464: parse_branch (regcomp.c:2222)
+    n1: 2252536 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 2252536 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 2252536 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 2252536 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 1129656 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 1127720 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1127720 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1127720 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 1119976 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 1119976 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 1119976 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 1119976 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 574992 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 568216 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 568216 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 568216 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 554664 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 554664 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 554664 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 554664 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 554664 in 2 places, all below massif's threshold (1.00%)
+                    n0: 13552 in 1 place, below massif's threshold (1.00%)
+                 n0: 6776 in 1 place, below massif's threshold (1.00%)
+                n1: 544984 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 544984 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 544984 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 544984 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 544984 in 2 places, all below massif's threshold (1.00%)
+            n0: 7744 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 1122880 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 1122880 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 1122880 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 1122880 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 568216 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 562408 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 562408 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 562408 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 546920 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 546920 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 546920 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 546920 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 546920 in 2 places, all below massif's threshold (1.00%)
+                n0: 15488 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 554664 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 554664 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 554664 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 554664 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 554664 in 2 places, all below massif's threshold (1.00%)
+    n1: 661144 0x5083569: parse_reg_exp (regcomp.c:2158)
+     n1: 661144 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 661144 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 661144 0x50834A7: parse_branch (regcomp.c:2213)
+        n1: 490776 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 490776 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 490776 0x5081EC9: parse_expression (regcomp.c:2281)
+           n1: 490776 0x50834A7: parse_branch (regcomp.c:2213)
+            n0: 490776 in 2 places, all below massif's threshold (1.00%)
+        n0: 170368 in 1 place, below massif's threshold (1.00%)
+  n0: 519816 in 2 places, all below massif's threshold (1.00%)
+  n1: 394944 0x508172B: create_tree (regcomp.c:3818)
+   n1: 394944 0x508172B: parse_dup_op (regcomp.c:2655)
+    n1: 394944 0x508172B: parse_expression (regcomp.c:2448)
+     n0: 394944 in 2 places, all below massif's threshold (1.00%)
+ n1: 2951432 0x5083349: create_token_tree (regcomp.c:3828)
+  n2: 2951432 0x5083349: parse_expression (regcomp.c:2254)
+   n2: 2146056 0x50834A7: parse_branch (regcomp.c:2213)
+    n1: 1857592 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 1857592 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 1857592 0x5081EC9: parse_expression (regcomp.c:2281)
+       n2: 1857592 0x50834A7: parse_branch (regcomp.c:2213)
+        n2: 929280 0x5083569: parse_reg_exp (regcomp.c:2158)
+         n1: 927344 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 927344 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 927344 0x50834A7: parse_branch (regcomp.c:2213)
+            n1: 922504 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 922504 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 922504 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 922504 0x50834A7: parse_branch (regcomp.c:2213)
+                n2: 467544 0x5083569: parse_reg_exp (regcomp.c:2158)
+                 n1: 462704 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 462704 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n2: 462704 0x50834A7: parse_branch (regcomp.c:2213)
+                    n1: 451088 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                     n1: 451088 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                      n1: 451088 0x5081EC9: parse_expression (regcomp.c:2281)
+                       n1: 451088 0x50834A7: parse_branch (regcomp.c:2213)
+                        n0: 451088 in 2 places, all below massif's threshold (1.00%)
+                    n0: 11616 in 1 place, below massif's threshold (1.00%)
+                 n0: 4840 in 1 place, below massif's threshold (1.00%)
+                n1: 454960 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 454960 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 454960 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 454960 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 454960 in 2 places, all below massif's threshold (1.00%)
+            n0: 4840 in 1 place, below massif's threshold (1.00%)
+         n0: 1936 in 1 place, below massif's threshold (1.00%)
+        n1: 928312 0x50835DB: parse_reg_exp (regcomp.c:2170)
+         n1: 928312 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+          n1: 928312 0x5081EC9: parse_expression (regcomp.c:2281)
+           n2: 928312 0x50834A7: parse_branch (regcomp.c:2213)
+            n2: 464640 0x5083569: parse_reg_exp (regcomp.c:2158)
+             n1: 458832 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 458832 0x5081EC9: parse_expression (regcomp.c:2281)
+               n2: 458832 0x50834A7: parse_branch (regcomp.c:2213)
+                n1: 448184 0x50835DB: parse_reg_exp (regcomp.c:2170)
+                 n1: 448184 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+                  n1: 448184 0x5081EC9: parse_expression (regcomp.c:2281)
+                   n1: 448184 0x50834A7: parse_branch (regcomp.c:2213)
+                    n0: 448184 in 2 places, all below massif's threshold (1.00%)
+                n0: 10648 in 1 place, below massif's threshold (1.00%)
+             n0: 5808 in 1 place, below massif's threshold (1.00%)
+            n1: 463672 0x50835DB: parse_reg_exp (regcomp.c:2170)
+             n1: 463672 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+              n1: 463672 0x5081EC9: parse_expression (regcomp.c:2281)
+               n1: 463672 0x50834A7: parse_branch (regcomp.c:2213)
+                n0: 463672 in 2 places, all below massif's threshold (1.00%)
+    n0: 288464 in 1 place, below massif's threshold (1.00%)
+   n2: 805376 0x50833FD: parse_branch (regcomp.c:2206)
+    n1: 628232 0x50835DB: parse_reg_exp (regcomp.c:2170)
+     n1: 628232 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+      n1: 628232 0x5081EC9: parse_expression (regcomp.c:2281)
+       n1: 628232 0x50834A7: parse_branch (regcomp.c:2213)
+        n0: 628232 in 2 places, all below massif's threshold (1.00%)
+    n0: 177144 in 1 place, below massif's threshold (1.00%)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n0: 296792 in 1 place, below massif's threshold (1.00%)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 1638644 in 22 places, all below massif's threshold (1.00%)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 875072 0x50814DE: create_token_tree (regcomp.c:3828)
+  n1: 875072 0x50814DE: create_tree (regcomp.c:3818)
+   n1: 875072 0x50814DE: parse_dup_op (regcomp.c:2633)
+    n2: 875072 0x50814DE: parse_expression (regcomp.c:2448)
+     n1: 606936 0x50834A7: parse_branch (regcomp.c:2213)
+      n0: 606936 in 2 places, all below massif's threshold (1.00%)
+     n0: 268136 in 1 place, below massif's threshold (1.00%)
+ n1: 787952 0x50836D7: create_token_tree (regcomp.c:3828)
+  n1: 787952 0x50836D7: create_tree (regcomp.c:3818)
+   n1: 787952 0x50836D7: parse_reg_exp (regcomp.c:2181)
+    n1: 787952 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+     n1: 787952 0x5081EC9: parse_expression (regcomp.c:2281)
+      n2: 787952 0x50834A7: parse_branch (regcomp.c:2213)
+       n1: 397848 0x5083569: parse_reg_exp (regcomp.c:2158)
+        n1: 397848 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 397848 0x5081EC9: parse_expression (regcomp.c:2281)
+          n2: 397848 0x50834A7: parse_branch (regcomp.c:2213)
+           n1: 396880 0x50835DB: parse_reg_exp (regcomp.c:2170)
+            n1: 396880 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+             n1: 396880 0x5081EC9: parse_expression (regcomp.c:2281)
+              n1: 396880 0x50834A7: parse_branch (regcomp.c:2213)
+               n0: 396880 in 2 places, all below massif's threshold (1.00%)
+           n0: 968 in 1 place, below massif's threshold (1.00%)
+       n1: 390104 0x50835DB: parse_reg_exp (regcomp.c:2170)
+        n1: 390104 0x5081EC9: parse_sub_exp (regcomp.c:2495)
+         n1: 390104 0x5081EC9: parse_expression (regcomp.c:2281)
+          n1: 390104 0x50834A7: parse_branch (regcomp.c:2213)
+           n0: 390104 in 2 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 660896 0x5083F73: analyze (regcomp.c:1171)
+  n1: 660896 0x5083F73: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 375584 0x5082809: create_token_tree (regcomp.c:3828)
+  n1: 375584 0x5082809: parse_bracket_exp (regcomp.c:3391)
+   n1: 375584 0x5082809: parse_expression (regcomp.c:2287)
+    n0: 375584 in 2 places, all below massif's threshold (1.00%)
+ n1: 372680 0x5079A00: create_token_tree (regcomp.c:3828)
+  n1: 372680 0x5079A00: build_charclass_op (regcomp.c:3727)
+   n1: 372680 0x5080816: parse_expression (regcomp.c:2422)
+    n0: 372680 in 2 places, all below massif's threshold (1.00%)
+ n1: 369776 0x5081959: create_token_tree (regcomp.c:3828)
+  n1: 369776 0x5081959: duplicate_tree (regcomp.c:3908)
+   n1: 369776 0x5081959: parse_dup_op (regcomp.c:2619)
+    n1: 369776 0x5081959: parse_expression (regcomp.c:2448)
+     n0: 369776 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=16
+#-----------
+time=152894727
+mem_heap_B=19741320
+mem_heap_extra_B=3934176
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=159620209
+mem_heap_B=19803959
+mem_heap_extra_B=3947753
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=170469161
+mem_heap_B=19847195
+mem_heap_extra_B=3951293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=180779973
+mem_heap_B=19847905
+mem_heap_extra_B=3951455
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=193151442
+mem_heap_B=19845563
+mem_heap_extra_B=3950029
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=201398608
+mem_heap_B=19850515
+mem_heap_extra_B=3950341
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=209645235
+mem_heap_B=19845762
+mem_heap_extra_B=3949966
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=222021426
+mem_heap_B=19846361
+mem_heap_extra_B=3950479
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=234400966
+mem_heap_B=19846675
+mem_heap_extra_B=3950861
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=244711340
+mem_heap_B=19845511
+mem_heap_extra_B=3949937
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=255019832
+mem_heap_B=19845540
+mem_heap_extra_B=3950004
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=265328900
+mem_heap_B=19849866
+mem_heap_extra_B=3949982
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=272640153
+mem_heap_B=19845563
+mem_heap_extra_B=3950029
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=279012306
+mem_heap_B=19848245
+mem_heap_extra_B=3951947
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=288570015
+mem_heap_B=19845107
+mem_heap_extra_B=3949821
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=294941804
+mem_heap_B=19847563
+mem_heap_extra_B=3951413
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=301313733
+mem_heap_B=19846528
+mem_heap_extra_B=3950784
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19846528 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 958884 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=33
+#-----------
+time=310874750
+mem_heap_B=19845231
+mem_heap_extra_B=3949777
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=317248145
+mem_heap_B=19849362
+mem_heap_extra_B=3952598
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=326805600
+mem_heap_B=19858473
+mem_heap_extra_B=3952783
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=333177257
+mem_heap_B=19845394
+mem_heap_extra_B=3949886
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19845394 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 957750 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=37
+#-----------
+time=342734895
+mem_heap_B=19849190
+mem_heap_extra_B=3952610
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=349107724
+mem_heap_B=19845178
+mem_heap_extra_B=3949894
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=358668033
+mem_heap_B=19850447
+mem_heap_extra_B=3953753
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=365040297
+mem_heap_B=19845178
+mem_heap_extra_B=3949894
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19845178 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 957534 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=41
+#-----------
+time=371414112
+mem_heap_B=19845563
+mem_heap_extra_B=3950029
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=380973136
+mem_heap_B=19851187
+mem_heap_extra_B=3950845
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=390530884
+mem_heap_B=19845173
+mem_heap_extra_B=3949843
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=396902793
+mem_heap_B=19845351
+mem_heap_extra_B=3949889
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19845351 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 957707 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=45
+#-----------
+time=403276678
+mem_heap_B=19850071
+mem_heap_extra_B=3953129
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=409648274
+mem_heap_B=19848741
+mem_heap_extra_B=3952395
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=416019959
+mem_heap_B=19846672
+mem_heap_extra_B=3950904
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=422391975
+mem_heap_B=19850738
+mem_heap_extra_B=3953814
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=428763614
+mem_heap_B=19845350
+mem_heap_extra_B=3949706
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19845350 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 957706 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=50
+#-----------
+time=435135318
+mem_heap_B=19845639
+mem_heap_extra_B=3950033
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=441506998
+mem_heap_B=19845479
+mem_heap_extra_B=3949929
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=447878660
+mem_heap_B=19845648
+mem_heap_extra_B=3950256
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=454250342
+mem_heap_B=19846536
+mem_heap_extra_B=3950704
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=460622922
+mem_heap_B=19845214
+mem_heap_extra_B=3949858
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=466994697
+mem_heap_B=19845876
+mem_heap_extra_B=3950164
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=473366301
+mem_heap_B=19857879
+mem_heap_extra_B=3958937
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=479738020
+mem_heap_B=19845531
+mem_heap_extra_B=3950021
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=486109943
+mem_heap_B=19849861
+mem_heap_extra_B=3949963
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=492481766
+mem_heap_B=19846083
+mem_heap_extra_B=3950589
+mem_stacks_B=0
+heap_tree=detailed
+n10: 19846083 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 4194304 0x508385E: init_dfa (regcomp.c:867)
+  n1: 4194304 0x508385E: re_compile_internal (regcomp.c:759)
+   n1: 4194304 0x5085770: regcomp (regcomp.c:491)
+    n1: 4194304 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 4194304 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083823: init_dfa (regcomp.c:860)
+  n1: 2643584 0x5083823: re_compile_internal (regcomp.c:759)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F86: analyze (regcomp.c:1172)
+  n1: 2643584 0x5083F86: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 2643584 0x5083F99: analyze (regcomp.c:1173)
+  n1: 2643584 0x5083F99: re_compile_internal (regcomp.c:796)
+   n1: 2643584 0x5085770: regcomp (regcomp.c:491)
+    n1: 2643584 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 2643584 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n2: 2298112 0x50736C4: re_node_set_merge (regex_internal.c:1205)
+  n2: 2298112 0x5077E66: calc_eclosure_iter (regcomp.c:1747)
+   n2: 1610648 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+    n2: 1123104 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+     n2: 699928 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+      n1: 403136 0x5077ECE: calc_eclosure_iter (regcomp.c:1740)
+       n0: 403136 in 2 places, all below massif's threshold (1.00%)
+      n1: 296792 0x50844B2: calc_eclosure (regcomp.c:1678)
+       n1: 296792 0x50844B2: analyze (regcomp.c:1205)
+        n1: 296792 0x50844B2: re_compile_internal (regcomp.c:796)
+         n1: 296792 0x5085770: regcomp (regcomp.c:491)
+          n1: 296792 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+           n0: 296792 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+     n1: 423176 0x50844B2: calc_eclosure (regcomp.c:1678)
+      n1: 423176 0x50844B2: analyze (regcomp.c:1205)
+       n1: 423176 0x50844B2: re_compile_internal (regcomp.c:796)
+        n1: 423176 0x5085770: regcomp (regcomp.c:491)
+         n1: 423176 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+          n0: 423176 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+    n1: 487544 0x50844B2: calc_eclosure (regcomp.c:1678)
+     n1: 487544 0x50844B2: analyze (regcomp.c:1205)
+      n1: 487544 0x50844B2: re_compile_internal (regcomp.c:796)
+       n1: 487544 0x5085770: regcomp (regcomp.c:491)
+        n1: 487544 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+         n0: 487544 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+   n1: 687464 0x50844B2: calc_eclosure (regcomp.c:1678)
+    n1: 687464 0x50844B2: analyze (regcomp.c:1205)
+     n1: 687464 0x50844B2: re_compile_internal (regcomp.c:796)
+      n1: 687464 0x5085770: regcomp (regcomp.c:491)
+       n1: 687464 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+        n0: 687464 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1998536 0x50847AB: re_node_set_insert_last (regex_internal.c:1346)
+  n1: 1998536 0x50847AB: calc_inveclosure (regcomp.c:1641)
+   n1: 1998536 0x50847AB: analyze (regcomp.c:1217)
+    n1: 1998536 0x50847AB: re_compile_internal (regcomp.c:796)
+     n1: 1998536 0x5085770: regcomp (regcomp.c:491)
+      n1: 1998536 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+       n0: 1998536 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 1551280 0x50846B1: analyze (regcomp.c:1214)
+  n1: 1551280 0x50846B1: re_compile_internal (regcomp.c:796)
+   n1: 1551280 0x5085770: regcomp (regcomp.c:491)
+    n1: 1551280 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 1551280 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n0: 958439 in 160 places, all below massif's threshold (1.00%)
+ n1: 660896 0x5083F60: analyze (regcomp.c:1170)
+  n1: 660896 0x5083F60: re_compile_internal (regcomp.c:796)
+   n1: 660896 0x5085770: regcomp (regcomp.c:491)
+    n1: 660896 0x11DBAC: init_rgx (in /root/restaurent-manager/bin/restaurant_prod)
+     n0: 660896 0x12572E: main (in /root/restaurent-manager/bin/restaurant_prod)
+ n1: 253764 0x5077DC0: re_node_set_alloc (regex_internal.c:973)
+  n1: 253764 0x5077DC0: calc_eclosure_iter (regcomp.c:1700)
+   n0: 253764 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=60
+#-----------
+time=498854759
+mem_heap_B=19844972
+mem_heap_extra_B=3949708
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=505226410
+mem_heap_B=19847102
+mem_heap_extra_B=3951202
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=511598891
+mem_heap_B=19845070
+mem_heap_extra_B=3949746
+mem_stacks_B=0
+heap_tree=empty

@@ -13,7 +13,7 @@
 
 /* files in the restaurant system*/
 #define EMPL "employee.dat"
-#define FSYS "/u/file_sys.txt"
+#define FSYS "/u/file_str.txt"
 #define GLUSR "/u"
 
 

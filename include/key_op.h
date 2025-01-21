@@ -8,6 +8,8 @@
 #define TIMECARD 100
 #define TIPS 101
 
+#define FSYSK "/u/file_sys.txt"
+
 unsigned char assemble_key(char*** key, int n, char c, char* str);
 unsigned char extract_employee_key(char* key_src, char** key_fnd, int mode);
 unsigned char extract_time(char* key_src, long* time);
