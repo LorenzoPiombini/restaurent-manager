@@ -21,7 +21,7 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_name,char* data_to_add,
 				 struct Record_f **rec_c,struct Schema **sch_c, unsigned char update,
 				 int *pcount, int crud);
-unsigned char write_rec(int fd_data,int fd_index, HashTable* ht, struct Record_f *rec, char* key);
+unsigned char write_rec(int fd_data, int fd_index, HashTable* ht,struct Record_f *rec, void* key, int key_type)
 unsigned char delete_rec(int fd_inx, char* key, HashTable* ht, int* p_i);
 unsigned char update_rec(int fd_data, HashTable* ht,struct Schema *sch, char* file_path,
 			 struct Record_f *rec, char* buffer, unsigned char check, unsigned char update,

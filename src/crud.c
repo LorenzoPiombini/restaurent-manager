@@ -257,32 +257,32 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 
 	if(!read_index_nr(*index,fd_inx,&pht)) {
 		printf("read index %d failed. %s:%d.\n", *index,F,L-2);
-		goto error_exit;
+		goto exit_error;
 	}
 		
 	if((pos = get(key,pht,key_type)) == -1) {
 		printf("record not found.\n");
 		destroy_hasht(pht);
-		goto error_exit;
+		goto exit_error;
 	}	
 	
 	destroy_hasht(pht);
 
 	if(find_record_position(fd_dat,pos) == -1) {
 		__er_file_pointer(F,L-2);
-		goto error_exit;
+		goto exit_error;
 	}
 
 	if(((*recs)[rec_arr_s - 1] = read_file(fd_dat, file_name)) == NULL) {
 		printf("read record failed. %s:%d.\n", F,L-2);
 		free(*recs);
-		goto error_exit;
+		goto exit_error;
 	}
 
 	if((pos = get_update_offset(fd_dat)) == -1) {
 		printf("read update offset failed. %s:%d.\n", F,L-2);
 		free_record_array(rec_arr_s,recs);
-		goto error_exit;
+		goto exit_error;
 	}	
 
 	if(pos == 0) {
@@ -312,7 +312,7 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 			if(!rec_n) {
 				printf("realloc failed. %s:%d.\n",F,L-3);
 				free_record_array(rec_arr_s,recs);
-				goto error_exit;
+				goto exit_error;
 			}
 
 			*recs = rec_n;
@@ -321,20 +321,20 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 			if(find_record_position(fd_dat,pos) == -1) {
 				__er_file_pointer(F,L-2);
 				free_record_array(rec_arr_s,recs);
-				goto error_exit;
+				goto exit_error;
 			}
 		
 		
 			if(((*recs)[rec_arr_s-1] = read_file(fd_dat, file_name)) == NULL) {
 				printf("read record failed. %s:%d.\n", F,L-2);
 				free_record_array(rec_arr_s,recs);
-				goto error_exit;
+				goto exit_error;
 			}
 
 			if((pos = get_update_offset(fd_dat)) == -1) {
 				printf("read update offset failed. %s:%d.\n", F,L-2);
 				free_record_array(rec_arr_s,recs);
-				goto error_exit;
+				goto exit_error;
 			}
 
 		}while(pos > 0);
@@ -363,7 +363,7 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 
 	return 1;
 
-error_exit:
+exit_error:
 	if(shared_locks && lock == LK_REQ) {
 		int result_i = 0, result_d = 0;
 		do {
@@ -595,7 +595,7 @@ error_exit:
 }
 
 /*read all indexes before using this fucntion*/
-unsigned char write_rec(int fd_data, int fd_index, HashTable* ht,struct Record_f *rec, char* key)
+unsigned char write_rec(int fd_data, int fd_index, HashTable* ht,struct Record_f *rec, void* key, int key_type)
 {
 	/* set the file pointer at the end*/	
 	off_t eof = go_to_EOF(fd_data);
@@ -606,15 +606,14 @@ unsigned char write_rec(int fd_data, int fd_index, HashTable* ht,struct Record_f
 	}
 
 	/*save the key with the off_t in the hash_table (index file)*/
-	if(!set(key,eof,&ht[0]))
+	if(!set(key,key_type,eof,&ht[0]))
 	{
 		printf("set failed. %s:%d.\n",F,L-2);
 		free(key);
         	return 0;
         }
 
-	if(!write_file(fd_data,rec,0,0))
-	{
+	if(!write_file(fd_data,rec,0,0)) {
 		printf("write to file failed, %s:%d.\n",F,L-2);
 		return 0;	
 	}
@@ -623,17 +622,22 @@ unsigned char write_rec(int fd_data, int fd_index, HashTable* ht,struct Record_f
 }
 
 /*read all indexes before using this fucntion*/
-unsigned char delete_rec(int fd_inx, char* key, HashTable *ht, int* p_i)
+unsigned char delete_rec(int fd_inx, void* key,int key_type, HashTable *ht, int* p_i)
 {
 
 	/*this will delete all the occurences of the key among all indexes*/
 	int i = 0;
 	for(i = 0; i < *p_i; i++)
 	{
-		Node* del_r = delete(key,&ht[i]);
-		if(del_r)
-		{
-			free(del_r->key);
+		Node* del_r = delete(key, key_type, &ht[i]);
+		if(del_r) {
+			switch(key_type) {
+			case STR:
+				free(del_r->key.s);
+				break;
+			default:
+				break;
+			}
 			free(del_r);
 		}
 	}
@@ -644,12 +648,11 @@ unsigned char delete_rec(int fd_inx, char* key, HashTable *ht, int* p_i)
 /*you have to read the index 0 before using this fucntion*/
 unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* file_path,
 			 struct Record_f *rec, char* buffer, unsigned char check, unsigned char update,
-			 int fields_count, char* key)
+			 int fields_count, void* key, int key_type)
 {		
-	off_t offset = get(key, ht); /*look for the key in the ht */
-
-	if(offset == - 1)
-	{
+	/*look for the key in the ht */
+	off_t offset = get(key,ht,key_type);
+	if(offset == - 1) {
 		printf("record not found.\n");
 		return 0;
 	}
@@ -657,24 +660,21 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 	destroy_hasht(ht);
 	ht = NULL;
 
-	if(find_record_position(fd_data, offset) == -1)
-	{
+	if(find_record_position(fd_data, offset) == -1) {
 		__er_file_pointer(F,L-1);
 		free_schema(sch);
                	return 0;
 	}
 
 	struct Record_f *rec_old = read_file(fd_data, file_path);
-	if (!rec_old)
-	{
+	if (!rec_old) {
 		printf("reading record failed %s:%d.\n",F,L-2);
 		free_schema(sch);
 		return 0;
 	}
 			
 	off_t updated_rec_pos = get_update_offset(fd_data);
-	if(updated_rec_pos == -1 )
-	{
+	if(updated_rec_pos == -1 ) {
 		__er_file_pointer(F,L-1);
 		free_schema(sch);
 		return 0;
@@ -682,14 +682,12 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			
 	struct Record_f **recs_old = NULL;
 	off_t* pos_u = NULL;
-	if(updated_rec_pos > 0)
-	{
+	if(updated_rec_pos > 0) {
 		int index = 2;
 		int pos_i = 2;
 		recs_old = calloc(index, sizeof(struct Record_f*));
 		
-		if(!recs_old)
-		{
+		if(!recs_old) {
 			printf("calloc failed. %s%d.\n",F,L-3);
 			free_record(rec_old,rec_old->fields_num);
 			free_schema(sch);
@@ -697,16 +695,13 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 		}
 				
 		pos_u = calloc(pos_i, sizeof(off_t));
-		if(!pos_u)
-		{
+		if(!pos_u) {
 			printf("calloc failed, %s:%d.\n",F,L-2);
 			free_record(rec_old,rec_old->fields_num);
 			free_schema(sch);
-			if(recs_old)
-			{
+			if(recs_old) {
 				int i = 0;
-				for(i = 0; i < index; i++)
-				{
+				for(i = 0; i < index; i++){
 					if(recs_old[i])
 						free_record(recs_old[i],recs_old[i]->fields_num);
 				}
@@ -723,7 +718,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			__er_file_pointer(F,L-1);
 			free(pos_u);
 			free_schema(sch);
-			if(recs_old){
+			if(recs_old) {
 				int i = 0;
 				for(i = 0; i < index; i++)
 				{
@@ -741,11 +736,9 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			printf("error reading file, %s:%d.\n",F,L-2);
 			free(pos_u);
 			free_schema(sch);
-			if(recs_old)
-			{
+			if(recs_old) {
 				int i = 0;
-				for(i = 0; i < index; i++)
-				{
+				for(i = 0; i < index; i++) {
 					free_record(recs_old[i],recs_old[i]->fields_num);
 				}
 				free(recs_old);
@@ -761,20 +754,11 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 		{
 			index++, pos_i++;
 			struct Record_f **recs_old_n = realloc(recs_old, index * sizeof(struct Record_f*));
-			if(!recs_old_n)
-			{
+			if(!recs_old_n) {
 				printf("realloc failed, %s:%d.\n",F,L-3);
 				free_schema(sch);
 				free(pos_u);
-			       	if(recs_old)
-				{
-					int i = 0;
-					for(i = 0; i < index; i++)
-					{
-						free_record(recs_old[i],recs_old[i]->fields_num);
-					}
-					free(recs_old);
-				}
+				free_record_array(index,&recs_old);
 				return 0;
 			}
 
@@ -786,15 +770,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 				printf("realloc failed, %s:%d.\n",F,L-3);
 				free_schema(sch);
 				free(pos_u);
-				if(recs_old)
-				{
-					int i = 0;
-					for(i = 0; i < index; i++)
-					{
-						free_record(recs_old[i],recs_old[i]->fields_num);
-					}
-					free(recs_old);
-				}
+				free_record_array(index,&recs_old);
 				return 0;
 			}
 
@@ -807,16 +783,8 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 				printf("error reading file, %s:%d.\n",F,L-1);
 				free_schema(sch);
 				free(pos_u);
-				if(recs_old)
-				{
-					int i = 0;
-					for(i = 0; i < index; i++)
-					{
-						free_record(recs_old[i],recs_old[i]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 1;
+				free_record_array(index,&recs_old);
+				return 0;
 			}
 
 			recs_old[index - 1] = rec_old_new; 
@@ -826,20 +794,10 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 
 		char* positions = calloc(index,sizeof(char));
 
-		if(!positions)
-		{
+		if(!positions) {
 			printf("calloc failed, main.c l %d.\n", __LINE__ - 1);
-			free_schema(sch);
-			free(pos_u);
-			if(recs_old)
-			{
-				int i = 0;
-				for(i = 0; i < index; i++){
-					free_record(recs_old[i],recs_old[i]->fields_num);
-				}	
-				free(recs_old);
-			}
-			return 1;
+			error = 1;
+			goto exit;
 					
 		}
 		/* this function check all records from the file 
@@ -852,19 +810,8 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 				
 		if(positions[0] != 'n' && positions[0] != 'y'){
 			printf("check on fields failed, %s:%d.\n",F,L-1);
-			free_schema(sch);
-			free(pos_u);
-			free(positions);
-			if(recs_old)
-			{
-				int i = 0;
-				for(i = 0; i < index; i++)
-				{
-					free_record(recs_old[i],recs_old[i]->fields_num);
-				}	
-				free(recs_old);
-			}
-			return 0;
+			error = 1;
+			goto exit;
 		}
 				
 		/* write the update records to file */
@@ -876,21 +823,10 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 				continue;	
 					
 			++updates;
-			if(find_record_position(fd_data, pos_u[i]) == -1)
-			{
+			if(find_record_position(fd_data, pos_u[i]) == -1) {
 				__er_file_pointer(F,L-1);
-				free(pos_u);
-				free_schema(sch);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j ++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 1;
+				error = 1;
+				goto exit;
 			}
 					
 			off_t right_update_pos = 0;
@@ -901,236 +837,114 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			{
 				right_update_pos = go_to_EOF(fd_data);
 				if(find_record_position(fd_data, pos_u[i]) == -1 || 
-							right_update_pos == -1)
-				{
+							right_update_pos == -1) {
 					__er_file_pointer(F,L-3);
-					free_schema(sch);
-					free(pos_u);
-					free(positions);
-					if(recs_old)
-					{
-						for(j = 0; j < index; j++)
-						{
-							free_record(recs_old[j],recs_old[j]->fields_num);
-						}	
-						free(recs_old);
-					}	
-					return 0;
+					error = 1;
+					goto exit;
 				}
 						
 			}
 
-			if(!write_file(fd_data, recs_old[i], right_update_pos,update))
-			{
+			if(!write_file(fd_data, recs_old[i], right_update_pos,update)) {
 				printf("error write file, %s:%d.\n",F,L-1);
-				free_schema(sch);
-				free(pos_u);
-				free(positions);
-				if(recs_old)
-				{
-					for(j = 0; j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 0;
-					
+				error = 1;
+				goto exit;
 			}					
 		}
 
 		if(check == SCHEMA_NW && updates > 0){
 			struct Record_f *new_rec = NULL;
-			if(!create_new_fields_from_schema(recs_old,rec, sch,index,&new_rec,file_path))
-			{
+			if(!create_new_fields_from_schema(recs_old,rec, sch,index,&new_rec,file_path)) {
 				printf("create new fileds failed, %s:%d.\n",F,L-2);
-				free(pos_u);
-				free_schema(sch);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0; j < index; j++)
-					{
-						free_record(recs_old[i],recs_old[i]->fields_num);
-					}	
-					free(recs_old);
-			}
-				return 0;
+				error = 1;
+				goto exit;
 			}
 					
 			off_t eof = go_to_EOF(fd_data);/* file pointer to the end*/
-			if(eof == -1)
-			{
+			if(eof == -1) {
 				__er_file_pointer(F,L-1);
-				free(pos_u);
-				free_schema(sch);
-				free(positions);
 				free_record(new_rec,new_rec->fields_num);
 				free_record(rec,rec->fields_num);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-				free(recs_old);
-			}
-				return 0;
+				error = 1;
+				goto exit;
 			}
 
 			/*writing the new part of the schema to the file*/
-			if(!write_file(fd_data,new_rec,0,0))
-			{
-				printf("write to file failed, main.c l %d.\n", __LINE__ - 1);
+			if(!write_file(fd_data,new_rec,0,0)) {
+				printf("write to file failed, %s:%d.\n",F,L - 1);
 				free_record(new_rec,new_rec->fields_num);
-				free_schema(sch);
-				free(pos_u);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j ++)
-					{
-						free_record(recs_old[i],recs_old[i]->fields_num);
-					}
-		
-					free(recs_old);
-				}
-				return 1;
+				error = 1;
+				goto exit;
 			}
 					
 			free_record(new_rec,new_rec->fields_num);
 			/*the position of new_rec in the old part of the record
-				 was already set at line 391*/
+				 was already set at line 846*/
 
 		}
 
 		if(check == SCHEMA_NW && updates == 0 ){
 			/* store the EOF value*/
 		        off_t eof = 0;
-			if((eof = go_to_EOF(fd_data)) == -1)
-			{
+			if((eof = go_to_EOF(fd_data)) == -1) {
 				__er_file_pointer(F,L-1);
-				free(pos_u);
-				free_schema(sch);
-				free(positions);
-				if(recs_old)
-				{
-					for(j = 0; j < index; j++){
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				
+				error = 1;
+				goto exit;
 			}
 
 			/*find the position of the last piece of the record*/
 			off_t initial_pos = 0;
 		
-			if((initial_pos = find_record_position(fd_data,pos_u[index - 1])) == -1)
-			{
+			if((initial_pos = find_record_position(fd_data,pos_u[index - 1])) == -1) {
 				__er_file_pointer(F,L-1);
-				free(pos_u);
-				free(positions);
-				free_schema(sch);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 0;
+				error = 1;
+				goto exit;
 			}
 		
 					
 			/*re-write the record*/
 			if(write_file(fd_data,recs_old[index - 1], eof, update) == - 1){
 				printf("write file failed, %s:%d.\n",F,L-1);
-				free(pos_u);
-				free_schema(sch);
-				free(positions);
-				if(recs_old)
-				{
-					for(j = 0; j < index; j++){
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 0;
+				error = 1;
+				goto exit;
 			}
 
  		     	/*move to EOF*/	
-			if((go_to_EOF(fd_data)) == -1)
-			{
+			if((go_to_EOF(fd_data)) == -1) {
 				__er_file_pointer(F,L-1);
-				free_schema(sch);
-				free(pos_u);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 0;	
+				error = 1;
+				goto exit;
 			}
 
 			/*create the new record*/
 			struct Record_f *new_rec = NULL;
-			if(!create_new_fields_from_schema(recs_old,rec, sch,index,&new_rec,file_path))
-			{
+			if(!create_new_fields_from_schema(recs_old,rec, sch,index,&new_rec,file_path)) {
 				printf("create new fields failed, %s:%d.\n",F,L-2);
-				free_schema(sch);
-				free(pos_u);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 1;
+				error = 1;
+				goto exit;
 			}
+
 			/*write the actual new data*/
-			if(!write_file(fd_data,new_rec,0,0))
-			{
+			if(!write_file(fd_data,new_rec,0,0)) {
 				printf("write to file failed, %s:%d.\n",F,L-1);
-				free_schema(sch);
 				free_record(new_rec,new_rec->fields_num);
-				free(pos_u);
-				free(positions);
-				if(recs_old)
-				{
-					for( j = 0;  j < index; j++)
-					{
-						free_record(recs_old[j],recs_old[j]->fields_num);
-					}	
-					free(recs_old);
-				}
-				return 1;
+				error = 1;
+				goto exit;
 			}
 
 			free_record(new_rec,new_rec->fields_num);
 		}
 			
-	
+			exit:	
 			free_schema(sch);
 			free(pos_u);
 			free(positions);
-			if(recs_old)
-			{
-				for( j = 0; j < index; j++)
-				{
-					free_record(recs_old[j],recs_old[j]->fields_num);
-				}	
-				free(recs_old);
+			free_record_array(index,&recs_old);
+			if(error){
+				return 0;
+			}else{
+				return 1;//success
 			}
-			return 1;//success
 	}
 
 			free_schema(sch);
