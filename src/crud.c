@@ -21,7 +21,7 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	char** files = two_file_path(file_name);
 	if(!files)
 	{
-		printf("%s() failed, %s:%d.\n",__func__,F,L-3);
+		fprintf(stderr,"%s() failed, %s:%d.\n",__func__,F,L-3);
 		return 0;
 	}
 	
@@ -48,82 +48,31 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	free_strs(2,1,files);
 	if(index_nr == -1)
 	{
-		if(!ht_array_size)
-		{
-			printf("pointer to int (array ht size) can't be NULL.\n");
-			if(shared_locks)
-			{/*release the locks before exit*/
-				int result_i = 0;
-				do
-				{
-					if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 )
-					{
-						__er_release_lock_smo(F,L-3);
-						return 0;
-					}
-				}while(result_i == WTLK);
-						
-				return 0;
-			}
-			return 0;
+		if(!ht_array_size)v{
+			fprintf(stderr,"pointer to int (array ht size) can't be NULL.\n");
+			goto exit_error;
 		}
 
 		/*read all indexes*/
-		if(!read_all_index_file(fd_index,&ht,ht_array_size))
-		{
+		if(!read_all_index_file(fd_index,&ht,ht_array_size)) {
 			printf("read_all_index() failed. %s:%d.\n",F,L-2);
-			if(shared_locks)
-			{/*release the locks before exit*/
-				int result_i = 0;
-				do
-				{
-					if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 )
-					{
-						__er_release_lock_smo(F,L-3);
-						return 0;
-					}
-				}while(result_i == WTLK);
-						
-				return 0;
-			}
-			return 0;
+			goto exit_error;
 		}
 		
-	}else
-	{
+	} else {
 		/*read index_nr*/
-		if(!read_index_nr(index_nr,fd_index,&ht))
-		{
+		if(!read_index_nr(index_nr,fd_index,&ht)){
 			printf("read_index_nr() failed. %s:%d.\n",F,L-2);
-			if(shared_locks)
-			{/*release the locks before exit*/
-				int result_i = 0;
-				do
-				{
-					if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 )
-					{
-					__er_release_lock_smo(F,L-3);
-					return 0;
-					}
-				}while(result_i == WTLK);
-						
-				return 0;
-			}
-			return 0;
+			goto exit_error;
 		}
 	}
-
-	if(shared_locks)
-	{/*release the lock normally*/
+	
+	/*release the lock normally*/
+	if(shared_locks) {
 		int result_i = 0;
-		do
-		{
+		do {
 			if((result_i = release_lock_smo(&shared_locks,
-				plp_i,plpa_i)) == 0 )
-			{
+				plp_i,plpa_i)) == 0 ) {
 				__er_release_lock_smo(F,L-3);
 				return 0;
 			}
@@ -133,6 +82,21 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	}
 	
 	return 1;
+
+exit_error:
+	if(shared_locks) {/*release the locks before exit*/
+		int result_i = 0;
+		do{
+			if((result_i = release_lock_smo(&shared_locks,
+				plp_i,plpa_i)) == 0 ) {
+					__er_release_lock_smo(F,L-3);
+					return 0;
+			}
+		}while(result_i == WTLK);
+						
+		return 0;
+	}
+
 }
 
 unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_caller)
