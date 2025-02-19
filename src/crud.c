@@ -680,6 +680,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 		return 0;
 	}
 			
+	int error = 0;
 	struct Record_f **recs_old = NULL;
 	off_t* pos_u = NULL;
 	if(updated_rec_pos > 0) {
@@ -699,15 +700,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			printf("calloc failed, %s:%d.\n",F,L-2);
 			free_record(rec_old,rec_old->fields_num);
 			free_schema(sch);
-			if(recs_old) {
-				int i = 0;
-				for(i = 0; i < index; i++){
-					if(recs_old[i])
-						free_record(recs_old[i],recs_old[i]->fields_num);
-				}
-
-				free(recs_old);
-			}
+			free_record_array(index,&recs_old);
 			return 0;
 		}	
 
@@ -718,15 +711,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			__er_file_pointer(F,L-1);
 			free(pos_u);
 			free_schema(sch);
-			if(recs_old) {
-				int i = 0;
-				for(i = 0; i < index; i++)
-				{
-					if(recs_old[i])
-						free_record(recs_old[i],recs_old[i]->fields_num);
-				}
-				free(recs_old);
-			}
+			free_record_array(index,&recs_old);
 			return 0;
 		}
 					
@@ -736,13 +721,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			printf("error reading file, %s:%d.\n",F,L-2);
 			free(pos_u);
 			free_schema(sch);
-			if(recs_old) {
-				int i = 0;
-				for(i = 0; i < index; i++) {
-					free_record(recs_old[i],recs_old[i]->fields_num);
-				}
-				free(recs_old);
-			}
+			free_record_array(index,&recs_old);
 			return 0;
 		}
 				
@@ -765,8 +744,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			recs_old = recs_old_n;
 					
 			off_t* pos_u_n = realloc(pos_u, pos_i * sizeof(off_t));
-			if(!pos_u_n)
-			{	
+			if(!pos_u_n) {	
 				printf("realloc failed, %s:%d.\n",F,L-3);
 				free_schema(sch);
 				free(pos_u);
@@ -778,8 +756,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			pos_u[pos_i - 1 ] = updated_rec_pos;
 
 			struct Record_f *rec_old_new = read_file(fd_data, file_path);							
-			if(!rec_old_new)
-			{
+			if(!rec_old_new) {
 				printf("error reading file, %s:%d.\n",F,L-1);
 				free_schema(sch);
 				free(pos_u);
@@ -793,12 +770,12 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 		/* check which record we have to update*/
 
 		char* positions = calloc(index,sizeof(char));
-
 		if(!positions) {
 			printf("calloc failed, main.c l %d.\n", __LINE__ - 1);
-			error = 1;
-			goto exit;
-					
+			free_schema(sch);
+			free(pos_u);
+			free_record_array(index,&recs_old);
+			return 0;
 		}
 		/* this function check all records from the file 
 		   against the new record setting the values that we have to update
@@ -864,7 +841,6 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 			if(eof == -1) {
 				__er_file_pointer(F,L-1);
 				free_record(new_rec,new_rec->fields_num);
-				free_record(rec,rec->fields_num);
 				error = 1;
 				goto exit;
 			}
