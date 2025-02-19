@@ -31,13 +31,11 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	if(shared_locks)
 	{
 		int result_i = 0;
-		do
-		{	
+		do {	
 			off_t fd_i_s = get_file_size(fd_index,NULL);
  
 			if(((result_i = acquire_lock_smo(&shared_locks,plp_i,plpa_i,files[0],0,
-					fd_i_s,RD_IND,fd_index)) == 0))
-			{
+					fd_i_s,RD_IND,fd_index)) == 0)) {
 				__er_acquire_lock_smo(F,L-5);
 				free_strs(2,1,files);
 				return 0;
@@ -48,21 +46,21 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	free_strs(2,1,files);
 	if(index_nr == -1)
 	{
-		if(!ht_array_size)v{
+		if(!ht_array_size){
 			fprintf(stderr,"pointer to int (array ht size) can't be NULL.\n");
 			goto exit_error;
 		}
 
 		/*read all indexes*/
 		if(!read_all_index_file(fd_index,&ht,ht_array_size)) {
-			printf("read_all_index() failed. %s:%d.\n",F,L-2);
+			fprintf(stderr,"read_all_index() failed. %s:%d.\n",F,L-2);
 			goto exit_error;
 		}
 		
 	} else {
 		/*read index_nr*/
 		if(!read_index_nr(index_nr,fd_index,&ht)){
-			printf("read_index_nr() failed. %s:%d.\n",F,L-2);
+			fprintf(stderr,"read_index_nr() failed. %s:%d.\n",F,L-2);
 			goto exit_error;
 		}
 	}
@@ -84,7 +82,8 @@ unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* 
 	return 1;
 
 exit_error:
-	if(shared_locks) {/*release the locks before exit*/
+	if(shared_locks) {
+		/*release the locks before exit*/
 		int result_i = 0;
 		do{
 			if((result_i = release_lock_smo(&shared_locks,
@@ -96,7 +95,7 @@ exit_error:
 						
 		return 0;
 	}
-
+	return 0;
 }
 
 unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_caller)
@@ -109,24 +108,20 @@ unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_call
 	int lock_pos_arr = 0, *plpa = &lock_pos_arr;
 
 	char** files = two_file_path(file_name);
-	if(!files)
-	{
-		printf("%s() failed, %s:%d.\n",__func__,F,L-3);
+	if(!files) {
+		fprintf(stderr,"%s() failed, %s:%d.\n",__func__,F,L-3);
 		return 0;
 	}
 
 	/* acquire RD_REC lock */
 	/* shared_locks is declare in lock.h and lock.c making the variable global*/
-	if(shared_locks)
-	{
+	if(shared_locks) {
 		int result_d = 0;
-		do
-		{
+		do {
 			off_t fd_d_s = get_file_size(fd_data,NULL);
  
 			if((result_d = acquire_lock_smo(&shared_locks,plp,plpa,files[1],0,
-					fd_d_s,RD_REC,fd_data)) == 0)
-			{
+					fd_d_s,RD_REC,fd_data)) == 0) {
 				__er_acquire_lock_smo(F,L-5);
 				free_strs(2,1,files);
 				return 0;
@@ -137,59 +132,24 @@ unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_call
 	free_strs(2,1,files);
 
 	/*make sure the file pointer is at the start*/
-	if(begin_in_file(fd_data) == -1)
-	{
+	if(begin_in_file(fd_data) == -1) {
 		__er_file_pointer(F,L-2);
-		if(shared_locks)
-		{/*release the locks before exit*/
-			int result_d = 0;
-			do
-			{
-				if((result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0 )
-				{
-					__er_release_lock_smo(F,L-3);
-					return 0;
-				}
-			}while(result_d == WTLK);
-						
-			return 0;
-		}
-		return 0;
+		goto exit_error;
 	}
-
 
 	/* this is to ensure the file is a db file */
-	if(!read_header(fd_data,&hd))
-	{
+	if(!read_header(fd_data,&hd)) {
 		printf("read header failed. %s:%d.\n",F,L-2);
-		if(shared_locks)
-		{/*release the lock before exit*/
-			int result_d = 0;
-			do
-			{
-				if((result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0 )
-				{
-					__er_release_lock_smo(F,L-3);
-					return 0;
-				}
-			}while(result_d == WTLK);
-						
-			return 0;
-		}
-                return 0;
+		goto exit_error;
 	}
 
-	if(hd_caller)
-	{	
+	if(hd_caller) {	
 		(*hd_caller).id_n = hd.id_n;
 		(*hd_caller).version = hd.version;
 		(*hd_caller).sch_d.fields_num = hd.sch_d.fields_num;	
 		(*hd_caller).sch_d.fields_name = hd.sch_d.fields_name;	
 		(*hd_caller).sch_d.types = hd.sch_d.types;
-	}else
-	{
+	}else {
 		free_schema(&hd.sch_d);
 	}
 	
@@ -197,22 +157,7 @@ unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_call
 	if(begin_in_file(fd_data) == -1)
 	{
 		__er_file_pointer(F,L-2);
-		if(shared_locks)
-		{/*release the locks before exit*/
-			int result_d = 0;
-			do
-			{
-				if((result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0 )
-				{
-					__er_release_lock_smo(F,L-3);
-					return 0;
-				}
-			}while(result_d == WTLK);
-						
-			return 0;
-		}
-		return 0;	
+		goto exit_error;
 	}
 	
 	/*release the lock normally*/
@@ -232,53 +177,30 @@ unsigned char is_a_db_file(int fd_data, char* file_name,struct Header_d *hd_call
 					
 		return 1;
 	}
+
 	return 1;
+
+exit_error:
+	if(sch.fields_name && sch.types)
+		free_schema(&sch);
+
+	if(shared_locks){
+		/*release the locks before exit*/
+		int result_d = 0;
+		do{
+			if((result_d = release_lock_smo(&shared_locks,
+				plp,plpa)) == 0 ) {
+				__er_release_lock_smo(F,L-3);
+				return 0;
+			}
+		}while(result_d == WTLK);
+						
+		return 0;
+	}
+	return 0;
 }
 
-/*i don't know if this make sense*/
-int look_for(char *file_name, char *param, struct Record_f *recs)
-{
-	char **files = two_file_path(file_name);
-	if(!files) {
-		fprintf(stderr,"can't create file name");
-		return -1;
-	}
-
-	int fd_index = open_file(files[0],0);
-	if(!file_error_handler(1,fd_index)) {
-		fprintf(stderr,
-				"can't open file %s.\n",
-				files[0]);
-		return -1;
-	}
-
-	HashTable *ht = NULL;	
-	int ht_i = 0, *pht_i = &ht_i;	
-	if(!read_all_index_file(fd_index,&ht,pht_i)) {
-		fprintf(stderr,"can't read all indexes,\n");
-		return -1;
-	}
-	
-	close_file(1,fd_index);
-	for(int i = 0; i < ht_i; i++) {
-		char **keys_arr = keys(&ht[i]);
-	       	if(!keys_arr) {
-			fprintf(stderr,"can't get keys from index.\n");
-			free_ht_array(ht,*pht_i);
-			return -1;
-		}
-		
-		if(strstr(keys_arr[i],param) != NULL) {
-			/*
-			 * get the record 
-			 * put the record in recs
-			 * */
-		}
-
-
-	}
-}
-unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Record_f ***recs, char* file_name, int lock)
+unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type, struct Record_f ***recs, char* file_name, int lock)
 {
 	if(lock == LK_REQ)
 	{
@@ -303,13 +225,12 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Recor
 		char** files = two_file_path(file_name);
 		if(!files)
 		{
-			printf("%s() failed, %s:%d.\n",__func__,F,L-3);
+			printf(stderr,"two_file_path() failed, %s:%d.\n",F,L-3);
 			return 0;
 		}
 
 		int result_i = 0, result_d = 0;
-		do
-		{
+		do {
 			off_t fd_i_s = get_file_size(fd_inx,NULL);
 			off_t fd_d_s = get_file_size(fd_dat,NULL);
  
@@ -334,153 +255,46 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Recor
 	off_t pos = 0;
 	int rec_arr_s = 1;
 
-	if(!read_index_nr(*index,fd_inx,&pht))
-	{
+	if(!read_index_nr(*index,fd_inx,&pht)) {
 		printf("read index %d failed. %s:%d.\n", *index,F,L-2);
-		/*release locks*/
-		if(shared_locks && lock == LK_REQ)
-		{
-			int result_i = 0, result_d = 0;
-			do
-			{
-				if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 ||
-				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
-					__er_release_lock_smo(F,L-5);
-					return 0;
-				}
-
-			}while(result_d == WTLK || result_i == WTLK);
-
-			return 0;	
-		}
-
-		return 0;
+		goto error_exit;
 	}
-
-	if((pos = get(key,pht)) == -1)
-	{
+		
+	if((pos = get(key,pht,key_type)) == -1) {
 		printf("record not found.\n");
 		destroy_hasht(pht);
-		if(shared_locks && lock == LK_REQ)
-		{
-			int result_i = 0, result_d = 0;
-			do
-			{
-				if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 ||
-				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
-					__er_release_lock_smo(F,L-5);
-					return 0;
-				}
-
-			}while(result_d == WTLK || result_i == WTLK);
-
-			return 0;	
-		}
-		return 0;
+		goto error_exit;
 	}	
 	
 	destroy_hasht(pht);
 
-	if(find_record_position(fd_dat,pos) == -1)
-	{
+	if(find_record_position(fd_dat,pos) == -1) {
 		__er_file_pointer(F,L-2);
-		/*release locks*/
-		if(shared_locks && lock == LK_REQ)
-		{
-			int result_i = 0, result_d = 0;
-			do
-			{
-				if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 ||
-				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
-					__er_release_lock_smo(F,L-5);
-					return 0;
-				}
-
-			}while(result_d == WTLK || result_i == WTLK);
-
-			return 0;	
-		}
-
-		return 0;
+		goto error_exit;
 	}
 
-	if(((*recs)[rec_arr_s - 1] = read_file(fd_dat, file_name)) == NULL)
-	{
+	if(((*recs)[rec_arr_s - 1] = read_file(fd_dat, file_name)) == NULL) {
 		printf("read record failed. %s:%d.\n", F,L-2);
 		free(*recs);
-		/*release locks*/
-		if(shared_locks && lock == LK_REQ)
-		{
-			int result_i = 0, result_d = 0;
-			do
-			{
-				if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 ||
-				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
-					__er_release_lock_smo(F,L-5);
-					return 0;
-				}
-
-			}while(result_d == WTLK || result_i == WTLK);
-
-			return 0;	
-		}
-
-		return 0;
+		goto error_exit;
 	}
 
-	if((pos = get_update_offset(fd_dat)) == -1)
-	{
+	if((pos = get_update_offset(fd_dat)) == -1) {
 		printf("read update offset failed. %s:%d.\n", F,L-2);
 		free_record_array(rec_arr_s,recs);
-		/*release locks*/
-		if(shared_locks && lock == LK_REQ)
-		{
-			int result_i = 0, result_d = 0;
-			do
-			{
-				if((result_i = release_lock_smo(&shared_locks,
-						plp_i,plpa_i)) == 0 ||
-				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
-					__er_release_lock_smo(F,L-5);
-					return 0;
-				}
-
-			}while(result_d == WTLK || result_i == WTLK);
-
-			return 0;	
-		}
-
-		return 0;
+		goto error_exit;
 	}	
 
-	if(pos == 0)
-	{
+	if(pos == 0) {
 		*index = rec_arr_s;
 		/*release locks*/
-		if(shared_locks && lock == LK_REQ)
-		{
+		if(shared_locks && lock == LK_REQ) {
 			int result_i = 0, result_d = 0;
-			do
-			{
+			do {
 				if((result_i = release_lock_smo(&shared_locks,
 						plp_i,plpa_i)) == 0 ||
 				   (result_d = release_lock_smo(&shared_locks,
-						plp,plpa)) == 0)
-				{
+						plp,plpa)) == 0) {
 					__er_release_lock_smo(F,L-5);
 					return 0;
 				}
@@ -491,121 +305,36 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Recor
 		}
 
 		return 1;
-	}else
-	{
-		do
-		{
+	}else {
+		do {
 			/*(++rec_arr_s) increments the rec_arr_s counter (the size of the array) */
 			struct Record_f **rec_n = realloc(*recs,(++rec_arr_s) * sizeof(struct Record_f*));
-			if(!rec_n)
-			{
+			if(!rec_n) {
 				printf("realloc failed. %s:%d.\n",F,L-3);
 				free_record_array(rec_arr_s,recs);
-				/*release locks*/
-				if(shared_locks && lock == LK_REQ)
-				{
-					int result_i = 0, result_d = 0;
-					do
-					{
-						if((result_i = release_lock_smo(&shared_locks,
-							plp_i,plpa_i)) == 0 ||
-						   (result_d = release_lock_smo(&shared_locks,
-							plp,plpa)) == 0)
-						{
-							__er_release_lock_smo(F,L-5);
-							return 0;
-						}
-
-					}while(result_d == WTLK || result_i == WTLK);
-
-					return 0;	
-				}
-
-				return 0;
+				goto error_exit;
 			}
 
 			*recs = rec_n;
 			(*recs)[rec_arr_s-1] = NULL;/*assigning the new array element to NULL*/
 
-			if(find_record_position(fd_dat,pos) == -1)
-			{
+			if(find_record_position(fd_dat,pos) == -1) {
 				__er_file_pointer(F,L-2);
 				free_record_array(rec_arr_s,recs);
-				/*release locks*/
-				if(shared_locks && lock == LK_REQ)
-				{
-					int result_i = 0, result_d = 0;
-					do
-					{
-						if((result_i = release_lock_smo(&shared_locks,
-							plp_i,plpa_i)) == 0 ||
-						   (result_d = release_lock_smo(&shared_locks,
-							plp,plpa)) == 0)
-						{
-							__er_release_lock_smo(F,L-5);
-							return 0;
-						}
-
-					}while(result_d == WTLK || result_i == WTLK);
-	
-					return 0;	
-				}
-
-				return 0;
+				goto error_exit;
 			}
 		
 		
-			if(((*recs)[rec_arr_s-1] = read_file(fd_dat, file_name)) == NULL)
-			{
+			if(((*recs)[rec_arr_s-1] = read_file(fd_dat, file_name)) == NULL) {
 				printf("read record failed. %s:%d.\n", F,L-2);
 				free_record_array(rec_arr_s,recs);
-				if(shared_locks && lock == LK_REQ)
-				{
-					int result_i = 0, result_d = 0;
-					do
-					{
-						if((result_i = release_lock_smo(&shared_locks,
-								plp_i,plpa_i)) == 0 ||
-				   			(result_d = release_lock_smo(&shared_locks,
-								plp,plpa)) == 0)
-						{
-							__er_release_lock_smo(F,L-5);
-							return 0;
-						}
-
-					}while(result_d == WTLK || result_i == WTLK);
-
-					return 0;	
-				}
-
-				return 0;
+				goto error_exit;
 			}
 
-			if((pos = get_update_offset(fd_dat)) == -1)
-			{
+			if((pos = get_update_offset(fd_dat)) == -1) {
 				printf("read update offset failed. %s:%d.\n", F,L-2);
 				free_record_array(rec_arr_s,recs);
-				/*release locks*/
-				if(shared_locks && lock == LK_REQ)
-				{
-					int result_i = 0, result_d = 0;
-					do
-					{
-						if((result_i = release_lock_smo(&shared_locks,
-								plp_i,plpa_i)) == 0 ||
-						   (result_d = release_lock_smo(&shared_locks,
-								plp,plpa)) == 0)
-						{
-							__er_release_lock_smo(F,L-5);
-							return 0;
-						}
-
-					}while(result_d == WTLK || result_i == WTLK);
-
-					return 0;	
-				}
-
-				return 0;
+				goto error_exit;
 			}
 
 		}while(pos > 0);
@@ -633,6 +362,23 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, char* key, struct Recor
 	}
 
 	return 1;
+
+error_exit:
+	if(shared_locks && lock == LK_REQ) {
+		int result_i = 0, result_d = 0;
+		do {
+			if((result_i = release_lock_smo(&shared_locks,
+					plp_i,plpa_i)) == 0 ||
+			   (result_d = release_lock_smo(&shared_locks,
+					plp,plpa)) == 0) {
+				__er_release_lock_smo(F,L-5);
+				return 0;
+			}
+
+		}while(result_d == WTLK || result_i == WTLK);
+		return 0;	
+	}
+	return 0;
 }
 
 unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_name,char* data_to_add,
@@ -640,36 +386,33 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 				 int *pcount, int crud)
 {
 
+	int lock_rel = 0;
 	struct Schema sch = {0,NULL,NULL};
 	struct Header_d hd = {0,0,sch};
 
 	if(crud == LK_REQ)
 	{
-		if(!is_a_db_file(fd_data,file_name,&hd))
-		{
+		if(!is_a_db_file(fd_data,file_name,&hd)) {
 			printf("not a db file, or reading header error, %s:%d.\n",F,L-2);
 			return 0;
 		}
 	}else
 	{
 		/*make sure the file pointer is at the start*/
-		if(begin_in_file(fd_data) == -1)
-		{
+		if(begin_in_file(fd_data) == -1) {
 			__er_file_pointer(F,L-2);
 			return 0;
 		}
 
 
 		/* this is to ensure the file is a db file */
-		if(!read_header(fd_data,&hd))
-		{
+		if(!read_header(fd_data,&hd)) {
 			printf("read header failed. %s:%d.\n",F,L-2);
 	                return 0;
 		}
 	
 		/* if the file is a db file reset the file pointer at the beginning */
-		if(begin_in_file(fd_data) == -1)
-		{
+		if(begin_in_file(fd_data) == -1) {
 			__er_file_pointer(F,L-2);
 			free_schema(&hd.sch_d);
 			return 0;	
@@ -680,8 +423,7 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 
 
 	int fields_count = count_fields(data_to_add, TYPE_) + count_fields(data_to_add,T_);
-	if(fields_count > MAX_FIELD_NR)
-	{
+	if(fields_count > MAX_FIELD_NR) {
        		printf("Too many fields, max %d each file definition.",MAX_FIELD_NR);
 		free_schema(&hd.sch_d);
 	   	return 0;
@@ -692,20 +434,16 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
         char* buf_v = strdup(data_to_add);
 	
 	struct Record_f *rec = NULL;
-
-
 	unsigned char check = perform_checks_on_schema(buffer, buf_t,buf_v,fields_count,
 							   fd_data,file_name,&rec, &hd);
 
-	if(check == SCHEMA_ERR || check == 0)
-	{
+	if(check == SCHEMA_ERR || check == 0) {
         	free_schema(&hd.sch_d);
         	free(buffer), free(buf_t), free(buf_v);
 		return 0;
 	}
 			
-	if(!rec)
-	{
+	if(!rec) {
           	printf("error creating record. %s:%d\n",F,L-1);
 		free(buffer), free(buf_t), free(buf_v);
 	        free_schema(&hd.sch_d);
@@ -715,97 +453,57 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 	*rec_c = rec;
 
 	/*if the schema is new we update the header*/
-	if(check == SCHEMA_NW)
-	{	// check the header size
-		if(compute_size_header((void*)&hd) >= MAX_HD_SIZE)
-		{
+	if(check == SCHEMA_NW) {
+		// check the header size
+		if(compute_size_header((void*)&hd) >= MAX_HD_SIZE) {
 			printf("File definition is bigger than the limit.\n");
-			free(buffer), free(buf_t), free(buf_v);
+			free(buffer);
+			free(buf_t);
+			free(buf_v);
                		free_schema(&hd.sch_d);
 			free_record(rec,rec->fields_num);
                 	return 0;
 		}
-		if(crud == LK_REQ)
-		{	
+		
+		if(crud == LK_REQ) {	
 			/* this variables are needed for the lock system */
 			int lock_pos = 0, *plp = &lock_pos;
 			int lock_pos_arr = 0, *plpa = &lock_pos_arr;
 
 			char** files = two_file_path(file_name);
-			if(!files)
-			{
+			if(!files) {
 				printf("%s() failed, %s:%d.\n",__func__,F,L-3);
-				return 0;
+				goto exit_error;
 			}
 
 			/*acquire WR_REC lock*/
-			if(shared_locks)
-			{
+			if(shared_locks) {
 				int result_d = 0;
-				do
-				{	
+				do {	
  
 					if(((result_d = acquire_lock_smo(&shared_locks,plp,plpa,files[1],0,
-						MAX_HD_SIZE,WR_REC,fd_data)) == 0))
-					{
+						MAX_HD_SIZE,WR_REC,fd_data)) == 0)) {
 						__er_acquire_lock_smo(F,L-5);
 						free_strs(2,1,files);
+						goto exit_error;
 						return 0;
 					}
 				}while(result_d == MAX_WTLK || result_d == WTLK);
 			}
 
+			lock_rel = 1;/*this variable is for the exit on error cleanup*/
 			free_strs(2,1,files);
 			files = NULL;
 			/*set the file pointer at the start*/
-			if(begin_in_file(fd_data) == -1)
-			{
+			if(begin_in_file(fd_data) == -1){
 				__er_file_pointer(F,L-1);
-				free(buffer), free(buf_t), free(buf_v);
-        	      		free_schema(&hd.sch_d);
-				free_record(rec,rec->fields_num);
-				if(shared_locks)
-				{/*release the locks before exit*/
-					int result_d = 0;
-					do
-					{
-						if((result_d = release_lock_smo(&shared_locks,
-								plp,plpa)) == 0 )
-						{
-							__er_release_lock_smo(F,L-3);
-							return 0;
-						}
-					}while(result_d == WTLK);
-						
-					return 0;
-				}
-
-        	        	return 0;				
+				goto exit_error;				
 			}
 
 			if(!write_header(fd_data,&hd))
 			{
 				printf("write to file failed, %s:%d.\n",F,L-1);
-				free(buffer), free(buf_t), free(buf_v);
-                	        free_schema(&hd.sch_d);
-				free_record(rec,rec->fields_num);
-				if(shared_locks)
-				{/*release the locks before exit*/
-					int result_d = 0;
-					do
-					{
-						if((result_d = release_lock_smo(&shared_locks,
-								plp,plpa)) == 0 )
-						{
-							__er_release_lock_smo(F,L-3);
-							return 0;
-						}
-					}while(result_d == WTLK);
-						
-					return 0;
-				}
-
-                	       	return 0;
+				goto exit_error;				
 			}
 			
 			/*release the lock normally*/
@@ -815,33 +513,24 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 				do
 				{
 					if((result_d = release_lock_smo(&shared_locks,
-							plp,plpa)) == 0 )
-					{
+							plp,plpa)) == 0 ) {
 						__er_release_lock_smo(F,L-3);
 						return 0;
 					}
 				}while(result_d == WTLK);
 			}
-
-		}else
-		{
+			
+			lock_rel  = 0;
+		}else {
 			/*set the file pointer at the start*/
-			if(begin_in_file(fd_data) == -1)
-			{
+			if(begin_in_file(fd_data) == -1) {
 				__er_file_pointer(F,L-1);
-				free(buffer), free(buf_t), free(buf_v);
-        	      		free_schema(&hd.sch_d);
-				free_record(rec,rec->fields_num);
-        	        	return 0;				
+				goto error_exit;
 			}
 
-			if(!write_header(fd_data,&hd))
-			{
+			if(!write_header(fd_data,&hd)) {
 				printf("write to file failed, %s:%d.\n",F,L-1);
-				free(buffer), free(buf_t), free(buf_v);
-                	        free_schema(&hd.sch_d);
-				free_record(rec,rec->fields_num);
-                	       	return 0;
+				goto error_exit;
 			}
 
 		}
@@ -858,21 +547,15 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 		if(!(*sch_c)->fields_name)
 		{
 			printf("calloc failed. %s:%d.\n", F,L-3);
-			free(buffer), free(buf_t), free(buf_v);
-                	free_schema(&hd.sch_d);
-			free_record(rec,rec->fields_num);
-			return 0;
+			goto error_exit;
 		}
 	
 		(*sch_c)->types = calloc((*sch_c)->fields_num, sizeof(enum ValueType));
 		if(!(*sch_c)->types)
 		{
 			printf("calloc failed. %s:%d.\n", F,L-3);
-			free(buffer), free(buf_t), free(buf_v);
-                	free_schema(&hd.sch_d);
 			free((*sch_c)->fields_name);
-			free_record(rec,rec->fields_num);
-			return 0;
+			goto error_exit;
 		}
 
 		int i = 0;
@@ -887,6 +570,28 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 	free(buffer), free(buf_t), free(buf_v);
 	return 1;
 
+error_exit:
+        free_schema(&hd.sch_d);
+	free_record(rec,rec->fields_num);
+	free(buffer);
+	free(buf_t);
+	free(buf_v);
+	if(shared_locks && lock_rel){
+		/*release the locks before exit*/
+		int result_d = 0;
+		do
+		{
+			if((result_d = release_lock_smo(&shared_locks,
+					plp,plpa)) == 0 )
+			{
+				__er_release_lock_smo(F,L-3);
+				return 0;
+			}
+		}while(result_d == WTLK);
+				
+		return 0;
+	}
+        return 0;		
 }
 
 /*read all indexes before using this fucntion*/
