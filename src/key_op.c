@@ -13,8 +13,6 @@
 #include "lock.h"
 #include "file.h"
 
-
-
 unsigned char assemble_key(char*** key, int n, char c, char* str)
 {
 	size_t len = number_of_digit(n) + strlen(str) + 2; /* 1 is the char c, and 1 is for '\0' so + 2*/	
@@ -146,26 +144,21 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 {	
  	char** files = NULL;
 	int l = 0, *p_l = &l;
-	if(!load_files_system(&files, p_l))
-	{
+	if(!load_files_system(&files, p_l)) {
 		printf("load files name failed %s:%d.\n",F,L-2);
 		return 0;
 	}	
 	
-	if(!files)
-	{
+	if(!files) {
 		printf("load files name failed %s:%d.\n",F,L-2);
 		return 0;
 	}
 	
 	/*generate a key based on the file name in the rec*/
 	int i = 0;
-	for(i = 0; i < *p_l; i++)
-	{
+	for(i = 0; i < *p_l; i++) {
 		if(strcmp(files[i],rec->file_name) == 0)
-		{
-			break;	
-		}
+			break;
 	}	
 
 	/* this variables are needed for the lock system */
@@ -174,19 +167,16 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 
 	
 	/*acquire WR_IND lock*/
-	if(shared_locks && lock == LK_REQ)
-	{
+	if(shared_locks && lock == LK_REQ) {
 		char** file_lck = two_file_path(rec->file_name);
-		if(!file_lck)
-		{
+		if(!file_lck) {
 			printf("%s() failed, %s:%d.\n",__func__,F,L-3);
 			free_strs(*p_l,1,files);
 			return 0;
 		}
 	
 		int result_i = 0;
-		do
-		{
+		do {
 			off_t fd_i_s = get_file_size(fd_index,NULL);
  
 			if((result_i = acquire_lock_smo(&shared_locks,plp_i,plpa_i,files[0],0,
@@ -213,8 +203,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	
 	HashTable *ht = NULL;	
 	int ht_i = 0, *pht_i = &ht_i;	
-	if(!read_all_index_file(fd_index,&ht,pht_i))
-	{
+	if(!read_all_index_file(fd_index,&ht,pht_i)) {
 		printf("read index failed. %s:%d.\n",F,L-2);
 		free_strs(*p_l,1,files);
 		if(shared_locks && lock == LK_REQ)
@@ -240,94 +229,77 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	{
 		case 0:/*employee*/
 			{ 
-				char f = return_first_char(rec->file_name); 
 				int n = len(ht[0]);
 
 				/*check if the employee already exists*/
-				char** keys_a = keys(&ht[0]);
-				int j = 0;
-				for(j = 0; j < n; j ++)
-				{
-					if(strstr(keys_a[j],rec->fields[1].data.s) != NULL)
-					{
-	
-						if((pos = get(keys_a[j],ht)) == -1)
-						{
-							free_strs(n,1,keys_a);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							printf("check on key failed. record not found. %s:%d.\n",F,L-4);
-							return 0;
-						}
+				struct Keys_ht *keys_data = keys(&ht[0]);
+				for(int j = 0; j < n; j ++) {
+					if(keys_a->types[j] == STR){
+						if(strstr((char*)keys_data->k[j],rec->fields[1].data.s) != NULL) {
+							if((pos = get(keys_data->k[j],ht,STR)) == -1) {
+								printf("check on key failed. record not found. %s:%d.\n",F,L-4);
+								goto exit_error;
+							}
 
-						if(find_record_position(fd_data,pos) == -1)	
-						{
-							__er_file_pointer(F,L-2);
-							free_strs(n,1,keys_a);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							return 0;
-						}
+							if(find_record_position(fd_data,pos) == -1) {
+								__er_file_pointer(F,L-2);
+								goto exit_error;
+							}
 					
-						struct Record_f **rec_e = calloc(1,sizeof(struct Record_f*));
-						if(!rec_e)
-						{
-							printf("calloc failed. %s:%d.\n",F,L-3);
-							free_strs(n,1,keys_a);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							return 0;
-						}
-						int index = 0, *p_i = &index;	
-						if(!get_rec(fd_data,fd_index, p_i, 
-							keys_a[j], &rec_e, rec->file_name,lock))
-						{
-							free_strs(n,1,keys_a);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							printf("check on key failed. record not found. %s:%d.\n",F,L-4);
-							return 0;
-						}
-				
-						if(strcmp(rec_e[0]->fields[0].data.s,rec->fields[0].data.s) == 0)
-						{
+							struct Record_f **rec_e = calloc(1,sizeof(struct Record_f*));
+							if(!rec_e){
+								printf("calloc failed. %s:%d.\n",F,L-3);
+								goto exit_error;
+							}
+							int index = 0, *p_i = &index;	
+							if(!get_rec(fd_data,fd_index, 
+										p_i, keys_data->k[j],
+									        STR, &rec_e, 
+									        rec->file_name,lock)) {
+								printf("check on key failed. record not found. %s:%d.\n",F,L-4);
+								goto exit_error;
+							}
+
+							if(strcmp(rec_e[0]->fields[0].data.s,rec->fields[0].data.s) == 0) {
+								free_record_array(*p_i,&rec_e);
+								printf("Employee already exist.\n");
+								goto exit_error;
+							}
+
 							free_record_array(*p_i,&rec_e);
-							free_strs(n,1,keys_a);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							printf("Employee already exist.\n");
-							return 0;
+
+							/*this force the loop to go trought all the employee 
+							  in the case multiple employees share the same last
+							  name, we are sure that the employee file is accurate*/
+
+							if((n-j) > 1)
+								continue;
+
+							/*if you reach this point the employee is new,
+							  they share the last name*/
+							break;
 						}
-
-						free_record_array(*p_i,&rec_e);
-
-						/*this force the loop to go trought all the employee 
-							in the case multiple employees share the same last
-							name, we are sure that the employee file is accurate*/
-
-						if((n-j) > 1)
-							continue;
-
-						/*if you reach this point the employee is new,
-						 they share the last name*/
-						break;
 					}
 				}
-			
 				/* free the keys array and the hash table*/
 				free_strs(n,1,keys_a);
 				free_ht_array(ht,*pht_i);
 
 				/* this is a new record, generate a new unique key*/
 
-				if(!assemble_key(&key,n,f,rec->fields[1].data.s))
-				{
+				char f = return_first_char(rec->file_name); 
+				if(!assemble_key(&key,n,f,rec->fields[1].data.s)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
 					return 0;
 				}
 
 				free_strs(*p_l,1,files);
 				break;
+				exit_error:
+					free_keys_data(keys_data);
+					free_strs(*p_l,1,files);
+					free_ht_array(ht,*pht_i);
+					return 0;
 			}		
 		case 1: /* schedule */
 			{

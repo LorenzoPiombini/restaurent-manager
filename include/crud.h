@@ -29,7 +29,7 @@ unsigned char update_rec(int fd_data, HashTable* ht,struct Schema *sch, char* fi
 unsigned char write_all_indexes(HashTable* ht,int fd, int index);
 unsigned char __write(char* file_name, int* fd_index, int fd_data, char* data_to_add,
 			struct Record_f *rec, char* key, indexing ixgn, int lock);
-unsigned char __update(char* file_name, int fd_index, int fd_data, char* data_to_add,char* key);
+unsigned char __update(char* file_name, int fd_index, int fd_data, char* data_to_add,void *key, int key_type);
 unsigned char __delete(char* file_name, int* fd_index, char* key);
 unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **export_key);
 
