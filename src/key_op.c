@@ -33,6 +33,7 @@ unsigned char assemble_key(char*** key, int n, char c, char* str)
 	
 	return 1;
 }
+
 /*mode is either TIMECARD or TIPS, specify the key that you are extracting the employee key */
 unsigned char extract_employee_key(char* key_src, char** key_fnd, int mode)
 {
@@ -155,8 +156,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	}
 	
 	/*generate a key based on the file name in the rec*/
-	int i = 0;
-	for(i = 0; i < *p_l; i++) {
+	for(int i = 0; i < *p_l; i++) {
 		if(strcmp(files[i],rec->file_name) == 0)
 			break;
 	}	
@@ -234,7 +234,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				/*check if the employee already exists*/
 				struct Keys_ht *keys_data = keys(&ht[0]);
 				for(int j = 0; j < n; j ++) {
-					if(keys_a->types[j] == STR){
+					if(keys_data->types[j] == STR){
 						if(strstr((char*)keys_data->k[j],rec->fields[1].data.s) != NULL) {
 							if((pos = get(keys_data->k[j],ht,STR)) == -1) {
 								printf("check on key failed. record not found. %s:%d.\n",F,L-4);
@@ -282,7 +282,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 					}
 				}
 				/* free the keys array and the hash table*/
-				free_strs(n,1,keys_a);
+				free_keys_data(keys_data);
 				free_ht_array(ht,*pht_i);
 
 				/* this is a new record, generate a new unique key*/
@@ -326,93 +326,70 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				size_t lt = strlen(rec->fields[2].data.s) + strlen(rec->fields[4].data.s) + 1;
 				lt += number_of_digit(rec->fields[3].data.i);
 
-				char* tip_key_b = NULL;	
-				tip_key_b = calloc(lt,sizeof(char));
-				if(!tip_key_b)
-				{
-					printf("calloc failed. %s:%d.\n",F,L-2);
-					free_strs(*p_l,1,files);
-					free_ht_array(ht,*pht_i);
-					return 0;
-				}	
-			
+				char tip_key_b[lt];
 				if(snprintf(tip_key_b,lt, "%s%s%d",rec->fields[2].data.s, rec->fields[4].data.s,
-							rec->fields[3].data.i) < 0)
-				{
+							rec->fields[3].data.i) < 0) {
 					printf("tips key builder failed.%s:%d.\n",F,L-2);
-					free(tip_key_b);
 					free_strs(*p_l,1,files);
 					free_ht_array(ht,*pht_i);
 					return 0;
 				}	
 
 				/* check if the same tip entry exist*/
-				char** keys_ar = keys(&ht[1]);
+				struct Keys_ht *keys_ar = keys(&ht[1]);
 				size_t size = len(ht[1]);
-				int j = 0;
-				for(j = 0; j < size; j++)
-				{
-					if(strstr(keys_ar[j],tip_key_b) != NULL)
-					{
-						char* date = NULL;
-						if(!extract_date(keys_ar[j], &date, &ht[0]))
-						{
-							printf("extract date failed. %s:%d.\n", F,L-2);
-							free_strs(size,1,keys_ar);
-							free(tip_key_b);
-							free_strs(*p_l,1,files);
-							free_ht_array(ht,*pht_i);
-							return 0;
-						}
-					 	
-						if(strcmp(date,rec->fields[2].data.s) == 0)
-						{
-							char c = return_last_char(keys_ar[j]);
-							int numb = c - '0';
-							if(numb == rec->fields[3].data.i)
-							{
-								printf("tip already saved.\n");
-								free_strs(size,1,keys_ar);
-								free(tip_key_b);
-								free_strs(*p_l,1,files);
-								free(date);
-								free_ht_array(ht,*pht_i);
-								return 0;
+				for(int j = 0; j < size; j++) {
+					if(keys_ar->type == STR){
+						if(strstr(keys_ar->k[j],tip_key_b) != NULL) {
+							char* date = NULL;
+							if(!extract_date(keys_ar[j], &date, &ht[0])) {
+								printf("extract date failed. %s:%d.\n", F,L-2);
+								goto exit_error;
 							}
-						}
 
-						free(date);
+							if(strcmp(date,rec->fields[2].data.s) == 0) {
+								char c = return_last_char(keys_ar[j]);
+								int numb = c - '0';
+								if(numb == rec->fields[3].data.i) {
+									printf("tip already saved.\n");
+									goto exit_error;
+								}
+							}
+
+							free(date);
+						}
 					}
 				}
 			
 				free_ht_array(ht,*pht_i);
-				free_strs(size,1,keys_ar);
-				if(!assemble_key(&key,n,f,tip_key_b))
-				{
+				free_keys_data(keys_data);
+				if(!assemble_key(&key,n,f,tip_key_b)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
-					free(tip_key_b);
 					free_strs(*p_l,1,files);
 					return 0;
 				}
 			
-				free(tip_key_b);
 				free_strs(*p_l,1,files);
 				break;		
+				exit_error:
+					free_keys_data(keys_data);
+					free_strs(*p_l,1,files);
+					free(date);
+					free_ht_array(ht,*pht_i);
+					return 0;
 			}
 		case 3: /* percentage */
 			{
 				size_t buff = number_of_digit(rec->fields[1].data.i) + 1;
 				*key = calloc(buff,sizeof(char));
-				if(!(*key))
-				{
+				if(!(*key)) {
 					printf("calloc failed. %s:%d",F,L-3);
 					free_strs(*p_l,1,files);
 					free_ht_array(ht,*pht_i);
 					return 0;
 				}
 	
-				if(snprintf(*key,buff,"%d",rec->fields[1].data.i) > 0)
-				{
+				if(snprintf(*key,buff,"%d",rec->fields[1].data.i) > 0) {
 					printf("error in key gen (snprintf). %s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
 					free_ht_array(ht,*pht_i);
@@ -478,12 +455,11 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			{
 				char f = 'm';
 				int n = len(ht[1]);
-				if(n == 0)
-				{
-					goto build_tc_key; /* line 1452 */	
+				if(n == 0){
+					goto build_tc_key; /* line 502 */	
 				}
 
-				char** keys_ar = keys(&ht[1]);
+				struct Keys_ht *keys_ar = keys(&ht[1]);
 				if(!keys_ar) {
 					printf("fetch keys faield.%s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
@@ -491,78 +467,64 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 					return 0;
 				}
 
-				int j = 0;
-				for(j = 0; j < n; j++)
-				{
-					if(strstr(keys_ar[j], rec->fields[2].data.s) == NULL)
-						continue;
+				for(int j = 0; j < n; j++) {
+					if(keys_ar->types[j] == STR){
+						if(strstr(keys_ar[j], rec->fields[2].data.s) == NULL)
+							continue;
 
-					long time = 0;	
-					if(!extract_time(keys_ar[j],&time))
-					{
-						printf("can`t extract time. %s:%d.\n",F,L-2);
-						free_strs(*p_l,1,files);
-						free_strs(n,1,keys_ar);
-						free_ht_array(ht,*pht_i);
-						return 0;
-					}
-					
-					/* now you have the seconds, you should create a tm struct */
-					/* you can compare it against the value in the record */
-					/* if the day is the same and clock out is 0 then */
-					/* no clock in should be allowed*/
+						long time = 0;	
+						if(!extract_time(keys_ar[j],&time)) {
+							printf("can`t extract time. %s:%d.\n",F,L-2);
+							goto exit_error;
+						}
 
-					if(!is_today(time))
-						continue;					
-					
-						
-					/* check if the employee clocked out if not exit clock in*/
-					
-					if((return_first_char(keys_ar[j])) == 'm')
-					{
-						printf("employee already clocked in\n");
-						free_strs(*p_l,1,files);
-						free_strs(n,1,keys_ar);
-						free_ht_array(ht,*pht_i);
-						return 0;	
+						/* now you have the seconds, you should create a tm struct */
+						/* you can compare it against the value in the record */
+						/* if the day is the same and clock out is 0 then */
+						/* no clock in should be allowed*/
+
+						if(!is_today(time))
+							continue;					
+
+
+						/* check if the employee clocked out if not exit clock in*/
+
+						if((return_first_char(keys_ar[j])) == 'm') {
+							printf("employee already clocked in\n");
+							goto exit_error;
+						}
 					}
 					
 				
 				}	
 				
-				free_strs(n,1,keys_ar);
+				free_keys_data(keys_ar);
 				build_tc_key:
 				
 				free_ht_array(ht,*pht_i);
 
 				size_t sz = number_of_digit(rec->fields[0].data.l) + strlen(rec->fields[2].data.s) + 1;
-				char* time_card_b = NULL; 
-				time_card_b = calloc(sz, sizeof(char));
-				if(!time_card_b)
-				{
-					printf("calloc failed. %s:%d.\n", F,L-2);
-					free_strs(*p_l,1,files);
-					return 0;
-				}
-	
-				if(snprintf(time_card_b,sz, "%ld%s", rec->fields[0].data.l, rec->fields[2].data.s) < 0)
-				{
+				char time_card_b[sz]; 
+				if(snprintf(time_card_b,sz, "%ld%s", rec->fields[0].data.l, rec->fields[2].data.s) < 0) {
 					printf("time_card key building failed %s:%d.\n",F,L-2);
-					free(time_card_b);
 					free_strs(*p_l,1,files);
 					return 0;
 				}
 				
 				/*get_service() returns either  0,1 or 2 (breakfast,lunch or dinner)*/	
-				if(!assemble_key(&key,get_service(),f,time_card_b))
-				{
+				if(!assemble_key(&key,get_service(),f,time_card_b)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
 					return 0;
 				}
-			free(time_card_b);	
+
 			free_strs(*p_l,1,files);
 			break;	
+			exit_error:
+				free_keys_data(keys_ar);
+				free_strs(*p_l,1,files);
+				free_ht_array(ht,*pht_i);
+				return 0;	
 			}
 		default:
 			printf("no cases for key gen. %s:%d.\n",F,L);
@@ -571,13 +533,11 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			return 0;
 	}
 
-	if(shared_locks && lock == LK_REQ)
-	{/*release the lock normally*/
+	if(shared_locks && lock == LK_REQ) {
+		/*release the lock normally*/
 		int result_i = 0;
-		do
-		{
-			if((result_i = release_lock_smo(&shared_locks,plp_i,plpa_i)) == 0 )
-			{
+		do {
+			if((result_i = release_lock_smo(&shared_locks,plp_i,plpa_i)) == 0 ) {
 				__er_release_lock_smo(F,L-3);
 				return 0;
 			}
