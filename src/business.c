@@ -25,8 +25,7 @@
 unsigned char get_tips_employees_week(int week, int tips_index, int tips_data, struct Record_f ****recs_tr,
 					 int **sizes, int *pr_sz)
 {
-	if(!is_a_db_file(tips_data,"tips",NULL))
-	{
+	if(!is_a_db_file(tips_data,"tips",NULL)) {
 		printf("not a db file or header reading error. %s:%d.\n",F,L-2);
 		return 0;	
 	}
@@ -36,17 +35,15 @@ unsigned char get_tips_employees_week(int week, int tips_index, int tips_data, s
 	/*- index 2 (current week) macro -> CUR_WK     	*/
 	/*- index 3 (last week) macro-> LST_WK		*/
 	HashTable ht= {0,NULL};
-	if(!read_indexes("tips",tips_index,week,&ht,NULL))
-	{
+	if(!read_indexes("tips",tips_index,week,&ht,NULL)) {
 		printf("read_indexes failed %s:%d.", F,L-2);
 		return 0;
 	}
 
-	int elements = len(ht), i = 0;
+	int elements = len(ht);
 	*pr_sz = elements;
-	char** keys_ar = keys(&ht);
-	if(!keys_ar)
-	{
+	struct Keys_ht *keys_ar = keys(&ht);
+	if(!keys_ar){
 		printf("index is empty. %s:%d.\n", F,L-2);
 		destroy_hasht(&ht);
 		return 0;
@@ -55,67 +52,61 @@ unsigned char get_tips_employees_week(int week, int tips_index, int tips_data, s
 	destroy_hasht(&ht);
 
 	*recs_tr = calloc(elements,sizeof(struct Record_f**));
-	if(!*recs_tr)
-	{
+	if(!*recs_tr) {
 		printf("calloc failed, %s:%d.\n", F,L-3);
-		free_strs(elements,1,keys_ar);
+		free_keys_data(keys_ar);
 		return 0;
 	}
 
 	*sizes = calloc(elements,sizeof(int));
-	if(!*sizes)
-	{
+	if(!*sizes) {
 		printf("calloc failed, %s:%d.\n", F,L-3);
-		free_strs(elements,1,keys_ar);
+		free_keys_data(keys_ar);
 		free(*recs_tr);
 		return 0;
 	}
 
-	for(i = 0; i < elements; i++)
-	{
-		int index = 0, *p_i = &index;
+	int i = 0;
+	for(i = 0; i < elements; i++) {
+		int index = 0;
+		int *p_i = &index;
+
 		struct Record_f **recs_t = calloc(1,sizeof(struct Record_f*));
-		if(!recs_t)
-		{
+		if(!recs_t) {
 			printf("calloc failed. %s:%d.\n",F,L-3);
-			free_strs(elements,1,keys_ar);
+			free_keys_data(keys_ar);
 			free_array_of_arrays(elements,recs_tr,*sizes,i);
 			free(sizes);
 			return 0;
 		}
 		
-							
-		if(!get_rec(tips_data,tips_index,p_i,keys_ar[i],&recs_t,"tips",LK_REQ))	
-		{
+		if(!get_rec(tips_data,tips_index,p_i,keys_ar->k[i],keys_ar->types[i],&recs_t,"tips",LK_REQ)) {
 			fprintf(stderr,"read failed. %s:%d\n", F,L-2);
-			free_strs(elements,1,keys_ar);
 			free_record_array(1,&recs_t);
-			free_array_of_arrays(elements,recs_tr,*sizes,i);
-			free(sizes);
-			return 0;
+			goto exit_error;
 		}
 		
-		if(*p_i == 1)
-		{	
+		if(*p_i == 1) {	
 			(*recs_tr)[i] = recs_t;
 			(*sizes)[i] = *p_i; 
-		}else
-		{
-			/*here you have to account for the case where the record is contained*/
+		}else {
+			/*:here you have to account for the case where the record is contained*/
 			/*in 2 or more position in the array */
 			/*this should never happened for this system, becuase the user won't */
 			/*have the ability to change the file definiton in the restaurant app */
 			printf("code refactor needed, %s:%d.\n",F,L);
-			free_strs(elements,1,keys_ar);
 			free_record_array(1,&recs_t);
-			free_array_of_arrays(elements,recs_tr,*sizes,i);
-			free(sizes);
-			return 0;
+			goto exit_error;
 		}
 	}
 
-	free_strs(elements,1,keys_ar);
+	free_keys_data(keys_ar);
 	return 1;
+	exit_error:
+		free_keys_data(keys_ar);
+		free_array_of_arrays(elements,recs_tr,*sizes,i);
+		free(sizes);
+		return 0;
 }
 
 
@@ -123,25 +114,21 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 				struct Record_f ****filtered_r, int service, int *ps,
 				int **sizes,int result_size, int **sizes_fts)
 {
-	if(!(*result))
-	{
-		if(index < 0)
-		{
+	if(!(*result)) {
+		if(index < 0){
 			printf("index value %d, is invalid.\n",index);
 			return 0;
 		}
 
 		HashTable ht= {0,NULL};
-		if(!read_indexes("tips",fd_index,index,&ht,NULL))
-		{
+		if(!read_indexes("tips",fd_index,index,&ht,NULL)) {
 			printf("read_indexes failed %s:%d.", F,L-2);
 			return 0;
 		}
 	
 		size_t l = len(ht);
-		char** keys_ar = keys(&ht);
-		if(!keys_ar)	
-		{
+		struct Keys_ht *keys_ar = keys(&ht);
+		if(!keys_ar) {
 			printf("get keys from hash table failed, %s:%d.\n",F,L-3);
 			destroy_hasht(&ht);
 			return 0;
@@ -149,66 +136,58 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 
 		destroy_hasht(&ht);
 
-		int i = 0, size = 0, j = 0; 
-		for(i = 0; i < l; i++)
-		{
-			char lc = return_last_char(keys_ar[i]);
+		int size = 0;
+		for(int i = 0; i < l; i++) {
+			char lc = return_last_char((char*)keys_ar->k[i]);
 			int num = lc - '0';
 			if(service == num)
 				size++;
 		}
 
-		if(size == 0)
-		{
-			free_strs(l,1,keys_ar);
+		if(size == 0) {
 			printf("there is no entry for this service.\n");
+			free_keys_data(keys_ar);
 			return 0;	
 		}		
 
 		*ps = size;
 
-
-		int index_i = index, *pi = &index_i;
+		int index_i = index;
+		int *pi = &index_i;
 
 		*result = calloc(size,sizeof(struct Record_f**));
-		if(!*result)
-		{
+		if(!*result){
 			printf("calloc failed. %s:%d.\n",F,L-2);
-			free_strs(l,1,keys_ar);
+			free_keys_data(keys_ar);
 			return 0;
 		}
 	
 		*sizes = calloc(size,sizeof(int));
-		if(!*sizes)
-		{
+		if(!*sizes) {
 			printf("calloc failed. %s:%d.\n",F,L-3);
 			free(*result);
-			free_strs(l,1,keys_ar);
+			free_keys_data(keys_ar);
 			return 0;
 		}
 		
 		/* get the data from the file */
-		if(fd_index != -1 && fd_data != -1 )
-		{
-			for(i = 0, j = 0; i < l; i++)
-			{
-				char lc = return_last_char(keys_ar[i]);
+		if(fd_index != -1 && fd_data != -1 ) {
+			for(int i = 0, j = 0; i < l; i++) {
+				char lc = return_last_char((char*)keys_ar->k[i]);
 				int num = lc - '0';
 				if(service != num)
 					continue;
 
 				*recs = calloc(1,sizeof(struct Record_f*));
-				if(!*recs)
-				{
+				if(!*recs) {
 					printf("calloc failed. %s:%d.\n",F,L-2);
 					free_array_of_arrays(size,result,*sizes,i);
 					free(sizes);
-					free_strs(l,1,keys_ar);
+					free_keys_data(keys_ar);
 					return 0;
 				}
 
-				if(!get_rec(fd_data,fd_index,pi,keys_ar[i],recs,"tips",LK_REQ))
-				{
+				if(!get_rec(fd_data,fd_index,pi,(void*)keys_ar->k[i],keys_ar->types[i],recs,"tips",LK_REQ)) {
 					printf("get_rec failed. %s:%d.",F,L-2);
 					free_array_of_arrays(size,result,*sizes,i);
 					free(sizes);
@@ -220,7 +199,6 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 				(*result)[j] = *recs;	
 
 				/*populate the array of all records sizes*/
-
 				(*sizes)[j] = *pi;
 		
 				/* reset the index value to the parameter 
@@ -228,8 +206,7 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 				*pi = index; 
 				j++;
 			}
-		}else
-		{
+		}else {
 			printf("check file descriptor, %s:%d.\n",F,L-36);
 			free(*result);
 			free(*sizes);
@@ -237,40 +214,34 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 			return 0;
 		}
 		
-		free_strs(l,1,keys_ar);
+		free_keys_data(keys_ar);
 	}else{/*you already have data so you do not have to read from a file*/
-		int i = 0, size = 0;
-		for(i = 0; i < result_size; i++)
-		{
+		int size = 0;
+		for(int i = 0; i < result_size; i++) {
 			if((*result)[i][0]->fields[3].data.i == service)
 				size++;
 		}
 		
 		
 		*filtered_r = calloc(size,sizeof(struct Record_f**));
-		if(!*filtered_r)
-		{
+		if(!*filtered_r) {
 			printf("calloc failed, %s:%d.\n",F,L-3);
 			return 0;
 		}
 		
 		*sizes_fts = calloc(size,sizeof(int));
-		if(!sizes_fts)
-		{
+		if(!sizes_fts) {
 			printf("calloc failed, %s:%d.\n",F,L-3);
 			free(*filtered_r);
 			return 0;
 		}
 		
 		*ps = size;
-		int j = 0;
-		for(i = 0, j = 0; i < size; i++)
-		{
-				
+	
+		for(int i = 0, j = 0; i < size; i++) {
 			/* perform a deep copy of the data to comply with memory management rules*/
 			struct Record_f *dest_rec = NULL;
-			if(!copy_rec((*result)[i][0],&dest_rec))
-			{
+			if(!copy_rec((*result)[i][0],&dest_rec)) {
 				printf("deep copy failed, %s:%d.\n",F,L-2);
 				free_array_of_arrays(size,filtered_r,*sizes_fts,i);
 				free(*sizes_fts);
@@ -278,8 +249,7 @@ unsigned char filter_tip_service(int index,int fd_index, int fd_data, struct Rec
 			}
 			
 			struct Record_f **pdest_rec_cpy = calloc(1,sizeof(struct Record_f*));
-			if(!pdest_rec_cpy)
-			{
+			if(!pdest_rec_cpy) {
 				printf("calloc failed, %s:%d.\n",F,L-3);
 				free_array_of_arrays(size,filtered_r,*sizes_fts,i);
 				free(*sizes_fts);
@@ -301,13 +271,11 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 					 float **totals, char ***emp_k,	int *pemp_t, int *ptot_t)
 {
 	if(size <= 1) return 0;
-	
 	/*creates array to  contain each employee key if the key is in the array we have a subtotal */
 	
 	size_t emp_t = 1;
 	*emp_k = calloc(emp_t,sizeof(char*));
-	if(!*emp_k)
-	{
+	if(!*emp_k) {
 		printf("calloc failed, %s:%d.\n",F,L-3);
 		return 0;	
 	}
@@ -315,8 +283,7 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 	/* array of totals */
 	size_t tot_t = 1;
 	*totals = calloc(tot_t,sizeof(float));
-	if(!*totals)
-	{
+	if(!*totals) {
 		printf("calloc failed.\n");
 		free_strs(emp_t-1,1,*emp_k);
 		return 0;
@@ -326,15 +293,14 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 	float* tot_n = NULL;
 	
 	(*emp_k)[0] = "null";/*just to give a value to avoid seg fault*/
-	int i = 0, j = 0, k = 0, fnd = 0;
-	for(i = 0; i < size; i++)
-	{
-		for(k = 0; k < sizes[i]; k++)
-		{
-			for(j = 0; j < emp_t; j++)
-			{
-				if(strcmp((*result)[i][k]->fields[4].data.s,(*emp_k)[j]) == 0)
-				{
+	int fnd = 0;
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	for(i = 0; i < size; i++) {
+		for(k = 0; k < sizes[i]; k++) {
+			for(j = 0; j < emp_t; j++) {
+				if(strcmp((*result)[i][k]->fields[4].data.s,(*emp_k)[j]) == 0) {
 					fnd++;
 					k = 0;
 					break; 
@@ -342,16 +308,12 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 				
 			}
 
-			if(fnd == 0)
-			{
-				if(i != 0)
-				{
+			if(fnd == 0) {
+				if(i != 0) {
 					emp_t++;
 					*pemp_t = emp_t;
 					emp_k_n = realloc(*emp_k, emp_t * sizeof(char*));
-
-					if(!emp_k_n)
-					{
+					if(!emp_k_n) {
 						printf("realloc failed. %s:%d.\n", F,L-3);
 						free_strs(emp_t-1,1,*emp_k);
 						free(totals);
@@ -360,12 +322,17 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 
 					*emp_k = emp_k_n;
 					(*emp_k)[emp_t-1] = strdup((*result)[i][k]->fields[4].data.s);
-					
+					if(!(*emp_k)[emp_t-1]){
+						fprintf(stderr,"strdup() failed, %s:%d",F,L-2);
+						free_strs(emp_t-1,1,*emp_k);
+						free(totals);
+						return 0;
+					}
+
 					tot_t++;
 					*ptot_t = tot_t;
 					tot_n = realloc(*totals, tot_t * sizeof(float));
-					if(!tot_n)
-					{
+					if(!tot_n) {
 						printf("realloc failed. %s:%d.\n", F,L-3);
 						free_strs(emp_t-1,1,*emp_k);
 						free(totals);
@@ -376,16 +343,16 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 					(*totals)[tot_t-1] = (*result)[i][k]->fields[0].data.f; 
 					
 		
-				}else
-				{
+				}else {
 					(*emp_k)[emp_t-1] = strdup((*result)[i][k]->fields[4].data.s);
 					(*totals)[tot_t-1] = (*result)[i][k]->fields[0].data.f; 
 				}
-			}else
-			{
-				/*if the program reaches this else it means we already have a subtotals*/
-				/* so we need to add to it, at this point the value of j is the position*/
-				/* of the subtotal that we need to increment*/
+			}else {
+				/*
+				 * if the program reaches this else, it means we already have a subtotals
+				 * so we need to add to it, at this point the value of j is the position
+				 * of the subtotal that we need to increment
+				 * */
 				(*totals)[j] += (*result)[i][k]->fields[0].data.f;
 				j = 0;
 	
@@ -403,13 +370,11 @@ unsigned char total_credit_card_tips_each_employee(struct Record_f ****result, i
 
 unsigned char compute_tips(float credit_card_tips, float cash_tips, int service, char **employee_list, int size)
 {
-
 	int fd_ei = open_file("employee.inx",0);
 	int fd_ed = open_file("employee.dat",0);
 	int fd_pi = open_file("percentage.inx",0);
 	int fd_pd = open_file("percentage.dat",0);
-	if(file_error_handler(4,fd_ei,fd_ed,fd_pi,fd_pd) > 0)
-	{
+	if(file_error_handler(4,fd_ei,fd_ed,fd_pi,fd_pd) > 0) {
 		printf("error opening timecard file %s:%d.\n",F,L-3);
 		return 0;
 	}
@@ -433,8 +398,7 @@ unsigned char compute_tips(float credit_card_tips, float cash_tips, int service,
 	{
 		/*get the employee record and get the role*/
 		recs = calloc(1,sizeof(struct Record_f*));
-		if(!recs)
-		{
+		if(!recs) {
 			printf("calloc failed, %s:%d.\n",F,L-3);
 			close_file(4,fd_ei,fd_pi,fd_ed,fd_pd); 
 			if(binary_st.root)
@@ -442,8 +406,7 @@ unsigned char compute_tips(float credit_card_tips, float cash_tips, int service,
 			return 0;
 		}
 
-		if(!get_rec(fd_ed,fd_ei,p_index,employee_list[i],&recs,"employee",LK_REQ))
-		{
+		if(!get_rec(fd_ed,fd_ei,p_index,(void*)employee_list[i],STR,&recs,"employee",LK_REQ)) {
 			printf("get_rec failed %s:%d.\n",F,L-2);
 			free_record_array(*p_index,&recs);
 			close_file(4,fd_ei,fd_pi,fd_ed,fd_pd); 
@@ -519,7 +482,7 @@ unsigned char compute_tips(float credit_card_tips, float cash_tips, int service,
 		}
 
 		/*get the points from the percentage file and sum it up*/
-		if(!get_rec(fd_pd,fd_pi,p_index,percentage_k,&recs,"percentage",LK_REQ))
+		if(!get_rec(fd_pd,fd_pi,p_index,(void*)percentage_k,STR,&recs,"percentage",LK_REQ))
 		{
 			printf("get_rec failed %s:%d.\n",F,L-2);
 			free_record_array(*p_index,&recs);
@@ -862,57 +825,59 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	
 	/*Load index 1*/
 	HashTable ht={0, NULL};
-	if(!read_indexes("tips",fd_ti,1,&ht,NULL))
-	{
+	if(!read_indexes("tips",fd_ti,1,&ht,NULL)) {
 		printf("read_indexes failed %s:%d.", F,L-2);
 		return 0;
 	}
 	
-	char **keys_a = keys(&ht);
-	if(!keys_a)
-	{
+	struct Keys_ht *keys_a = keys(&ht);
+	if(!keys_a){
 		printf("no tip to submit to.\n");
 		close_file(1,fd_ti);
 		destroy_hasht(&ht);
 		return 0;	
 	}
 
-	size_t k_n = len(ht);	 
-
 	destroy_hasht(&ht);
 
 	int j = 0, fnd = 0;
-	for(j = 0; j < k_n; j++)
-	{
-		if(strstr(keys_a[j],employee_key) != NULL)
-		{
-			char c = return_last_char(keys_a[j]);
-			int num = c - '0';
-			if( num == service)
-			{
-				fnd++;
-				break;
+	for(j = 0; j < keys_a->length; j++) {
+		if(keys_a->types[j] == STR) {
+			if(strstr((char*)keys_a->k[j],employee_key) != NULL) {
+				char c = return_last_char((char*)keys_a->k[j]);
+				int num = c - '0';
+				if( num == service) {
+					fnd++;
+					break;
+				}
 			}
 		}
 	}
 	
-	if(fnd == 0)
-	{
+	if(fnd == 0) {
 		printf("no entry found.\n");
-		free_strs(k_n,1,keys_a);
+		free_keys_data(keys_a);
 		return 0;
 	}
 
 
-	char *key_tip = strdup(keys_a[j]);
-	free_strs(k_n,1,keys_a);
+	char *key_tip = strdup((char*)keys_a->k[j]);
+	if(!(*key_tip)) {
+		fprintf(stderr,"strdup() failed %s:%d.",F,L-2);
+		free_keys_data(keys_a);
+		return 0;
+	}
+
+	free_keys_data(keys_a);
 	
-	/* from line 699 to line 742 I perform a check to make sure we are writing the data */
-	/* correctly to maintain data integrity, if the indexing tips fails, this make sure */
-	/* the program does not write the wrong data to the wrong record in the file.       */
+	/* 
+	 * from line 699 to line 742 I perform a check to make sure we are writing the data 
+	 * correctly to maintain data integrity, if the indexing tips fails, this make sure 
+	 * the program does not write the wrong data to the wrong record in the file.       
+	 * */
+
 	char *date_str = NULL;
-	if(!create_string_date(now_seconds(),&date_str))
-	{
+	if(!create_string_date(now_seconds(),&date_str)) {
 		printf("crate string date failed, %s:%d.\n",F,L-2);
 		close_file(1,fd_ti);
 		free(key_tip);
@@ -920,8 +885,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	}
 	
 	/*load index 0*/
-	if(!read_indexes("tips",fd_ti,0,&ht,NULL))
-	{
+	if(!read_indexes("tips",fd_ti,0,&ht,NULL)) {
 		printf("read_indexes failed %s:%d.", F,L-2);
 		close_file(1,fd_ti);
 		free(date_str);
@@ -930,8 +894,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	}
 
 	char *date = NULL;
-	if(!extract_date(key_tip, &date, &ht))
-	{
+	if(!extract_date(key_tip, &date, &ht)) {
 		printf("extract date failed, %s:%d.\n",F,L-2);
 		close_file(1,fd_ti);
 		destroy_hasht(&ht);
@@ -942,8 +905,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	
 	destroy_hasht(&ht);
 
-	if(strcmp(date,date_str) != 0)
-	{
+	if(strcmp(date,date_str) != 0) {
 		printf("date are not equal.\n");
 		close_file(1,fd_ti);
 		free(key_tip);
@@ -957,8 +919,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 
 	/* get the tip record*/
 	int fd_td = open_file("tips.dat",0);
-	if(file_error_handler(1,fd_td) > 0)
-	{
+	if(file_error_handler(1,fd_td) > 0) {
 		printf("open_file failed, %s:%d.\n",F,L-2);
 		close_file(1,fd_ti);
 		free(key_tip);
@@ -966,8 +927,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	}	
 
 	struct Record_f **recs = calloc(1,sizeof(struct Record_f*));
-	if(!recs)
-	{
+	if(!recs) {
 		printf("calloc failed, %s:%d.\n",F,L-3);
 		close_file(2,fd_ti,fd_td);
 		free(key_tip);
@@ -975,8 +935,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	}
 
 	int i = 0, *pi = &i;
-	if(!get_rec(fd_td,fd_ti,pi,key_tip,&recs,"tips",LK_REQ))
-	{
+	if(!get_rec(fd_td,fd_ti,pi,(void*)key_tip,STR,&recs,"tips",LK_REQ)) {
 		printf("get_rec failed, %s:%d.\n",F,L-2);
 		free_record_array(*pi,&recs);
 		free(key_tip);
@@ -984,8 +943,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 		return 0;
 	}
 
-	if(*pi > 1)
-	{
+	if(*pi > 1) {
 		printf("code refactor needed.%s:%d.",F,L);
 		free_record_array(*pi,&recs);
 		free(key_tip);
@@ -993,8 +951,7 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 		return 0;
 	}
 
-	if(cash > recs[0]->fields[0].data.f)
-	{
+	if(cash > recs[0]->fields[0].data.f) {
 		printf("cash bigger than credit card.\n");
 		free_record_array(*pi,&recs);
 		free(key_tip);
@@ -1022,37 +979,24 @@ unsigned char submit_cash_tips(float cash, char *employee_key, int service)
 	size_t size = strlen(cash_field) + strlen(credit_field) + digit + 1;/*+ 1 for '\0'*/
 	
 	/* create the string data (data_to_add)*/
-	char* data_to_add = calloc(size, sizeof(char));
-	if(!data_to_add)
-	{
-		printf("calloc failed, %s:%d.\n", F,L-2);
-		free(key_tip);
-		close_file(2,fd_ti,fd_td);
-		return 0;
-	}
-
-	if(snprintf(data_to_add,size,"%s%.2f%s%.2f",credit_field,credit_c,cash_field,cash) < 0)
-	{
+	char data_to_add[size]; 
+	if(snprintf(data_to_add,size,"%s%.2f%s%.2f",credit_field,credit_c,cash_field,cash) < 0) {
 		printf("snprintf failed, %s:%d.",F,L-2);
-		free(data_to_add);
 		free(key_tip);
 		close_file(2,fd_ti,fd_td);
 		return 0;
 	}
 	
 	/*use __update() to update the record in the tips file*/
-	if(!__update("tips",fd_ti,fd_td, data_to_add,key_tip))
-	{
+	if(!__update("tips",fd_ti,fd_td, data_to_add,(void*)key_tip,STR)) {
 		printf("update record failed. %s:%d.\n", F,L-2);
 		close_file(2,fd_ti,fd_td);
 		free(key_tip);
-		free(data_to_add);
 		return 0;
 	}
 
 	free(key_tip);
 	close_file(2,fd_ti,fd_td);
-	free(data_to_add);
 	return 1;
 }
 

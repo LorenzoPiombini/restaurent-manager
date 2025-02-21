@@ -13,7 +13,6 @@
 #include "common.h"
 #include "index.h"
 #include "lock.h"
-#include "date.h"
 #include "restaurant_t.h"
 
 unsigned char read_indexes(char* file_name,int fd_index,int index_nr,HashTable* ht, int* ht_array_size)
@@ -220,12 +219,10 @@ unsigned char get_rec(int fd_dat,int fd_inx, int* index, void* key, int key_type
 
 	/* acquire RD_IND and RD_REC locks */
 	/* shared_locks is declare in lock.h and lock.c making the variable global*/
-	if(shared_locks && lock == LK_REQ)
-	{
+	if(shared_locks && lock == LK_REQ) {
 		char** files = two_file_path(file_name);
-		if(!files)
-		{
-			printf(stderr,"two_file_path() failed, %s:%d.\n",F,L-3);
+		if(!files) {
+			fprintf(stderr,"two_file_path() failed, %s:%d.\n",F,L-3);
 			return 0;
 		}
 
@@ -389,6 +386,9 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 	int lock_rel = 0;
 	struct Schema sch = {0,NULL,NULL};
 	struct Header_d hd = {0,0,sch};
+	/* this variables are needed for the lock system */
+	int lock_pos = 0, *plp = &lock_pos;
+	int lock_pos_arr = 0, *plpa = &lock_pos_arr;
 
 	if(crud == LK_REQ)
 	{
@@ -466,9 +466,6 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 		}
 		
 		if(crud == LK_REQ) {	
-			/* this variables are needed for the lock system */
-			int lock_pos = 0, *plp = &lock_pos;
-			int lock_pos_arr = 0, *plpa = &lock_pos_arr;
 
 			char** files = two_file_path(file_name);
 			if(!files) {
@@ -567,7 +564,7 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 	free(buffer), free(buf_t), free(buf_v);
 	return 1;
 
-error_exit:
+exit_error:
         free_schema(&hd.sch_d);
 	free_record(rec,rec->fields_num);
 	free(buffer);
