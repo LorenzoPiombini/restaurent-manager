@@ -519,42 +519,38 @@ unsigned char schema_control(int fd_data, unsigned char* check_s, char* file_nam
 			/*set the file pointer at the start*/
 			if(begin_in_file(fd_data) == -1) {
 				__er_file_pointer(F,L-1);
-				goto error_exit;
+				goto exit_error;
 			}
 
 			if(!write_header(fd_data,&hd)) {
 				printf("write to file failed, %s:%d.\n",F,L-1);
-				goto error_exit;
+				goto exit_error;
 			}
 
 		}
 	}
 
 	/*extracting values that we need at the caller level*/
-	if(update)
-	{
+	if(update) {
 		*pcount = fields_count;			
 		*check_s = check;
 		(*sch_c)->fields_num =  hd.sch_d.fields_num;
 		(*sch_c)->fields_name = calloc((*sch_c)->fields_num, sizeof(char*));
 
-		if(!(*sch_c)->fields_name)
-		{
+		if(!(*sch_c)->fields_name) {
 			printf("calloc failed. %s:%d.\n", F,L-3);
-			goto error_exit;
+			goto exit_error;
 		}
 	
 		(*sch_c)->types = calloc((*sch_c)->fields_num, sizeof(enum ValueType));
-		if(!(*sch_c)->types)
-		{
+		if(!(*sch_c)->types) {
 			printf("calloc failed. %s:%d.\n", F,L-3);
 			free((*sch_c)->fields_name);
-			goto error_exit;
+			goto exit_error;
 		}
 
 		int i = 0;
-		for(i = 0; i < (*sch_c)->fields_num; i++)
-		{
+		for(i = 0; i < (*sch_c)->fields_num; i++) {
 			(*sch_c)->fields_name[i] = strdup(hd.sch_d.fields_name[i]);
 			(*sch_c)->types[i] = hd.sch_d.types[i];
 		}
@@ -621,7 +617,7 @@ unsigned char delete_rec(int fd_inx, void* key,int key_type, HashTable *ht, int*
 	int i = 0;
 	for(i = 0; i < *p_i; i++)
 	{
-		Node* del_r = delete(key, key_type, &ht[i]);
+		Node* del_r = delete(key, &ht[i], key_type);
 		if(del_r) {
 			switch(key_type) {
 			case STR:
@@ -784,7 +780,7 @@ unsigned char update_rec(int fd_data, HashTable* ht, struct Schema* sch, char* f
 		}
 				
 		/* write the update records to file */
-		int i = 0, j = 0;
+		int i = 0;
 		unsigned short updates = 0; /* bool value if 0 no updates*/
 		for(i = 0; i < index; i++)
 		{
@@ -1028,7 +1024,7 @@ unsigned char write_all_indexes(HashTable* ht,int fd, int index)
 /*i decied to make bigger functions to make writing this software easier*/
 /* even thought i do not like hiding functionality */
 unsigned char __write(char* file_name, int* fd_index, int fd_data, char* data_to_add,
-			struct Record_f *rec, char* key, indexing ixgn, int lock)
+			struct Record_f *rec, void* key,int key_type, indexing ixgn, int lock)
 {
 	if((data_to_add && rec) || (!data_to_add && !rec))
 	{
@@ -1076,14 +1072,11 @@ unsigned char __write(char* file_name, int* fd_index, int fd_data, char* data_to
 	if(data_to_add)/*if the caller passed data_to_add we check the schema*/
 	{
 		unsigned char update = 0;
-		if(!schema_control(fd_data, NULL, file_name,data_to_add,&rec, NULL, update,NULL,NO_OP))
-		{
+		if(!schema_control(fd_data, NULL, file_name,data_to_add,&rec, NULL, update,NULL,NO_OP)) {
 			printf("illegal schema. %s:%d.\n",F,L-2);
-			if(shared_locks && lock == LK_REQ)
-			{
+			if(shared_locks && lock == LK_REQ) {
 				int result_i = 0, result_d = 0;
-				do
-				{
+				do {
 					if((result_i = release_lock_smo(&shared_locks,
 							plp_i,plpa_i)) == 0 ||
 					   (result_d = release_lock_smo(&shared_locks,
@@ -1132,8 +1125,7 @@ unsigned char __write(char* file_name, int* fd_index, int fd_data, char* data_to
 	}
 	
 
-	if(!write_rec(fd_data,*fd_index,ht,rec,key))
-	{
+	if(!write_rec(fd_data,*fd_index,ht,rec,key,key_type)) {
 		printf("write record failed. %s:%d.\n",F,L-2);
 		free_ht_array(ht,*pht_i);
 		if(data_to_add)
@@ -1428,7 +1420,7 @@ unsigned char __update(char *file_name, int fd_index, int fd_data, char *data_to
 	}	
 
 	/*this functions free the memory for the Schema and the Hash Table */
-	if(!update_rec(fd_data, pht, psch, file_name, rec, data_to_add, *pcheck, update,*pcount, key)) {
+	if(!update_rec(fd_data, pht, psch, file_name, rec, data_to_add, *pcheck, update,*pcount, key, key_type)) {
 		printf("update failed. %s:%d",F,L-2);
 		free_record(rec,rec->fields_num);
 		goto exit_error;
@@ -1470,7 +1462,7 @@ exit_error:
 
 }
 
-unsigned char __delete(char* file_name, int* fd_index,char* key)
+unsigned char __delete(char* file_name, int* fd_index,void* key, int key_type)
 {
 	/* this variables are needed for the lock system */
 	int lock_pos_i = 0, *plp_i = &lock_pos_i;
@@ -1512,7 +1504,7 @@ unsigned char __delete(char* file_name, int* fd_index,char* key)
 		goto exit_error;
 	}
 
-	if(!delete_rec(*fd_index, key, ht, pht_i)) {
+	if(!delete_rec(*fd_index, key, key_type, ht, pht_i)) {
 		printf("delete_rec failed. %s:%d.\n",F,L-2);
 		free_ht_array(ht,*pht_i);
 		goto exit_error;
@@ -1641,6 +1633,11 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 		goto exit_error;
 	}
 
+	/*
+	 *
+	 * TODO: 
+	 * CHANGE THE WAY KEY GENERATOR WORK
+	 * */
 	char* key = NULL;
 	if(!key_generator(rec,&key,fd_data,fd_index,NO_OP)) {
 		printf("key_generator() failed, %s:%d.\n",F,L-2);
@@ -1659,7 +1656,7 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 		}
 	}
 
-	if(!__write(file_name,&fd_index,fd_data,NULL,rec,key,NULL,NO_OP)) {
+	if(!__write(file_name,&fd_index,fd_data,NULL,rec,key,key_type,NULL,NO_OP)) {
 		printf("key_generator() failed, %s:%d.\n",F,L-2);
 		free_record(rec,rec->fields_num);
 		free(key);
