@@ -340,7 +340,8 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 							char* date = NULL;
 							if(!extract_date((char*)keys_ar->k[j], &date, &ht[0])) {
 								printf("extract date failed. %s:%d.\n", F,L-2);
-								goto exit_error;
+								free(date);
+								goto exit_error_tipk;
 							}
 
 							if(strcmp(date,rec->fields[2].data.s) == 0) {
@@ -348,7 +349,8 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 								int numb = c - '0';
 								if(numb == rec->fields[3].data.i) {
 									printf("tip already saved.\n");
-									goto exit_error;
+									free(date);
+									goto exit_error_tipk;
 								}
 							}
 
@@ -367,10 +369,9 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			
 				free_strs(*p_l,1,files);
 				break;		
-				exit_error:
+				exit_error_tipk:
 					free_keys_data(keys_ar);
 					free_strs(*p_l,1,files);
-					free(date);
 					free_ht_array(ht,*pht_i);
 					return 0;
 			}
@@ -451,6 +452,8 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 			{
 				char f = 'm';
 				int n = len(ht[1]);
+				size_t sz = number_of_digit(rec->fields[0].data.l) + strlen(rec->fields[2].data.s) + 1;
+				char time_card_b[sz]; 
 				if(n == 0){
 					goto build_tc_key; /* line 502 */	
 				}
@@ -465,13 +468,13 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 
 				for(int j = 0; j < n; j++) {
 					if(keys_ar->types[j] == STR){
-						if(strstr(keys_ar[j], rec->fields[2].data.s) == NULL)
+						if(strstr(keys_ar->k[j], rec->fields[2].data.s) == NULL)
 							continue;
 
 						long time = 0;	
-						if(!extract_time(keys_ar[j],&time)) {
+						if(!extract_time((char*)keys_ar->k[j],&time)) {
 							printf("can`t extract time. %s:%d.\n",F,L-2);
-							goto exit_error;
+							goto exit_error_timecardk;
 						}
 
 						/* now you have the seconds, you should create a tm struct */
@@ -485,9 +488,9 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 
 						/* check if the employee clocked out if not exit clock in*/
 
-						if((return_first_char(keys_ar[j])) == 'm') {
+						if((return_first_char((char*)keys_ar->k[j])) == 'm') {
 							printf("employee already clocked in\n");
-							goto exit_error;
+							goto exit_error_timecardk;
 						}
 					}
 					
@@ -499,8 +502,6 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				
 				free_ht_array(ht,*pht_i);
 
-				size_t sz = number_of_digit(rec->fields[0].data.l) + strlen(rec->fields[2].data.s) + 1;
-				char time_card_b[sz]; 
 				if(snprintf(time_card_b,sz, "%ld%s", rec->fields[0].data.l, rec->fields[2].data.s) < 0) {
 					printf("time_card key building failed %s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
@@ -516,7 +517,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 
 			free_strs(*p_l,1,files);
 			break;	
-			exit_error:
+			exit_error_timecardk:
 				free_keys_data(keys_ar);
 				free_strs(*p_l,1,files);
 				free_ht_array(ht,*pht_i);
