@@ -224,10 +224,19 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	{
 		case 0:/*employee*/
 			{ 
-				int n = len(ht[0]);
+				/*
+				 * check if the employee already exists
+				 * if the file is empty we jump to empl_key
+				 * and create the employee key 
+				 * */
+				int n = 0;	
+				struct Keys_ht *keys_data = NULL;
+				if(ht) keys_data = keys(&ht[0]);
 
-				/*check if the employee already exists*/
-				struct Keys_ht *keys_data = keys(&ht[0]);
+				if(!keys_data)
+					goto empl_key;
+
+				n = keys_data->length;
 				for(int j = 0; j < n; j ++) {
 					if(keys_data->types[j] == STR){
 						if(strstr((char*)keys_data->k[j],rec->fields[1].data.s) != NULL) {
@@ -282,7 +291,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				free_ht_array(ht,*pht_i);
 
 				/* this is a new record, generate a new unique key*/
-
+				empl_key:
 				char f = return_first_char(rec->file_name); 
 				if(!assemble_key(&key,n,f,rec->fields[1].data.s)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
