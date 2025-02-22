@@ -1515,7 +1515,6 @@ unsigned char __delete(char* file_name, int* fd_index,void* key, int key_type)
 	if(snprintf(file,l,"%s%s",file_name,suffix) < 0) {
 		printf("file name build failed. %s:%d.\n",F,L-2);
 		free_ht_array(ht,*pht_i);
-		free(file);
 		goto exit_error;
 	}
 
@@ -1523,7 +1522,6 @@ unsigned char __delete(char* file_name, int* fd_index,void* key, int key_type)
         if(file_error_handler(1,*fd_index) > 0) {
 		printf("can't open file in O_TRUNC mode %s:%d.\n",F,L-3);
 		free_ht_array(ht,*pht_i);
-		free(file);
 		goto exit_error;
 	}	
 
@@ -1536,7 +1534,6 @@ unsigned char __delete(char* file_name, int* fd_index,void* key, int key_type)
 	free_ht_array(ht,*pht_i);
 	close_file(1,*fd_index);
 	*fd_index = open_file(file,0); // reopen in O_RDWR mode
-	free(file);
 	if(file_error_handler(1,*fd_index) > 0) {
 		printf("can't open file in O_RDWR mode %s:%d.\n",F,L-3);
 		goto exit_error;
@@ -1544,11 +1541,9 @@ unsigned char __delete(char* file_name, int* fd_index,void* key, int key_type)
 
 	if(shared_locks) {
 		int result_i = 0;
-		do
-		{
+		do {
 			if((result_i = release_lock_smo(&shared_locks,
-				plp_i,plpa_i)) == 0)
-			{
+				plp_i,plpa_i)) == 0) {
 				__er_release_lock_smo(F,L-5);
 				return 0;
 			}
@@ -1612,15 +1607,16 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 	free_strs(2,1,files);
 	files = NULL;
 	
+	size_t l = strlen(file_name) + strlen(".inx") + 1 ;
+	char file_pt[l];
+	memset(file_pt,0,l);
+
 	struct Record_f *rec = NULL; 
 	if(!schema_control(fd_data,NULL,file_name,db_data,&rec,NULL,0,NULL,NO_OP)) {
 		printf("illegal schema, %s:%d.\n",F,L-2);
 		goto exit_error;
 	}
 				
-	size_t l = strlen(file_name) + strlen(".inx") + 1 ;
-	char file_pt[l];
-	memset(file_pt,0,l);
 
 	if(snprintf(file_pt,l,"%s%s",file_name,".inx") < 0) {
 		fprintf(stderr,"snprintf() failed.\n");
@@ -1633,11 +1629,6 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 		goto exit_error;
 	}
 
-	/*
-	 *
-	 * TODO: 
-	 * CHANGE THE WAY KEY GENERATOR WORK
-	 * */
 	char* key = NULL;
 	if(!key_generator(rec,&key,fd_data,fd_index,NO_OP)) {
 		printf("key_generator() failed, %s:%d.\n",F,L-2);
@@ -1648,11 +1639,24 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 		goto exit_error;
 	}
 	
-	if(export_key) {
-		(*export_key) = strdup(key);
-		if(!(*export_key)) {
-			fprintf(stderr,"can't export key %s:%d.\n",F,L-2);
-			*export_key = NULL;
+	int key_type = 0;
+	void* key_converted = key_converter(key,&key_type);
+	if(!key_converted){
+		fprintf(stderr,"key_converter() failed %s:%d.",F,L-2);
+		free_record(rec,rec->fields_num);
+		if(key)	
+			free(key);
+		
+		goto exit_error;
+	}
+
+	if(key_type == STR) {
+		if(export_key) {
+			(*export_key) = strdup(key);
+			if(!(*export_key)) {
+				fprintf(stderr,"can't export key %s:%d.\n",F,L-2);
+				*export_key = NULL;
+			}
 		}
 	}
 

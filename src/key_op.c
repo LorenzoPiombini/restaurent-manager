@@ -13,19 +13,20 @@
 #include "lock.h"
 #include "file.h"
 
-unsigned char assemble_key(char*** key, int n, char c, char* str)
+static unsigned char assemble_key(char*** key, int n, char c, char* str);
+static unsigned char load_files_system(char*** files, int* len);
+
+static unsigned char assemble_key(char*** key, int n, char c, char* str)
 {
 	size_t len = number_of_digit(n) + strlen(str) + 2; /* 1 is the char c, and 1 is for '\0' so + 2*/	
 	
 	*(*key) = calloc(len,sizeof(char));
-	if(!*(*key))
-	{
+	if(!*(*key)) {
 		printf("calloc failed. %s:%d",F,L-2);
 		return 0;
 	}
 	
-	if(snprintf(*(*key),len,"%c%d%s",c,n,str) < 0)
-	{
+	if(snprintf(*(*key),len,"%c%d%s",c,n,str) < 0){
 		printf("key generation failed. %s:%d.\n",F,L-2);
 		free(*(*key));
 		return 0;
@@ -52,8 +53,7 @@ unsigned char extract_employee_key(char* key_src, char** key_fnd, int mode)
 	size_t em_k_t = (mode == TIPS) ? ((len - 1) - pos) + 1 : (len - pos) + 1;
 
 	*key_fnd = calloc(em_k_t, sizeof(char));
-	if(!*key_fnd)
-	{
+	if(!*key_fnd) {
 		printf("calloc failed, %s:%d.\n",F,L-2);
 		return 0;
 	}
@@ -62,8 +62,7 @@ unsigned char extract_employee_key(char* key_src, char** key_fnd, int mode)
 	
 	int i = 0, j = 0;
 	int end = mode == TIPS ? len - 1 : len;
-	for(i = pos, j = 0; i < end; i++)
-	{
+	for(i = pos, j = 0; i < end; i++) {
 		(*key_fnd)[j] = key_src[i];
 		j++; 
 	}
@@ -71,13 +70,11 @@ unsigned char extract_employee_key(char* key_src, char** key_fnd, int mode)
 	return 1;	
 }
 
-unsigned char extract_time(char* key_src, long* time)
-{
+unsigned char extract_time(char* key_src, long* time) {
 	
 	size_t pos = strcspn(key_src,"e");
 	size_t len = strlen(key_src);
-	if(pos == len)
-	{
+	if(pos == len) {
 		printf("extract time failed. %s:%d.\n",F,L-2);
 		return 0;
 	}	
@@ -114,7 +111,7 @@ int extract_username(char *key_src, char **usrname_rslt)
 	return 0;
 }
 
-unsigned char load_files_system(char*** files, int* len)
+static unsigned char load_files_system(char*** files, int* len)
 {
 	FILE* fp = fopen(FSYSK,"r");
 	if(!fp) {
@@ -156,7 +153,8 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	}
 	
 	/*generate a key based on the file name in the rec*/
-	for(int i = 0; i < *p_l; i++) {
+	int i = 0;
+	for(i = 0; i < *p_l; i++) {
 		if(strcmp(files[i],rec->file_name) == 0)
 			break;
 	}	
@@ -165,7 +163,6 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 	int lock_pos_i = 0, *plp_i = &lock_pos_i;
 	int lock_pos_arr_i = 0, *plpa_i = &lock_pos_arr_i;
 
-	
 	/*acquire WR_IND lock*/
 	if(shared_locks && lock == LK_REQ) {
 		char** file_lck = two_file_path(rec->file_name);
@@ -178,16 +175,14 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 		int result_i = 0;
 		do {
 			off_t fd_i_s = get_file_size(fd_index,NULL);
- 
+
 			if((result_i = acquire_lock_smo(&shared_locks,plp_i,plpa_i,files[0],0,
-					fd_i_s,WR_IND,fd_index)) == 0)
-			{
+					fd_i_s,WR_IND,fd_index)) == 0) {
 				__er_acquire_lock_smo(F,L-5);
 				free_strs(*p_l,1,files);
 				free_strs(2,1,file_lck);
 				if(munmap(shared_locks,
-					sizeof(lock_info)*MAX_NR_FILE_LOCKABLE) == -1)
-				{
+					sizeof(lock_info)*MAX_NR_FILE_LOCKABLE) == -1) {
 					__er_munmap(F,L-3);
 					return 0;
 				}
@@ -251,6 +246,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 								printf("calloc failed. %s:%d.\n",F,L-3);
 								goto exit_error;
 							}
+
 							int index = 0, *p_i = &index;	
 							if(!get_rec(fd_data,fd_index, 
 										p_i, keys_data->k[j],
@@ -339,16 +335,16 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				struct Keys_ht *keys_ar = keys(&ht[1]);
 				size_t size = len(ht[1]);
 				for(int j = 0; j < size; j++) {
-					if(keys_ar->type == STR){
+					if(keys_ar->types[j] == STR){
 						if(strstr(keys_ar->k[j],tip_key_b) != NULL) {
 							char* date = NULL;
-							if(!extract_date(keys_ar[j], &date, &ht[0])) {
+							if(!extract_date((char*)keys_ar->k[j], &date, &ht[0])) {
 								printf("extract date failed. %s:%d.\n", F,L-2);
 								goto exit_error;
 							}
 
 							if(strcmp(date,rec->fields[2].data.s) == 0) {
-								char c = return_last_char(keys_ar[j]);
+								char c = return_last_char((char*)keys_ar->k[j]);
 								int numb = c - '0';
 								if(numb == rec->fields[3].data.i) {
 									printf("tip already saved.\n");
@@ -362,7 +358,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				}
 			
 				free_ht_array(ht,*pht_i);
-				free_keys_data(keys_data);
+				free_keys_data(keys_ar);
 				if(!assemble_key(&key,n,f,tip_key_b)) {
 					printf("error in key gen. %s:%d.\n",F,L-2);
 					free_strs(*p_l,1,files);
@@ -372,7 +368,7 @@ unsigned char key_generator(struct Record_f *rec, char** key, int fd_data, int f
 				free_strs(*p_l,1,files);
 				break;		
 				exit_error:
-					free_keys_data(keys_data);
+					free_keys_data(keys_ar);
 					free_strs(*p_l,1,files);
 					free(date);
 					free_ht_array(ht,*pht_i);
