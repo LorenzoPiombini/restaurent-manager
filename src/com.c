@@ -487,12 +487,12 @@ unsigned char accept_instructions(int* fd_sock,int* client_sock,
 	 * */
 	struct sockaddr_in addr = {0};
 	/*convert the ip adress from human readable to network endian*/
-	inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
+//	inet_pton(AF_INET, IP_ADR, &addr.sin_addr);
 
-	 if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
-		fprintf(stderr,"client not allowed. connection dropped.\n");
-		return CLI_NOT; 
-	}
+//	 if(client_info.sin_addr.s_addr != addr.sin_addr.s_addr ) {
+//		fprintf(stderr,"client not allowed. connection dropped.\n");
+//		return CLI_NOT; 
+//	}
  
 	errno = 0;
 	int instruction_size = read(*client_sock,instruction_buff,buff_size);

@@ -409,13 +409,11 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				memset(cur_dir,0,1024);
 				if(getcwd(cur_dir,1024) == NULL) {
 					fprintf(stderr,"can't get the current directory.\n");
-					free(node_data);
 					return 0;
 				}
 
 				if(chdir(node_data) != 0) {
 					fprintf(stderr,"can't change directory.");
-					free(node_data);
 					return EUSER;
 				}
 				/*
@@ -439,7 +437,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return 0;
 				}
 				
-				printf("before write_safe %s:%d.\n",__FILE__,__LINE__);
 
 				char *export_key = NULL;	
 				if(!__write_safe(fd_data,db_data,"employee",&export_key)) {
@@ -455,7 +452,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 
 				/*
 				 * save the employee
-				 * into teh users master file 
+				 * into the users master file 
 				 * for login porpuses;
 				 * */
 				char *first_name = NULL;	       
