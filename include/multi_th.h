@@ -44,7 +44,7 @@ typedef struct
 	pthread_t threads[THREAD_POOL];
 	pthread_mutex_t lock;
 	pthread_cond_t notify;
-	Queue* tasks;
+	struct Queue* tasks;
 	int stop;	
 }Thread_pool;
 

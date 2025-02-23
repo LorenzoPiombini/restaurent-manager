@@ -40,7 +40,7 @@ file_sys:
 		sudo echo "shift|start_time:t_s:end_time:t_s:role:t_i:employee_id:t_s|0|1" >> /u/file_str.txt ;\
 		sudo echo "timecard|clock_in:t_l:clock_out:t_l:employee_id:t_s|365|0" >> /u/file_str.txt ;\
 		sudo touch /u/global_file_str.txt ;\
-		sudo echo -e "users|user_name:t_s:password:t_s:permission:t_b:employee_id:t_s:restaurant_id:t_i|500|2\n" >> /u/global_file_str ;\
+		sudo echo -e "users|user_name:t_s:password:t_s:permission:t_b:employee_id:t_s:restaurant_id:t_i|500|2" >> /u/global_file_str ;\
 		sudo touch /u/file_sys.txt ;\
 		sudo echo "employee" >> /u/file_sys.txt ;\
 		sudo echo "schedule" >> /u/file_sys.txt ;\

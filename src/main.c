@@ -86,7 +86,7 @@ int main(void)
         /*init the thread pool */
 	Thread_pool pool = {0};
 
-	Queue q = {NULL,NULL,0};
+	struct Queue q = {NULL,NULL,0};
 	if(!q_init(&q)) {	
         	printf("q_init() failed, %s:%d,\n",F,L-2);
                 goto handle_crash;
@@ -96,12 +96,14 @@ int main(void)
 	if(!pool_init(&pool))
 	{
 		printf("thread pool init failed, %s:%d.\n",F,L-2);
+                q_free(&q);
                 goto handle_crash;
 	}
 
         /*shared locks is declared as a global variable in lock.h and define as NULL
              inside lock.c */
 	if(!set_memory_obj(&shared_locks)) {
+                q_free(&q);
 		printf("set_memory_obj() failed, %s:%d.\n",F,L-2);
                 goto handle_crash;
         }
@@ -123,6 +125,7 @@ int main(void)
 				continue;
 
                         fprintf(stderr,"epoll_wait() failed.\n");
+			q_free(&q);
                         goto handle_crash;
                 }
 
@@ -161,6 +164,7 @@ int main(void)
 				arg_st = calloc(1,sizeof(struct Th_args));
 				if(!arg_st) {
 					__er_calloc(F,L-3);
+					q_free(&q);
 					goto handle_crash;
 				}
 
@@ -176,6 +180,7 @@ int main(void)
 
 				if(!enqueue(&q,(void*)task)) {
 					printf("enqueue() failed, %s:%d,\n",F,L-2);
+					q_free(&q);
 					goto handle_crash;
 				}
 
@@ -198,6 +203,7 @@ int main(void)
 					arg_st = calloc(1,sizeof(struct Th_args));
 					if(!arg_st) {
 						__er_calloc(F,L-3);
+						q_free(&q);
 						goto handle_crash;
 					}
 	
@@ -217,6 +223,7 @@ int main(void)
 
 					if(!enqueue(&q,(void*)task)) {
 						printf("enqueue() failed, %s:%d,\n",F,L-2);
+						q_free(&q);
 						goto handle_crash;
 					}
 
@@ -263,9 +270,6 @@ handle_crash:
         /*free resourses for thread pool*/
         if(pool.tasks)
                 pool_destroy(&pool);
-
-        if(q.front)
-                q_free(&q);
 
         if(fd_socket > -1 )
 	        close(fd_socket);
