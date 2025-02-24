@@ -1641,7 +1641,7 @@ unsigned char __write_safe(int fd_data,char* db_data, char* file_name, char **ex
 	
 	int key_type = 0;
 	void* key_converted = key_converter(key,&key_type);
-	if(!key_converted){
+	if(!key_converted && key_type == UINT){
 		fprintf(stderr,"key_converter() failed %s:%d.",F,L-2);
 		free_record(rec,rec->fields_num);
 		if(key)	
