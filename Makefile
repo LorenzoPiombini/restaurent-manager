@@ -17,7 +17,7 @@ clean:
 
 obj_dir:
 	@if [ ! -d ./obj ]; then\
-		echo "creating obj directory"\
+		echo "creating obj directory";\
 		mkdir obj ;\
 	fi
 

@@ -504,9 +504,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				}
 
 				if(crypt_pswd(paswd,&hash) == -1) {
-					fprintf(stderr
-							,"crypt_paswd() failed %s:%d\n"
-							,F,L-3);
+					fprintf(stderr,"crypt_paswd() failed %s:%d\n",F,L-3);
 					return 0;
 				}
 

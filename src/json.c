@@ -25,15 +25,13 @@ unsigned char parse_json_object(char* json_str, JsonPair*** pairs, int* pairs_si
 	}
 	
 	Token** tokens = calloc(1,sizeof(Token*));
-	if(!tokens)
-	{
+	if(!tokens) {
 		printf("calloc failed, %s:%d.\n",F,L-2);
 		return 0;
 	}
 
 	int token_counts = 1, *ptcount = &token_counts;
-	if(!lex(json_str, &tokens, ptcount))
-	{
+	if(!lex(json_str, &tokens, ptcount)) {
 		printf("lexer failed, %s:%d.\n",F,L-2);
 		free_tokens_array(&tokens,*ptcount);
 		return 0;
@@ -66,12 +64,10 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 	unsigned char in_array = 0, nested_array  = 0, nested_obj = 0, in_obj = 0;
 	int i = 0, j = 0, complessive_counter = 0;
 	char* original_json = strdup(json);
-	for(i = 0; i < buffer; i++)
-	{
+	for(i = 0; i < buffer; i++) {
 		char c = json[i];
 		
-		if(c == '\"')
-		{
+		if(c == '\"') {
 			register int str_b = i + 1; /* skip the quote */
 			complessive_counter++;	
 			char* temp = &json[str_b];
@@ -143,8 +139,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 
 			/*expand the tokens array by one to contain the next data*/
 			Token** tokens_n = realloc(*tokens, ++(*ptcount) * sizeof(Token*));
-			if(!tokens_n)
-			{
+			if(!tokens_n) {
 				printf("realloc failed, %s:%d.",F,L-3);
 				return 0;	
 			}
@@ -152,34 +147,29 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			continue;
 		}
 
-		if(c == ' ')
-		{ 
+		if(c == ' ') { 
 			complessive_counter++;	
 			continue;
 		}
 		
-		if(in_array && (c != ':' && c != '[' && c != ',' && c != ']' && c != '"' && c != '{' && c != '}'))
-		{
+		if(in_array && (c != ':' && c != '[' && c != ',' && c != ']' && c != '"' && c != '{' && c != '}')) {
 			int p = 0, value_size = 0;
 			char* temp = &json[i];
 
 			(*tokens)[(*ptcount) - 1] = calloc(1,sizeof(Token));
-			if(!(*tokens)[(*ptcount) - 1])
-			{
+			if(!(*tokens)[(*ptcount) - 1]) {
 				printf("calloc failed,%s:%d.\n",F,L-3);
 				return 0;
 			}
 			
-			while(temp[p] != ',' && temp[p] != '[' && temp[p] != ']')
-			{	
+			while(temp[p] != ',' && temp[p] != '[' && temp[p] != ']') {	
 				value_size++;
 				complessive_counter++;	
 				p++;
 			}
 			
 			(*tokens)[(*ptcount) - 1]->value = calloc(++value_size,sizeof(char));
-			if(!(*tokens)[(*ptcount) - 1]->value)
-			{
+			if(!(*tokens)[(*ptcount) - 1]->value) {
 				printf("calloc falied, %s:%d.\n",F,L-3);
 				return 0;
 			}
@@ -187,8 +177,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			(*tokens)[(*ptcount) - 1]->value[value_size - 1] = '\0';
 			
 			p = 0;	
-			while(temp[p] != ',' && temp[p] != '[' && temp[p] != ']')
-			{
+			while(temp[p] != ',' && temp[p] != '[' && temp[p] != ']') {
 				(*tokens)[(*ptcount) - 1]->value[p] = temp[p];
 				p++;
 			}
@@ -206,8 +195,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 
 			/*expand the tokens array by one to contain the next data*/
 			Token** tokens_n = realloc(*tokens, ++(*ptcount) * sizeof(Token*));
-			if(!tokens_n)
-			{
+			if(!tokens_n) {
 				printf("realloc failed, %s:%d.\n",F,L-3);
 				return 0;
 			}
@@ -223,23 +211,21 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			case 'n':
 			{
 				(*tokens)[(*ptcount) - 1] = calloc(1,sizeof(Token));
-				if(!(*tokens)[(*ptcount) - 1])
-				{
+				if(!(*tokens)[(*ptcount) - 1]) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
+
 				size_t l = strlen(JS_NULL) + 1;	
 				complessive_counter+= l - 1;
 
 				(*tokens)[(*ptcount) - 1]->value = calloc(l,sizeof(char));
-			       	if(!(*tokens)[(*ptcount) - 1]->value)
-				{
+			       	if(!(*tokens)[(*ptcount) - 1]->value) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
 				
-				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_NULL) < 0)
-				{
+				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_NULL) < 0) {
 					printf("snprintf failed %s:%d.\n",F,L-2);
 					return 0;
 				}	
@@ -247,8 +233,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 				(*tokens)[(*ptcount - 1)]->type = TOKEN_NULL;
 				
 				Token** tokens_n = realloc(*tokens,++(*ptcount) * sizeof(Token*));
-				if(!tokens_n)
-				{
+				if(!tokens_n) {
 					printf("realloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
@@ -261,23 +246,21 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			case 't':
 			{
 				(*tokens)[(*ptcount) - 1] = calloc(1,sizeof(Token));
-				if(!(*tokens)[(*ptcount) - 1])
-				{
+				if(!(*tokens)[(*ptcount) - 1]) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
+
 				size_t l = strlen(JS_TRUE) + 1;	
 				complessive_counter+= l - 1;
 
 				(*tokens)[(*ptcount) - 1]->value = calloc(l,sizeof(char));
-			       	if(!(*tokens)[(*ptcount) - 1]->value)
-				{
+			       	if(!(*tokens)[(*ptcount) - 1]->value) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
 				
-				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_TRUE) < 0)
-				{
+				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_TRUE) < 0) {
 					printf("sprintf failed %s:%d.\n",F,L-2);
 					return 0;
 				}	
@@ -285,11 +268,11 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 				(*tokens)[(*ptcount - 1)]->type = TOKEN_TRUE;
 				
 				Token** tokens_n = realloc(*tokens,++(*ptcount) * sizeof(Token*));
-				if(!tokens_n)
-				{
+				if(!tokens_n) {
 					printf("realloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
+
 				*tokens = tokens_n;
 
 				/* skip the entire null token in the next iterations*/
@@ -299,23 +282,21 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			case 'f':
 			{
 				(*tokens)[(*ptcount) - 1] = calloc(1,sizeof(Token));
-				if(!(*tokens)[(*ptcount) - 1])
-				{
+				if(!(*tokens)[(*ptcount) - 1]) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
+
 				size_t l = strlen(JS_FALSE) + 1;	
 				complessive_counter+= l - 1;
 
 				(*tokens)[(*ptcount) - 1]->value = calloc(l,sizeof(char));
-			       	if(!(*tokens)[(*ptcount) - 1]->value)
-				{
+			       	if(!(*tokens)[(*ptcount) - 1]->value) {
 					printf("calloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
 				
-				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_FALSE) < 0)
-				{
+				if(snprintf((*tokens)[(*ptcount) - 1]->value,l,"%s",JS_FALSE) < 0 ) {
 					printf("sprintf failed %s:%d.\n",F,L-2);
 					return 0;
 				}	
@@ -323,8 +304,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 				(*tokens)[(*ptcount - 1)]->type = TOKEN_FALSE;
 				
 				Token** tokens_n = realloc(*tokens,++(*ptcount) * sizeof(Token*));
-				if(!tokens_n)
-				{
+				if(!tokens_n) {
 					printf("realloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
@@ -337,16 +317,15 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 			}	
 			case '{':
 			{
-				if(in_obj)
-				{
+				if(in_obj) {
 					if(nested_obj)
 						nested_obj++;
 					else
 						nested_obj = 1;
-				}else
-				{
+				}else {
 					in_obj = 1;
 				}
+
 				(*tokens)[(*ptcount) - 1] = calloc(1,sizeof(Token));
 				if(!(*tokens)[(*ptcount - 1)])
 				{
@@ -354,25 +333,22 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 					return 0;
 				}	
 				
-				if(nested_obj && !in_array)
-				{
+				if(nested_obj && !in_array) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_NESTED_OBJ_OPEN;
-				}
-				else if(nested_obj && in_array) 
-				{
+
+				} else if(nested_obj && in_array) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_NESTED_OBJ_OPEN_IN_ARRAY;
-				}
-				else if(!nested_obj)
-				{
+
+				}else if(!nested_obj) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_OBJ_OPEN;
 				}
 
 				Token** tokens_n = realloc(*tokens,++(*ptcount) * sizeof(Token*));
-				if(!tokens_n)
-				{
+				if(!tokens_n) {
 					printf("realloc failed, %s:%d.\n",F,L-3);
 					return 0;
 				}
+
 				*tokens = tokens_n;
 				complessive_counter++;
 				break;
@@ -386,18 +362,13 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 					return 0;
 				}	
 				
-				if(nested_obj && !in_array)
-				{
+				if(nested_obj && !in_array) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_NESTED_OBJ_CLOSE;
 					complessive_counter++;
-				}
-				else if(nested_obj && in_array) 
-				{
+				}else if(nested_obj && in_array) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_NESTED_OBJ_CLOSE_IN_ARRAY;
 					complessive_counter++;
-				}
-				else if(!nested_obj)
-				{
+				} else if(!nested_obj) {
 					(*tokens)[(*ptcount - 1)]->type = TOKEN_JSON_OBJ_CLOSE;
 					complessive_counter++;
 				}
@@ -585,8 +556,7 @@ unsigned char lex(char* json, Token*** tokens, int* ptcount)
 /*in case of failure we do not free the compiled regex to increase performance */
 unsigned char check_json_input(char* json)
 {
-	if(regexec(&regex,json,0,NULL,0) > 0)
-	{
+	if(regexec(&regex,json,0,NULL,0) > 0) {
 		printf("invalid json string, %s:%d.\n",F,L-2);
 		return 0;
 	}
@@ -644,8 +614,7 @@ unsigned char create_json_pairs(Token*** tokens, int count, JsonPair*** pairs, i
 						{
 							JsonPair** pairs_n = realloc(*pairs,
 									++(*ppcount)*sizeof(JsonPair*));
-							if(!pairs_n)
-							{
+							if(!pairs_n) {
 								printf("realloc failed,\
 								    %s:%d.\n",F,L-3);
 								return 0;

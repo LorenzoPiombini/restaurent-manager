@@ -33,4 +33,19 @@ typedef enum
 }Instructions;
 
 
+
+struct Restaurant{
+	char username[64];
+	char password[64];
+};
+
+
+struct Object{
+	int instruction;
+	union{
+		struct Restaurant rest;	
+	
+	}data;
+
+};
 #endif
