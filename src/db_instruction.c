@@ -21,11 +21,11 @@
 struct login_u user_login = {NULL,-1};
 
 /*local function prototypes */
-static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, BST pairs_tree);
+static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, struct Object *obj);
 static int login_employee(char *username, char * passwd);
 
 
-static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, BST pairs_tree)
+static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, struct Object *obj)
 {
 	/*loads the schema from the header file and creates the string to write
 		to the file */
@@ -41,29 +41,21 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 	}
 
 	/*creates data_to_add from the schema*/
-	char* data_to_add = NULL;
-	if(!create_data_to_add(&hd.sch_d,&data_to_add))
-	{
+	char data_to_add[hd.sch.fields_num][500] = {0};
+
+	if(!create_data_to_add(&hd.sch_d,data_to_add)) {
 		printf("create_data_to_add(), failed %s:%d.\n",F,L-2);
 		free_schema(&hd.sch_d);
 		return 0;
 	}
 
-	char *dta_buf = strdup(data_to_add);
-	free(data_to_add);
-
-	char** dta_blocks = NULL;
-	int blocks = 0;	
-	if(!create_blocks_data_to_add(dta_buf, &dta_blocks, &blocks))
-	{
+	char dta_blocks[hd.sch.fields_num][500] = {0};
+	if(!create_blocks_data_to_add(hd.sch.fields_num,data_to_add, dta_blocks)) {
 		printf("create_blocks_data_to_add() failed, %s:%d.\n",F,L-2);
-		free(dta_buf);
 		free_schema(&hd.sch_d);
 		return 0;
 	}
 				
-	free(dta_buf);
-
 	/*build the final data to add*/
 	*db_data = NULL;
 
@@ -421,9 +413,7 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				}
 			
 				char* db_data = NULL;
-				if(!creates_string_instruction("employee", 
-							fd_data, &db_data, 
-							pairs_tree)) {
+				if(!creates_string_instruction("employee", fd_data, &db_data,obj)) {
 					printf("creates_string_instruction() failed,\
 						       	%s:%d.\n",F,L-2);
 					close_file(1,fd_data);
