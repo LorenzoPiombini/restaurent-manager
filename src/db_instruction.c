@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "json.h"
-#include "user_create.h"
+#include "uniuser.h"
 #include "debug.h"
 #include "str_op.h"
 #include "key_op.h"
@@ -387,19 +387,12 @@ static int login_employee(char *username, char * passwd)
 	
 
 }
-unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
+unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 {
 	switch(inst)
 	{
 		case WRITE_EMP:
 			{
-				/* find the data in the tree */
-			       char *node_data = NULL;	       
-				if(!find(t_s,(void*)REST_HM,
-					&pairs_tree.root,(void**)&node_data,t_s)) {
-					fprintf(stderr,"restaurant does not exist.\n");
-						return 0;
-				}
 				
 				/*
 				 * get the current directory
@@ -412,7 +405,7 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return 0;
 				}
 
-				if(chdir(node_data) != 0) {
+				if(chdir(obj->data.emp.rest_hm) != 0) {
 					fprintf(stderr,"can't change directory.");
 					return EUSER;
 				}
@@ -455,33 +448,6 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				 * into the users master file 
 				 * for login porpuses;
 				 * */
-				char *first_name = NULL;	       
-				if(!find(t_s,(void*)"name",
-					&pairs_tree.root,(void**)&first_name,t_s)) {
-					fprintf(stderr,"first name not found.\n");
-						return 0;
-				}
-
-				char *last_name = NULL;	       
-				if(!find(t_s,(void*)"last name",
-					&pairs_tree.root,(void**)&last_name,t_s)) {
-					fprintf(stderr,"last name does not exist.\n");
-						return 0;
-				}
-				
-				long *rest_id = NULL;
-				if(!find(t_s,(void*)REST_ID,
-					&pairs_tree.root,(void**)&rest_id,t_l)) {
-					fprintf(stderr,"resaurant id does not exist.\n");
-						return 0;
-				}
-
-				long *role = NULL;
-				if(!find(t_s,(void*)"role",
-					&pairs_tree.root,(void**)&role,t_l)) {
-					fprintf(stderr,"role does not exist.\n");
-						return 0;
-				}
 				
 				/*create the users master file entry*/
 				int permission = (*role) == SERVER ? 1 : 0;	
@@ -492,11 +458,11 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 				char *r_id = ":restaurant_id:t_i:";
 
 				char *hash = NULL;
-				size_t l = number_of_digit((int)*rest_id) + 1;
+				size_t l = number_of_digit(obj->data.emp.rest_id) + 1;
 				char paswd[l];
 				memset(paswd,0,l);
 
-				if(snprintf(paswd,l,"%ld",*rest_id) < 0) {
+				if(snprintf(paswd,l,"%ld",obj->data.emp.rest_id) < 0) {
 					fprintf(stderr
 							,"snprintf() failed %s:%d\n"
 							,F,L-3);
@@ -508,8 +474,8 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return 0;
 				}
 
-				size_t len = strlen(first_name) 
-						+ strlen(last_name)
+				size_t len = strlen(obj->data.emp.first_name) 
+						+ strlen(obj->data.emp.last_name)
 						+ strlen(user_name)
 						+ strlen(pass)
 						+ strlen(hash)
@@ -518,15 +484,15 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 						+ strlen(export_key)
 						+ strlen(r_id)
 						+ number_of_digit(permission)
-						+ number_of_digit((int)*rest_id) + 1;
+						+ number_of_digit(obj->data.emp.rest_id) + 1;
 
 				char data[len];
 				memset(data,0,len);
 				
 				
 				if(snprintf(data,len,"%s%s%s%s%s%s%d%s%s%s%ld",
-							user_name,first_name,
-							last_name,pass,hash,
+							user_name,obj->data.emp.first_name,
+							obj->data.emp.last_name,pass,hash,
 							perm,permission,
 							employee_id,export_key,
 							r_id,*rest_id) < 0) {
@@ -589,27 +555,15 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 		case NW_REST:
                 case LG_REST:
 		{
-			char* username = NULL;
-			if(!find(t_s,"username",&pairs_tree.root,(void**)&username,t_s)) {
-				fprintf(stderr,"error new user.\n");
-				return 0;
-			}
-
-			char *passwd = NULL;
-			if(!find(t_s,"password",&pairs_tree.root,(void**)&passwd,t_s)) {
-				fprintf(stderr,"error new user.\n");
-				return 0;
-			}
-
 			if(inst == NW_REST) {
-				int r = add_user(username,passwd);
+				int r = add_user(obj->data.rest.username,obj->data.rest.passwd,NULL);
 				if(r == -1 || r == EALRDY_U) 
 					return EUSER; 
 
 				/* here you have to create the file in the new home*/
-				char *home = NULL;
-				int uid = 0;	
-				if(get_user_info(username,&home,&uid) == -1) {
+
+				struct user_info info = {0}
+				if(get_user_info(username,&info) == -1) {
 					fprintf(stderr,"can't get user info.\n");
 					return 0;
 				}
@@ -626,13 +580,12 @@ unsigned char convert_pairs_in_db_instruction(BST pairs_tree,Instructions inst)
 					return 0;
 				}
 
-				if(chdir(home) != 0) {
+				if(chdir(info.dir) != 0) {
 					fprintf(stderr,"can't change directory.");
 					free(home);
 					return EUSER;
 				}
 
-				free(home);
 				if(!create_system_from_txt_file(FSYS)) {
 					fprintf(stderr,
 							"failed to create restaurant system");

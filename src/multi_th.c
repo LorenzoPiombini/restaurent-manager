@@ -5,7 +5,7 @@
 #include <string.h>
 #include "multi_th.h"
 #include "str_op.h"
-#include "json.h"
+#include "jaster.h"
 #include "file.h"
 #include "bst.h"
 #include "debug.h"
@@ -75,6 +75,21 @@ void* principal_interface(void* arg)
 
 	struct Th_args* arg_st = ((struct Th_args*)arg);	
 	
+	struct Object obj = {0};
+	int steps = json_parse(arg_st->data_from_socket,parsed);
+	
+	/*the parsing*/
+	char *endptr;
+	long l = strtol(parsed[2],&endptr,10);
+	if(*endptr == '\0')
+		obj.instruction = l; 
+	
+	if(obj.instruction == NW_REST){
+		strncpy(obj.data.rest.username,parsed[3],strlen(parsed[3]));
+		strncpy(obj.data.rest.password,parsed[5],strlen(parsed[5]));
+	}
+
+/*
  	JsonPair** pairs = NULL;
 	int psize = 0;
 	if(!parse_json_object(arg_st->data_from_socket,&pairs,&psize))
@@ -93,7 +108,7 @@ void* principal_interface(void* arg)
 		return (void*)err;
 	}
 	
-	BST_init;/*declere the Binary search tree (AVL tree)*/
+	BST_init; declere the Binary search tree (AVL tree)
 
 	if(!create_json_pair_tree(&pairs, psize, &BST_tree))
 	{
@@ -112,17 +127,16 @@ void* principal_interface(void* arg)
 		free(arg_st);
 		return (void*)err;
 	}
-	
+*/	
 	/* extract the type of operation to perform on the database */
-	int inst = (int)pairs[0]->value->data.i;
+	/*int inst = (int)pairs[0]->value->data.i;*/
 
-	free_json_pairs_array(&pairs,psize);
+	/*free_json_pairs_array(&pairs,psize);*/
 	
 	int ret = convert_pairs_in_db_instruction(BST_tree,inst);
 
 	if(ret == 0 || ret == EUSER) {
 		printf("convert_pairs_in_db_instruction() failed, %s:%d.\n",F,L-2);
-		free_BST(&BST_tree);
 		char message[] = "{\"status\":\"error\"}";
 		size_t size = strlen(message);
 		if(write(arg_st->socket_client,message,size) == -1) {
@@ -158,7 +172,6 @@ void* principal_interface(void* arg)
 				user_login.uid) < 0) {
 			fprintf(stderr,"snprintf() failed.%s:%d.\n",
 					F,L-5);
-			free_BST(&BST_tree);
 			char error[] = "{\"status\":\"error\"}";
 			size_t size = strlen(error);
 			if(write(arg_st->socket_client,error,size) == -1) {

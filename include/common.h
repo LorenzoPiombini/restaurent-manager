@@ -40,11 +40,20 @@ struct Restaurant{
 };
 
 
+struct Employee{
+	int rest_id;
+	char rest_hm[64];
+	char first_name[64];
+	char last_name[64];
+	int shift_id;
+	int role;
+};
+
 struct Object{
 	int instruction;
 	union{
 		struct Restaurant rest;	
-	
+		struct Employee emp;
 	}data;
 
 };
