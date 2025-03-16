@@ -41,7 +41,7 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 	}
 
 	/*creates data_to_add from the schema*/
-	char data_to_add[hd.sch.fields_num][500] = {0};
+	char data_to_add[hd.sch_d.fields_num][500] = {0};
 
 	if(!create_data_to_add(&hd.sch_d,data_to_add)) {
 		printf("create_data_to_add(), failed %s:%d.\n",F,L-2);
@@ -49,20 +49,24 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 		return 0;
 	}
 
-	char dta_blocks[hd.sch.fields_num][500] = {0};
-	if(!create_blocks_data_to_add(hd.sch.fields_num,data_to_add, dta_blocks)) {
+	char dta_blocks[hd.sch_d.fields_num][500] = {0};
+	if(!create_blocks_data_to_add(hd.sch_d.fields_num,data_to_add, dta_blocks)) {
 		printf("create_blocks_data_to_add() failed, %s:%d.\n",F,L-2);
 		free_schema(&hd.sch_d);
 		return 0;
 	}
 				
 	/*build the final data to add*/
-	*db_data = NULL;
+	char db_data[5000] = {0};
 
 	for(int i = 0; i < hd.sch_d.fields_num; i++)
 	{
-		switch(hd.sch_d.types[i])
-		{
+		replace(' ','_',hd.sch_d.fields_name[i]);
+		if(strstr(hd.sch_d.fields_name[i],dta_blocks[i]) != NULL){
+			/**/
+		}
+
+		switch(hd.sch_d.types[i]){
 			case TYPE_STRING:
 			{
 				char* node_data = NULL;
@@ -75,8 +79,7 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 					&pairs_tree.root,(void**)&node_data,t_s))
 						continue;
 
-				if(!*db_data)
-				{
+				if(!*db_data) {
 					init_s = strlen(dta_blocks[i]) + strlen(node_data) + 1;
 					*db_data = calloc(init_s,sizeof(char));
 					if(!*db_data)
