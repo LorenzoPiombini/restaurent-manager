@@ -69,8 +69,8 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 		{
 			if(allocated_bytes < 5000) {
 				size_t l = strlen(dta_blocks[i]);
-				strncpy(&db_data[allocated_bytes],dta_blocks[i],strlen(dta_blocks[i]));
-				allocated_bytes += strlen(dta_blocks[i]);
+				strncpy(&db_data[allocated_bytes],dta_blocks[i],l);
+				allocated_bytes += l;
 				switch(i){
 				case 0:
 				{
@@ -495,13 +495,11 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				char *export_key = NULL;	
 				if(!__write_safe(fd_data,db_data,"employee",&export_key)) {
 					printf("__write_safe() failed %s:%d.\n",F,L-2);
-					free(db_data);
 					close_file(1,fd_data);
 					return 0;
 				}
 				
 				close_file(1,fd_data);
-				free(db_data);
 				
 
 				/*
