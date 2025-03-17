@@ -202,7 +202,7 @@ int main(void)
 					}
 	
 					arg_st->socket_client = events[i].data.fd;
-					arg_st->data_from_socket = strdup(instruction);
+					strncpy(arg_st->data_from_socket,instruction,buff_size);
 					if(epoll_ctl(epoll_fd,EPOLL_CTL_DEL,
 								events[i].data.fd,
 								NULL) == -1) {
