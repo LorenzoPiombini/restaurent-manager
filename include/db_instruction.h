@@ -24,7 +24,7 @@ struct login_u{
 
 extern struct login_u user_login;
 
-unsigned char convert_pairs_in_db_instruction(struct Object *obj,Instructions inst);
+unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst);
 
 
 #endif /* db_instruction.h */

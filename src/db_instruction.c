@@ -21,11 +21,11 @@
 struct login_u user_login = {NULL,-1};
 
 /*local function prototypes */
-static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, struct Object *obj);
+static unsigned char creates_string_instruction(char* file_name, int fd_data, char* db_data, struct Object *obj);
 static int login_employee(char *username, char * passwd);
 
 
-static unsigned char creates_string_instruction(char* file_name, int fd_data, char** db_data, struct Object *obj)
+static unsigned char creates_string_instruction(char* file_name, int fd_data, char* db_data, struct Object *obj)
 {
 	/*loads the schema from the header file and creates the string to write
 		to the file */
@@ -33,23 +33,27 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 	struct Schema sch = {0,NULL,NULL};
 	struct Header_d hd = {0,0,sch};
 
-	if(!is_a_db_file(fd_data,file_name,&hd))
-	{
+	if(!is_a_db_file(fd_data,file_name,&hd)) {
 		printf("not a db file, or reading header error, %s:%d.\n",F,L-2);
 		close_file(1,fd_data);
 		return 0;
 	}
 
-	/*creates data_to_add from the schema*/
-	char data_to_add[hd.sch_d.fields_num][500] = {0};
+	char data_to_add[hd.sch_d.fields_num][500];
+	char dta_blocks[hd.sch_d.fields_num][500];
 
+	for(int i = 0; i < hd.sch_d.fields_num; i++) {
+		memset(data_to_add[i],0,hd.sch_d.fields_num);
+		memset(dta_blocks[i],0,hd.sch_d.fields_num);
+	}
+
+	/*creates data_to_add from the schema*/
 	if(!create_data_to_add(&hd.sch_d,data_to_add)) {
 		printf("create_data_to_add(), failed %s:%d.\n",F,L-2);
 		free_schema(&hd.sch_d);
 		return 0;
 	}
 
-	char dta_blocks[hd.sch_d.fields_num][500] = {0};
 	if(!create_blocks_data_to_add(hd.sch_d.fields_num,data_to_add, dta_blocks)) {
 		printf("create_blocks_data_to_add() failed, %s:%d.\n",F,L-2);
 		free_schema(&hd.sch_d);
@@ -57,13 +61,76 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 	}
 				
 	/*build the final data to add*/
-	char db_data[5000] = {0};
 
+	size_t allocated_bytes = 0;
+	for(int i = 0; i < hd.sch_d.fields_num; i++) {
+		switch(obj->instruction) {
+		case WRITE_EMP:
+		{
+			if(allocated_bytes < 5000) {
+				size_t l = strlen(dta_blocks[i]);
+				strncpy(&db_data[allocated_bytes],dta_blocks[i],strlen(dta_blocks[i]));
+				allocated_bytes += strlen(dta_blocks[i]);
+				switch(i){
+				case 0:
+				{
+					size_t len = strlen(obj->data.emp.first_name);
+					strncpy(&db_data[allocated_bytes],
+							obj->data.emp.first_name,len);
+					allocated_bytes += len;
+					break;
+				}
+				case 1:
+				{
+					size_t len = strlen(obj->data.emp.last_name);
+					strncpy(&db_data[allocated_bytes],
+							obj->data.emp.last_name,len);
+					allocated_bytes += len;
+					break;
+				}
+				case 2:
+				{
+					size_t len = number_of_digit(obj->data.emp.shift_id);
+					if(snprintf(&db_data[allocated_bytes],len,"%d",
+							obj->data.emp.shift_id) < 0) {
+						fprintf(stderr,"snprintf() failed %s:%d",F,L-3);
+						return 0;
+					}
+					allocated_bytes += len;
+					break;
+				}
+				case 3:
+				{
+					size_t len = number_of_digit(obj->data.emp.role);
+					if(snprintf(&db_data[allocated_bytes],len,"%d",
+							obj->data.emp.role) < 0) {
+						fprintf(stderr,"snprintf() failed %s:%d",F,L-3);
+						return 0;
+					}
+					allocated_bytes += len;
+					break;
+				}
+				default:	
+					break;
+				}	
+			}else{
+				/*the string is too big*/
+				return 0;
+			}
+
+			break;
+		}
+		default:	
+			break;
+		}
+	}
+#if 0 /*the following code is a lot of allocations*/
 	for(int i = 0; i < hd.sch_d.fields_num; i++)
 	{
 		replace(' ','_',hd.sch_d.fields_name[i]);
 		if(strstr(hd.sch_d.fields_name[i],dta_blocks[i]) != NULL){
 			/**/
+
 		}
 
 		switch(hd.sch_d.types[i]){
@@ -374,6 +441,7 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 			
 		free_schema(&hd.sch_d);
 		free_strs(blocks,1,dta_blocks);
+#endif
 		return 1;
 }
 
@@ -415,8 +483,8 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 					return 0;
 				}
 			
-				char* db_data = NULL;
-				if(!creates_string_instruction("employee", fd_data, &db_data,obj)) {
+				char db_data[5000] = {0};
+				if(!creates_string_instruction("employee", fd_data, db_data,obj)) {
 					printf("creates_string_instruction() failed,\
 						       	%s:%d.\n",F,L-2);
 					close_file(1,fd_data);
@@ -443,7 +511,7 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				 * */
 				
 				/*create the users master file entry*/
-				int permission = (*role) == SERVER ? 1 : 0;	
+				int permission = obj->data.emp.role == SERVER ? 1 : 0;	
 				char *user_name = "user_name:t_s:";
 				char *pass = ":password:t_s:";
 				char *perm = ":permission:t_b:";
@@ -455,14 +523,14 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				char paswd[l];
 				memset(paswd,0,l);
 
-				if(snprintf(paswd,l,"%ld",obj->data.emp.rest_id) < 0) {
+				if(snprintf(paswd,l,"%d",obj->data.emp.rest_id) < 0) {
 					fprintf(stderr
 							,"snprintf() failed %s:%d\n"
 							,F,L-3);
 					return 0;
 				}
 
-				if(crypt_pswd(paswd,&hash) == -1) {
+				if(crypt_pswd(paswd,&hash,NULL) == -1) {
 					fprintf(stderr,"crypt_paswd() failed %s:%d\n",F,L-3);
 					return 0;
 				}
@@ -483,12 +551,12 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				memset(data,0,len);
 				
 				
-				if(snprintf(data,len,"%s%s%s%s%s%s%d%s%s%s%ld",
+				if(snprintf(data,len,"%s%s%s%s%s%s%d%s%s%s%d",
 							user_name,obj->data.emp.first_name,
 							obj->data.emp.last_name,pass,hash,
 							perm,permission,
 							employee_id,export_key,
-							r_id,*rest_id) < 0) {
+							r_id,obj->data.emp.rest_id) < 0) {
 					fprintf(stderr,"snprintf() failed. %s:%d.\n"
 							,F,L - 7);
 					free(hash);
@@ -501,8 +569,7 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 
 				/*change directory to u*/
 				if( chdir("/u") != 0 ) {	
-					fprintf(stderr,
-							"failed to create restaurant system");
+					fprintf(stderr,	"failed to create restaurant system");
 					return 0;
 				}
 
@@ -549,14 +616,14 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
                 case LG_REST:
 		{
 			if(inst == NW_REST) {
-				int r = add_user(obj->data.rest.username,obj->data.rest.passwd,NULL);
+				int r = add_user(obj->data.rest.username,obj->data.rest.password,NULL);
 				if(r == -1 || r == EALRDY_U) 
 					return EUSER; 
 
 				/* here you have to create the file in the new home*/
 
-				struct user_info info = {0}
-				if(get_user_info(username,&info) == -1) {
+				struct user_info info = {0};
+				if(get_user_info(obj->data.rest.username,&info) == -1) {
 					fprintf(stderr,"can't get user info.\n");
 					return 0;
 				}
@@ -569,41 +636,35 @@ unsigned char convert_pairs_in_db_instruction(struct Object *obj,int inst)
 				memset(cur_dir,0,1024);
 				if(getcwd(cur_dir,1024) == NULL) {
 					fprintf(stderr,"can't get the current directory.\n");
-					free(home);
 					return 0;
 				}
 
 				if(chdir(info.dir) != 0) {
 					fprintf(stderr,"can't change directory.");
-					free(home);
 					return EUSER;
 				}
 
 				if(!create_system_from_txt_file(FSYS)) {
-					fprintf(stderr,
-							"failed to create restaurant system");
+					fprintf(stderr,"failed to create restaurant system");
 					return 0;
 				}
 				
 				/*change back to the original directory*/
 				if(chdir(cur_dir) != 0 ) {	
-					fprintf(stderr,
-							"failed to create restaurant system");
+					fprintf(stderr,"failed to create restaurant syste`m");
 					return 0;
 				}
 
 				break;
 			} else if(inst == LG_REST) {
-				if(login(username,passwd) == -1) {
+				if(login(obj->data.rest.username,obj->data.rest.password,NOT_STD) == -1) {
 					fprintf(stderr,"login failed.\n");
 					return 0;
 				}
-				
-				if(get_user_info(username,
-							&user_login.home_pth,
-							&user_login.uid) == -1) {
-					fprintf(stderr,
-						"can't get user info upon login\n");
+
+				struct user_info ui = {0};
+				if(get_user_info(obj->data.rest.username,&ui) == -1) {
+					fprintf(stderr,"can't get user info upon login\n");
 					return 0;
 				}
 				/*YOU WILL HAVE TO KEEP TRACK OF WHO EVER IS ALREADY LOGGED IN*/

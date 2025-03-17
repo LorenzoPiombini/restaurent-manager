@@ -76,7 +76,7 @@ void* principal_interface(void* arg)
 	struct Th_args* arg_st = ((struct Th_args*)arg);	
 	
 	struct Object obj = {0};
-	int steps = json_parse(arg_st->data_from_socket,parsed);
+	int steps = parse_json(arg_st->data_from_socket,parsed);
 	
 	/*the parsing*/
 	char *endptr;
@@ -87,6 +87,68 @@ void* principal_interface(void* arg)
 	if(obj.instruction == NW_REST){
 		strncpy(obj.data.rest.username,parsed[3],strlen(parsed[3]));
 		strncpy(obj.data.rest.password,parsed[5],strlen(parsed[5]));
+	} else if (obj.instruction == WRITE_EMP){
+		char *enptr;
+		int num = (int) strtol(parsed[3],&enptr,10); 
+		if(*endptr == '\0'){
+			obj.data.emp.rest_id = num;
+		}else {
+			printf("parsing json failed, %s:%d.\n",F,L-2);
+			char* message = "{\"status\":\"error\"}";
+			size_t size = strlen(message);
+			if(write(arg_st->socket_client,message,size) == -1)
+			{
+				close_file(1,arg_st->socket_client);
+				return (void*)err;
+			}
+			close_file(1,arg_st->socket_client);
+			free(arg_st->data_from_socket);
+			free(arg_st);
+			return (void*)err;
+		}
+			
+		strncpy(obj.data.emp.rest_hm,parsed[5],strlen(parsed[5]));
+		strncpy(obj.data.emp.first_name,parsed[7],strlen(parsed[7]));
+		strncpy(obj.data.emp.last_name,parsed[9],strlen(parsed[9]));
+		
+		num = (int)strtol(parsed[11],&endptr,10);
+		if(*endptr == '\0'){
+			obj.data.emp.shift_id = num;
+		}else{
+                        /*error*/
+			printf("parsing json failed, %s:%d.\n",F,L-2);
+			char* message = "{\"status\":\"error\"}";
+			size_t size = strlen(message);
+			if(write(arg_st->socket_client,message,size) == -1)
+			{
+				close_file(1,arg_st->socket_client);
+				return (void*)err;
+			}
+			close_file(1,arg_st->socket_client);
+			free(arg_st->data_from_socket);
+			free(arg_st);
+			return (void*)err;
+		}
+
+		num = (int)strtol(parsed[13],&endptr,10);
+                if(*endptr == '\0'){
+			obj.data.emp.role = num;
+                }else{
+                        /*error*/
+			printf("parsing json failed, %s:%d.\n",F,L-2);
+			char* message = "{\"status\":\"error\"}";
+			size_t size = strlen(message);
+			if(write(arg_st->socket_client,message,size) == -1)
+			{
+				close_file(1,arg_st->socket_client);
+				return (void*)err;
+			}
+			close_file(1,arg_st->socket_client);
+			free(arg_st->data_from_socket);
+			free(arg_st);
+			return (void*)err;
+                }
+	
 	}
 
 /*
@@ -133,7 +195,7 @@ void* principal_interface(void* arg)
 
 	/*free_json_pairs_array(&pairs,psize);*/
 	
-	int ret = convert_pairs_in_db_instruction(BST_tree,inst);
+	int ret = convert_pairs_in_db_instruction(&obj,obj.instruction);
 
 	if(ret == 0 || ret == EUSER) {
 		printf("convert_pairs_in_db_instruction() failed, %s:%d.\n",F,L-2);
@@ -184,11 +246,9 @@ void* principal_interface(void* arg)
 			close_file(1,arg_st->socket_client);
 			free(arg_st->data_from_socket);
 			free(arg_st);
-			free(user_login.home_pth);
 			return (void*)err;
 		}
 
-		free_BST(&BST_tree);
 		size_t size = strlen(message);
 
 		if(write(arg_st->socket_client,message,size) == -1) {
@@ -206,7 +266,6 @@ void* principal_interface(void* arg)
 		return (void*)suc;
 	}
 
-	free_BST(&BST_tree);
 	char* message = "{\"status\":\"succeed\"}";
 	size_t size = strlen(message);
 

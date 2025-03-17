@@ -53,13 +53,13 @@ file_sys:
 	fi
 
 $(TARGET): $(OBJ)
-	gcc -o $@ $? -fsanitize=address -lcrypto -lssl -lcrypt -luser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -fpie -pie -z relro -z now -z noexecstack
+	gcc -o $@ $? -fsanitize=address -ljaster -lcrypto -lssl -lcrypt -luniuser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -fpie -pie -z relro -z now -z noexecstack
 
 obj/%.o : src/%.c
 	gcc -Wall -g3 -c $< -o $@ -Iinclude -fsanitize=address -fstack-protector-strong  -D_FORTIFY_SOURCE=2 -fpie -fPIE -pie 
 
 $(TARGET)_prod:$(OBJ_PROD)
-	gcc -o $@ $? -lcrypto -lssl -luser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -lcrypt -fpie -pie -z relro -z now -z noexecstack
+	gcc -o $@ $? -ljaster -lcrypto -lssl -luniuser -lpthread -lque -lbst -lht -lfile -lstrOP -lrecord -lparse -llock -lm -lcrypt -fpie -pie -z relro -z now -z noexecstack
 
 obj/%_prod.o : src/%.c
 	gcc -Wall  -c $< -o $@ -Iinclude -fstack-protector-strong  -D_FORTIFY_SOURCE=2 -fPIC
