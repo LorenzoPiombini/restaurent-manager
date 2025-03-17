@@ -78,6 +78,8 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 					strncpy(&db_data[allocated_bytes],
 							obj->data.emp.first_name,len);
 					allocated_bytes += len;
+					strncpy(&db_data[allocated_bytes],":",1);
+					allocated_bytes++;
 					break;
 				}
 				case 1:
@@ -86,27 +88,33 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 					strncpy(&db_data[allocated_bytes],
 							obj->data.emp.last_name,len);
 					allocated_bytes += len;
+					strncpy(&db_data[allocated_bytes],":",1);
+					allocated_bytes++;
 					break;
 				}
 				case 2:
 				{
-					size_t len = number_of_digit(obj->data.emp.shift_id);
-					if(snprintf(&db_data[allocated_bytes],len,"%d",
-							obj->data.emp.shift_id) < 0) {
+					size_t len = number_of_digit(obj->data.emp.shift_id)+1;
+					char num[len] = {0};
+					if(snprintf(num,len,"%d",obj->data.emp.shift_id) < 0) {
 						fprintf(stderr,"snprintf() failed %s:%d",F,L-3);
 						return 0;
 					}
+					strncpy(&db_data[allocated_bytes],num,len);
 					allocated_bytes += len;
+					strncpy(&db_data[allocated_bytes],":",1);
+					allocated_bytes++;
 					break;
 				}
 				case 3:
 				{
-					size_t len = number_of_digit(obj->data.emp.role);
-					if(snprintf(&db_data[allocated_bytes],len,"%d",
-							obj->data.emp.role) < 0) {
+					size_t len = number_of_digit(obj->data.emp.role)+1;
+					char num[len] = {0};
+					if(snprintf(num,len,"%d",obj->data.emp.role) < 0) {
 						fprintf(stderr,"snprintf() failed %s:%d",F,L-3);
 						return 0;
 					}
+					strncpy(&db_data[allocated_bytes],num,len);
 					allocated_bytes += len;
 					break;
 				}
@@ -124,6 +132,7 @@ static unsigned char creates_string_instruction(char* file_name, int fd_data, ch
 			break;
 		}
 	}
+	free_schema(&hd.sch_d);
 #if 0 /*the following code is a lot of allocations*/
 	for(int i = 0; i < hd.sch_d.fields_num; i++)
 	{

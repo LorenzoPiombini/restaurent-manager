@@ -20,7 +20,6 @@
 #include "restaurant_t.h"
 #include "db_instruction.h"
 #include "timecard.h"
-#include "json.h"
 #include "multi_th.h"
 #include "queue.h"
 #include "com.h" /*for listen_set_up()*/
@@ -37,7 +36,7 @@ int main(void)
 	int send_err = 0;
         int smo = 0;
         int buff_size = 1000;
-        char instruction[buff_size];
+        char instruction[buff_size] = {0};
 	struct Th_args* arg_st = NULL;
 
         /* epoll() setup variables*/
@@ -46,11 +45,6 @@ int main(void)
         int nfds = 0;
         int epoll_fd = -1;
                
-        /*checking if the regex compiled succesfully for json parsng*/
-        int rgx = -1;
-        if((rgx = init_rgx()) != 0)
-                goto handle_crash;
-
         /*
 	 * SOCKET setup
 	 * listen_set_up will create a NON BLOCKING stream socket,
@@ -169,7 +163,7 @@ int main(void)
 				}
 
 				arg_st->socket_client = fd_client;
-				arg_st->data_from_socket = strdup(instruction);
+				strncpy(arg_st->data_from_socket,instruction,buff_size);
 
 				/*put the function in a task que*/
 				void* (*interface)(void*) = principal_interface;

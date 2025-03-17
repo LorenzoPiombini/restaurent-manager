@@ -24,7 +24,7 @@ enum IO
  * */
 struct Th_args {
 	int socket_client;
-	char* data_from_socket;
+	char data_from_socket[1000];
 	int epoll_fd;
 	int op;
 };
